@@ -1,0 +1,91 @@
+@import "tailwindcss";
+
+:root {
+  --background: #FFFAF8;
+  --foreground: #090E19;
+  --primary: #090E19;
+
+  /* Header offset for sticky elements */
+  --header-height: 96px;
+  --header-height-scrolled: 64px;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-primary: var(--primary);
+
+  /* Fonts */
+  --font-serif: var(--font-instrument-serif), serif;
+  --font-sans: var(--font-inter), sans-serif;
+
+  /* Letter spacing */
+  --letter-spacing-tighter: -0.03em;
+  --letter-spacing-tight: -0.04em;
+
+  /* Custom spacing */
+  --spacing-header: var(--header-height);
+}
+
+/* No dark mode - single theme only */
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+}
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Marquee animation for logo slider */
+@keyframes marquee {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-marquee {
+  animation: marquee 40s linear infinite;
+}
+
+.animate-marquee:hover {
+  animation-duration: 80s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-marquee {
+    animation: none;
+  }
+}
+
+/* Selection color */
+::selection {
+  background: var(--primary);
+  color: var(--background);
+}
+
+/* Grid layout utility */
+.grid-layout {
+  @apply mx-auto grid w-full max-w-full grid-cols-4 gap-3 px-4 lg:grid-cols-12;
+}
