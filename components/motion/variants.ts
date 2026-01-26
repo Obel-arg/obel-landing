@@ -1,8 +1,9 @@
-import { Variants } from "framer-motion";
 import { ANIMATION_DURATION, ANIMATION_EASE } from "@/lib/constants";
 
-// Fade up animation (most common)
-export const fadeUp: Variants = {
+// Animation configuration objects
+// These can be used as reference for GSAP animations
+
+export const fadeUp = {
   hidden: {
     opacity: 0,
     y: 30,
@@ -10,15 +11,12 @@ export const fadeUp: Variants = {
   visible: {
     opacity: 1,
     y: 0,
-    transition: {
-      duration: ANIMATION_DURATION,
-      ease: ANIMATION_EASE,
-    },
+    duration: ANIMATION_DURATION,
+    ease: ANIMATION_EASE,
   },
 };
 
-// Fade down animation
-export const fadeDown: Variants = {
+export const fadeDown = {
   hidden: {
     opacity: 0,
     y: -30,
@@ -26,29 +24,23 @@ export const fadeDown: Variants = {
   visible: {
     opacity: 1,
     y: 0,
-    transition: {
-      duration: ANIMATION_DURATION,
-      ease: ANIMATION_EASE,
-    },
+    duration: ANIMATION_DURATION,
+    ease: ANIMATION_EASE,
   },
 };
 
-// Fade in (no translation)
-export const fadeIn: Variants = {
+export const fadeIn = {
   hidden: {
     opacity: 0,
   },
   visible: {
     opacity: 1,
-    transition: {
-      duration: ANIMATION_DURATION,
-      ease: ANIMATION_EASE,
-    },
+    duration: ANIMATION_DURATION,
+    ease: ANIMATION_EASE,
   },
 };
 
-// Slide in from left
-export const slideInLeft: Variants = {
+export const slideInLeft = {
   hidden: {
     opacity: 0,
     x: -50,
@@ -56,15 +48,12 @@ export const slideInLeft: Variants = {
   visible: {
     opacity: 1,
     x: 0,
-    transition: {
-      duration: ANIMATION_DURATION,
-      ease: ANIMATION_EASE,
-    },
+    duration: ANIMATION_DURATION,
+    ease: ANIMATION_EASE,
   },
 };
 
-// Slide in from right
-export const slideInRight: Variants = {
+export const slideInRight = {
   hidden: {
     opacity: 0,
     x: 50,
@@ -72,15 +61,12 @@ export const slideInRight: Variants = {
   visible: {
     opacity: 1,
     x: 0,
-    transition: {
-      duration: ANIMATION_DURATION,
-      ease: ANIMATION_EASE,
-    },
+    duration: ANIMATION_DURATION,
+    ease: ANIMATION_EASE,
   },
 };
 
-// Scale in
-export const scaleIn: Variants = {
+export const scaleIn = {
   hidden: {
     opacity: 0,
     scale: 0.9,
@@ -88,26 +74,17 @@ export const scaleIn: Variants = {
   visible: {
     opacity: 1,
     scale: 1,
-    transition: {
-      duration: ANIMATION_DURATION,
-      ease: ANIMATION_EASE,
-    },
+    duration: ANIMATION_DURATION,
+    ease: ANIMATION_EASE,
   },
 };
 
-// Stagger container
-export const staggerContainer: Variants = {
-  hidden: {},
-  visible: {
-    transition: {
-      staggerChildren: 0.1,
-      delayChildren: 0.1,
-    },
-  },
+export const staggerContainer = {
+  staggerChildren: 0.1,
+  delayChildren: 0.1,
 };
 
-// Stagger children item (used with staggerContainer)
-export const staggerItem: Variants = {
+export const staggerItem = {
   hidden: {
     opacity: 0,
     y: 20,
@@ -115,9 +92,7 @@ export const staggerItem: Variants = {
   visible: {
     opacity: 1,
     y: 0,
-    transition: {
-      duration: ANIMATION_DURATION,
-      ease: ANIMATION_EASE,
-    },
+    duration: ANIMATION_DURATION,
+    ease: ANIMATION_EASE,
   },
 };

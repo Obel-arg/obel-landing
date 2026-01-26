@@ -1,7 +1,6 @@
 "use client";
 
 import { useRef, useEffect, useState, useCallback } from "react";
-import { useReducedMotion } from "framer-motion";
 
 // Placeholder logos - replace with actual client logos
 const LOGOS = [
@@ -18,7 +17,17 @@ interface LogoMarqueeProps {
 }
 
 export function LogoMarquee({ className = "" }: LogoMarqueeProps) {
-  const prefersReducedMotion = useReducedMotion();
+  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
+
+  // Check reduced motion preference
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+    setPrefersReducedMotion(mediaQuery.matches);
+
+    const handler = (e: MediaQueryListEvent) => setPrefersReducedMotion(e.matches);
+    mediaQuery.addEventListener("change", handler);
+    return () => mediaQuery.removeEventListener("change", handler);
+  }, []);
   const containerRef = useRef<HTMLDivElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
   const positionRef = useRef(0);
