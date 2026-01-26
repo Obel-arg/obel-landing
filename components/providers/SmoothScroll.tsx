@@ -4,16 +4,23 @@ import { useEffect } from "react";
 import Lenis from "lenis";
 import { gsap, ScrollTrigger } from "@/lib/gsap";
 
+// Module-level guard — prevents double init in StrictMode (Rule: advanced-init-once)
+let lenisInstance: Lenis | null = null;
+
 export function SmoothScroll({ children }: { children: React.ReactNode }) {
   useEffect(() => {
+    if (lenisInstance) return;
+
     const lenis = new Lenis({
-      duration: 1.4,
+      duration: 1.2,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       orientation: "vertical",
       smoothWheel: true,
       syncTouch: false,
       touchMultiplier: 1.5,
     });
+
+    lenisInstance = lenis;
 
     // Expose lenis globally for external access
     (window as unknown as { lenis: Lenis }).lenis = lenis;
@@ -31,6 +38,7 @@ export function SmoothScroll({ children }: { children: React.ReactNode }) {
 
     return () => {
       lenis.destroy();
+      lenisInstance = null;
     };
   }, []);
 

@@ -1,7 +1,8 @@
 "use client";
 
-import { ReactNode, useRef, useLayoutEffect, useEffect, useState } from "react";
+import { ReactNode, useRef, useLayoutEffect, useEffect } from "react";
 import { gsap, ScrollTrigger } from "@/lib/gsap";
+import { useReducedMotion } from "@/components/motion/useReducedMotion";
 import { ANIMATION_DURATION } from "@/lib/constants";
 
 // Use useLayoutEffect on client, useEffect on server (SSR safety)
@@ -37,17 +38,7 @@ export function Reveal({
   className,
 }: RevealProps) {
   const ref = useRef<HTMLDivElement>(null);
-  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
-
-  // Check reduced motion preference
-  useEffect(() => {
-    const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
-    setPrefersReducedMotion(mediaQuery.matches);
-
-    const handler = (e: MediaQueryListEvent) => setPrefersReducedMotion(e.matches);
-    mediaQuery.addEventListener("change", handler);
-    return () => mediaQuery.removeEventListener("change", handler);
-  }, []);
+  const prefersReducedMotion = useReducedMotion();
 
   useIsomorphicLayoutEffect(() => {
     const el = ref.current;

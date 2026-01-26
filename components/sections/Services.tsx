@@ -1,8 +1,9 @@
 "use client";
 
-import { useRef, useLayoutEffect, useEffect, useState } from "react";
+import { useRef, useLayoutEffect, useEffect } from "react";
 import { gsap, ScrollTrigger } from "@/lib/gsap";
-import { Reveal } from "@/components/motion";
+import { Reveal } from "@/components/motion/Reveal";
+import { useReducedMotion } from "@/components/motion/useReducedMotion";
 import { HEADER_HEIGHT } from "@/lib/constants";
 
 // Use useLayoutEffect on client, useEffect on server (SSR safety)
@@ -76,64 +77,49 @@ export function Services() {
   const carouselRef = useRef<HTMLDivElement>(null);
   const titleRef = useRef<HTMLHeadingElement>(null);
   const subtitleRef = useRef<HTMLParagraphElement>(null);
-  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
-
-  // Check reduced motion preference
-  useEffect(() => {
-    const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
-    setPrefersReducedMotion(mediaQuery.matches);
-
-    const handler = (e: MediaQueryListEvent) =>
-      setPrefersReducedMotion(e.matches);
-    mediaQuery.addEventListener("change", handler);
-    return () => mediaQuery.removeEventListener("change", handler);
-  }, []);
+  const prefersReducedMotion = useReducedMotion();
 
   // GSAP animations
   useIsomorphicLayoutEffect(() => {
     if (prefersReducedMotion) return;
 
-    // Shared animation config - change once, applies to both title & subtitle
-    const revealAnimation = {
-      from: { yPercent: 150, opacity: 0 },
-      to: { yPercent: 0, opacity: 1, duration: 1.8, ease: "power3.out" },
-    };
-
     const ctx = gsap.context(() => {
-      // Title Y-translate reveal animation
+      // Title — scroll-linked reveal
       if (titleRef.current) {
-        const titleAnim = gsap.fromTo(
+        gsap.fromTo(
           titleRef.current,
-          revealAnimation.from,
-          { ...revealAnimation.to, paused: true }
+          { yPercent: 100, opacity: 0 },
+          {
+            yPercent: 0,
+            opacity: 1,
+            ease: "none",
+            scrollTrigger: {
+              trigger: titleRef.current.parentElement,
+              start: "top 90%",
+              end: "top 50%",
+              scrub: 0.5,
+            },
+          }
         );
-
-        ScrollTrigger.create({
-          trigger: titleRef.current.parentElement,
-          start: "top 90%",
-          onEnter: () => titleAnim.restart(),
-          onEnterBack: () => titleAnim.restart(),
-          onLeave: () => titleAnim.progress(0).pause(),
-          onLeaveBack: () => titleAnim.progress(0).pause(),
-        });
       }
 
-      // Subtitle Y-translate reveal animation
+      // Subtitle — scroll-linked reveal
       if (subtitleRef.current) {
-        const subtitleAnim = gsap.fromTo(
+        gsap.fromTo(
           subtitleRef.current,
-          revealAnimation.from,
-          { ...revealAnimation.to, paused: true }
+          { yPercent: 100, opacity: 0 },
+          {
+            yPercent: 0,
+            opacity: 1,
+            ease: "none",
+            scrollTrigger: {
+              trigger: subtitleRef.current.parentElement,
+              start: "top 90%",
+              end: "top 50%",
+              scrub: 0.5,
+            },
+          }
         );
-
-        ScrollTrigger.create({
-          trigger: subtitleRef.current.parentElement,
-          start: "top 90%",
-          onEnter: () => subtitleAnim.restart(),
-          onEnterBack: () => subtitleAnim.restart(),
-          onLeave: () => subtitleAnim.progress(0).pause(),
-          onLeaveBack: () => subtitleAnim.progress(0).pause(),
-        });
       }
 
       // Horizontal scroll for cards
@@ -152,7 +138,7 @@ export function Services() {
               start: `top ${HEADER_HEIGHT}px`,
               // End exactly when sticky releases - scrub smoothing prevents diagonal movement
               end: "bottom bottom",
-              scrub: 0.8,
+              scrub: 0.3,
             },
           }
         );
@@ -165,7 +151,7 @@ export function Services() {
   // Reduced motion fallback - vertical stack
   if (prefersReducedMotion) {
     return (
-      <section id="services" className="py-24 md:py-32">
+      <section id="services" className="below-fold py-24 md:py-32">
         <div className="px-4">
           <Reveal>
             <h2 className="font-sans font-semibold text-4xl md:text-5xl lg:text-6xl xl:text-7xl tracking-tight mb-16">
@@ -205,7 +191,7 @@ export function Services() {
   }
 
   return (
-    <section id="services" ref={sectionRef}>
+    <section id="services" ref={sectionRef} className="below-fold">
       {/* Part 1: Intro */}
       <div className="flex flex-col px-4 pt-24 md:pt-32 lg:pt-40 pb-0">
         {/* Title - Y-translate reveal */}
@@ -245,7 +231,7 @@ export function Services() {
           }}
         >
           {/* Horizontal carousel - cards side by side */}
-          <div ref={carouselRef} className="flex h-full">
+          <div ref={carouselRef} className="flex h-full" style={{ willChange: "transform" }}>
             {SERVICE_CARDS.map((service, index) => (
               <ServiceCard key={service.id} service={service} index={index} />
             ))}

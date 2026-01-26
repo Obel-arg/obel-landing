@@ -1,10 +1,10 @@
 "use client";
 
-import { Reveal } from "@/components/motion";
+import { Reveal } from "@/components/motion/Reveal";
 
 export function Contact() {
   return (
-    <section id="contact" className="py-24 md:py-32 px-4">
+    <section id="contact" className="below-fold py-24 md:py-32 px-4">
       <div>
         <Reveal>
           <h2 className="font-sans font-semibold text-4xl md:text-5xl lg:text-6xl tracking-tight mb-8">

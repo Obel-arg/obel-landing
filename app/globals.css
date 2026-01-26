@@ -89,3 +89,9 @@ html {
 .grid-layout {
   @apply mx-auto grid w-full max-w-full grid-cols-4 gap-3 px-4 lg:grid-cols-12;
 }
+
+/* Defer off-screen rendering for below-fold sections (Rule: rendering-content-visibility) */
+.below-fold {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 100vh;
+}

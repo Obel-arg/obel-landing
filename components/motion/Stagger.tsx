@@ -1,7 +1,8 @@
 "use client";
 
-import { ReactNode, Children, isValidElement, useRef, useLayoutEffect, useEffect, useState } from "react";
+import { ReactNode, Children, isValidElement, useRef, useLayoutEffect, useEffect } from "react";
 import { gsap, ScrollTrigger } from "@/lib/gsap";
+import { useReducedMotion } from "@/components/motion/useReducedMotion";
 
 // Use useLayoutEffect on client, useEffect on server (SSR safety)
 const useIsomorphicLayoutEffect =
@@ -23,17 +24,7 @@ export function Stagger({
   className,
 }: StaggerProps) {
   const containerRef = useRef<HTMLDivElement>(null);
-  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
-
-  // Check reduced motion preference
-  useEffect(() => {
-    const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
-    setPrefersReducedMotion(mediaQuery.matches);
-
-    const handler = (e: MediaQueryListEvent) => setPrefersReducedMotion(e.matches);
-    mediaQuery.addEventListener("change", handler);
-    return () => mediaQuery.removeEventListener("change", handler);
-  }, []);
+  const prefersReducedMotion = useReducedMotion();
 
   useIsomorphicLayoutEffect(() => {
     const container = containerRef.current;

@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { Reveal, Stagger } from "@/components/motion";
+import { Reveal } from "@/components/motion/Reveal";
+import { Stagger } from "@/components/motion/Stagger";
 import { FOOTER_NAV_LINKS, SOCIAL_LINKS } from "@/lib/constants";
 
 export function Footer() {

@@ -12,6 +12,7 @@ export function SpotlightPattern({ className = "", children }: SpotlightPatternP
   const spotlightRef = useRef<HTMLDivElement>(null);
   const rafRef = useRef<number | null>(null);
   const [isHovered, setIsHovered] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
 
   // Target position for smooth interpolation
   const targetPos = useRef({ x: 0, y: 0 });
@@ -52,13 +53,29 @@ export function SpotlightPattern({ className = "", children }: SpotlightPatternP
     }
   }, []);
 
+  // Lazy-load pattern image when section nears viewport
+  useEffect(() => {
+    if (!containerRef.current) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true);
+          observer.disconnect();
+        }
+      },
+      { rootMargin: "200px" }
+    );
+    observer.observe(containerRef.current);
+    return () => observer.disconnect();
+  }, []);
+
   useEffect(() => {
     const container = containerRef.current;
     if (!container) return;
 
-    container.addEventListener("mousemove", handleMouseMove);
-    container.addEventListener("mouseenter", handleMouseEnter);
-    container.addEventListener("mouseleave", handleMouseLeave);
+    container.addEventListener("mousemove", handleMouseMove, { passive: true });
+    container.addEventListener("mouseenter", handleMouseEnter, { passive: true });
+    container.addEventListener("mouseleave", handleMouseLeave, { passive: true });
 
     return () => {
       container.removeEventListener("mousemove", handleMouseMove);
@@ -72,23 +89,23 @@ export function SpotlightPattern({ className = "", children }: SpotlightPatternP
 
   return (
     <div ref={containerRef} className={`relative overflow-hidden ${className}`}>
-      {/* Light OBEL pattern background (always visible, faded) */}
+      {/* Light OBEL pattern background (always visible, faded) — lazy loaded */}
       <div
         className="absolute inset-0"
         style={{
-          backgroundImage: `url("/images/pattern-obel.png")`,
+          backgroundImage: isVisible ? `url("/images/pattern-obel.png")` : "none",
           backgroundSize: "800px auto",
           backgroundRepeat: "repeat",
           opacity: 0.04,
         }}
       />
 
-      {/* Navy blue pattern with spotlight mask (revealed on hover) */}
+      {/* Navy blue pattern with spotlight mask (revealed on hover) — lazy loaded */}
       <div
         ref={spotlightRef}
         className="absolute inset-0 transition-opacity duration-300"
         style={{
-          backgroundImage: `url("/images/pattern-obel.png")`,
+          backgroundImage: isVisible ? `url("/images/pattern-obel.png")` : "none",
           backgroundSize: "800px auto",
           backgroundRepeat: "repeat",
           opacity: isHovered ? 0.15 : 0,

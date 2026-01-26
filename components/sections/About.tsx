@@ -1,12 +1,13 @@
 "use client";
 
-import { Reveal, Stagger } from "@/components/motion";
+import { Reveal } from "@/components/motion/Reveal";
+import { Stagger } from "@/components/motion/Stagger";
 import { SpotlightPattern } from "@/components/ui/SpotlightPattern";
 import { LogoMarquee } from "@/components/ui/LogoMarquee";
 
 export function About() {
   return (
-    <section id="about" className="relative min-h-screen py-24 md:py-32">
+    <section id="about" className="below-fold relative min-h-screen py-24 md:py-32">
       <SpotlightPattern className="absolute inset-0" />
 
       {/* Content aligned with header padding (matching logo position) */}

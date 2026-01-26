@@ -1,28 +1,39 @@
 "use client";
 
-import { useRef, useLayoutEffect, useEffect, useState } from "react";
+import { useRef, useLayoutEffect, useEffect } from "react";
 import { gsap } from "@/lib/gsap";
+import { useReducedMotion } from "@/components/motion/useReducedMotion";
 
 // Use useLayoutEffect on client, useEffect on server (SSR safety)
 const useIsomorphicLayoutEffect =
   typeof window !== "undefined" ? useLayoutEffect : useEffect;
+
+// Hoisted static SVG — avoids re-creation on every render (Rule: rendering-hoist-jsx)
+const scrollIndicatorSvg = (
+  <svg
+    width="24"
+    height="24"
+    viewBox="0 0 24 24"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    className="opacity-60"
+  >
+    <path
+      d="M12 5V19M12 19L5 12M12 19L19 12"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+);
 
 export function Hero() {
   const sectionRef = useRef<HTMLElement>(null);
   const titleRef = useRef<HTMLHeadingElement>(null);
   const subtitleRef = useRef<HTMLParagraphElement>(null);
   const scrollIndicatorRef = useRef<HTMLDivElement>(null);
-  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
-
-  // Check reduced motion preference
-  useEffect(() => {
-    const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
-    setPrefersReducedMotion(mediaQuery.matches);
-
-    const handler = (e: MediaQueryListEvent) => setPrefersReducedMotion(e.matches);
-    mediaQuery.addEventListener("change", handler);
-    return () => mediaQuery.removeEventListener("change", handler);
-  }, []);
+  const prefersReducedMotion = useReducedMotion();
 
   // GSAP intro timeline
   useIsomorphicLayoutEffect(() => {
@@ -86,32 +97,9 @@ export function Hero() {
 
   return (
     <section ref={sectionRef} className="relative h-screen w-full overflow-hidden">
-      {/* Video Background */}
+      {/* Background — video sources not yet available, using placeholder */}
       <div className="absolute inset-0">
-        {prefersReducedMotion ? (
-          // Static image for reduced motion
-          <div
-            className="absolute inset-0 bg-foreground/10"
-            style={{
-              backgroundImage: "url(/videos/hero-poster.jpg)",
-              backgroundSize: "cover",
-              backgroundPosition: "center",
-            }}
-          />
-        ) : (
-          <video
-            autoPlay
-            loop
-            muted
-            playsInline
-            preload="metadata"
-            poster="/videos/hero-poster.jpg"
-            className="absolute inset-0 w-full h-full object-cover"
-          >
-            <source src="/videos/hero.webm" type="video/webm" />
-            <source src="/videos/hero.mp4" type="video/mp4" />
-          </video>
-        )}
+        <div className="absolute inset-0 bg-foreground/10" />
 
         {/* Overlay gradient */}
         <div className="absolute inset-0 bg-gradient-to-b from-background/20 via-transparent to-background/40" />
@@ -139,22 +127,7 @@ export function Hero() {
         ref={scrollIndicatorRef}
         className="hero-scroll-indicator absolute bottom-8 left-1/2 -translate-x-1/2"
       >
-        <svg
-          width="24"
-          height="24"
-          viewBox="0 0 24 24"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-          className="opacity-60"
-        >
-          <path
-            d="M12 5V19M12 19L5 12M12 19L19 12"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-        </svg>
+        {scrollIndicatorSvg}
       </div>
     </section>
   );

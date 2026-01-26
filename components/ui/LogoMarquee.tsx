@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useEffect, useState, useCallback } from "react";
+import { useReducedMotion } from "@/components/motion/useReducedMotion";
 
 // Placeholder logos - replace with actual client logos
 const LOGOS = [
@@ -12,22 +13,15 @@ const LOGOS = [
   { name: "Company F", id: 6 },
 ];
 
+// Hoisted: duplicate logos 6x for seamless infinite loop (Rule: rendering-hoist-jsx)
+const REPEATED_LOGOS = [...LOGOS, ...LOGOS, ...LOGOS, ...LOGOS, ...LOGOS, ...LOGOS];
+
 interface LogoMarqueeProps {
   className?: string;
 }
 
 export function LogoMarquee({ className = "" }: LogoMarqueeProps) {
-  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
-
-  // Check reduced motion preference
-  useEffect(() => {
-    const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
-    setPrefersReducedMotion(mediaQuery.matches);
-
-    const handler = (e: MediaQueryListEvent) => setPrefersReducedMotion(e.matches);
-    mediaQuery.addEventListener("change", handler);
-    return () => mediaQuery.removeEventListener("change", handler);
-  }, []);
+  const prefersReducedMotion = useReducedMotion();
   const containerRef = useRef<HTMLDivElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
   const positionRef = useRef(0);
@@ -36,10 +30,22 @@ export function LogoMarquee({ className = "" }: LogoMarqueeProps) {
   const rafRef = useRef<number | null>(null);
   const singleSetWidthRef = useRef(0);
   const [isHovered, setIsHovered] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
 
   // Normal speed and slow speed (on hover)
   const NORMAL_SPEED = 1.2;
   const SLOW_SPEED = 0.5;
+
+  // Pause rAF when off-screen
+  useEffect(() => {
+    if (!containerRef.current) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => setIsVisible(entry.isIntersecting),
+      { rootMargin: "100px" }
+    );
+    observer.observe(containerRef.current);
+    return () => observer.disconnect();
+  }, []);
 
   // Calculate single set width once track is rendered
   useEffect(() => {
@@ -89,7 +95,7 @@ export function LogoMarquee({ className = "" }: LogoMarqueeProps) {
   }, []);
 
   useEffect(() => {
-    if (prefersReducedMotion) return;
+    if (prefersReducedMotion || !isVisible) return;
 
     rafRef.current = requestAnimationFrame(animate);
 
@@ -98,7 +104,7 @@ export function LogoMarquee({ className = "" }: LogoMarqueeProps) {
         cancelAnimationFrame(rafRef.current);
       }
     };
-  }, [animate, prefersReducedMotion]);
+  }, [animate, prefersReducedMotion, isVisible]);
 
   // Update target speed on hover state change
   useEffect(() => {
@@ -107,9 +113,6 @@ export function LogoMarquee({ className = "" }: LogoMarqueeProps) {
 
   const handleMouseEnter = useCallback(() => setIsHovered(true), []);
   const handleMouseLeave = useCallback(() => setIsHovered(false), []);
-
-  // Duplicate logos 6 times for seamless infinite loop
-  const repeatedLogos = [...LOGOS, ...LOGOS, ...LOGOS, ...LOGOS, ...LOGOS, ...LOGOS];
 
   if (prefersReducedMotion) {
     return (
@@ -142,7 +145,7 @@ export function LogoMarquee({ className = "" }: LogoMarqueeProps) {
         className="flex items-center gap-20 py-6"
         style={{ width: "max-content", willChange: "transform" }}
       >
-        {repeatedLogos.map((logo, index) => (
+        {REPEATED_LOGOS.map((logo, index) => (
           <div
             key={`${logo.id}-${index}`}
             className="flex items-center justify-center min-w-[100px] md:min-w-[120px] h-10 md:h-12 opacity-50 hover:opacity-80 transition-opacity duration-300 flex-shrink-0"

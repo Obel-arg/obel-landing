@@ -1,7 +1,7 @@
 "use client";
 
 import { cn } from "@/lib/cn";
-import { Reveal } from "@/components/motion";
+import { Reveal } from "@/components/motion/Reveal";
 import { HEADER_HEIGHT } from "@/lib/constants";
 
 // Title area height (title + padding)
@@ -83,7 +83,7 @@ function ProjectCard({ project }: { project: (typeof PROJECTS)[0] }) {
 
 export function FeaturedProjects() {
   return (
-    <section id="works" className="grid-layout !gap-y-0">
+    <section id="works" className="below-fold grid-layout !gap-y-0">
       {PROJECTS.map((project, index) => {
         const isFirst = index === 0;
 
