@@ -11,6 +11,11 @@ export function SmoothScroll({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     if (lenisInstance) return;
 
+    // Prevent browser from restoring previous scroll position
+    if ("scrollRestoration" in history) {
+      history.scrollRestoration = "manual";
+    }
+
     const lenis = new Lenis({
       duration: 1.2,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
@@ -21,6 +26,9 @@ export function SmoothScroll({ children }: { children: React.ReactNode }) {
     });
 
     lenisInstance = lenis;
+
+    // Always start at top on page load
+    lenis.scrollTo(0, { immediate: true });
 
     // Expose lenis globally for external access
     (window as unknown as { lenis: Lenis }).lenis = lenis;

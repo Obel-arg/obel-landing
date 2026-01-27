@@ -38,9 +38,20 @@ const PROJECTS = [
   },
 ];
 
-function ProjectCard({ project }: { project: (typeof PROJECTS)[0] }) {
+function ProjectCard({
+  project,
+  isFirst,
+}: {
+  project: (typeof PROJECTS)[0];
+  isFirst?: boolean;
+}) {
   return (
-    <div className="bg-background py-4 border-t border-foreground/10">
+    <div
+      className={cn(
+        "bg-background py-4",
+        !isFirst && "border-t border-foreground/10"
+      )}
+    >
       <div className="flex flex-col lg:flex-row gap-4 lg:gap-8">
         {/* Project Image - smaller, more compact */}
         <div className="lg:w-1/2 xl:w-[55%]">
@@ -96,22 +107,22 @@ export function FeaturedProjects() {
             )}
             style={{
               zIndex: index + 1,
-              // First card sticks at header height (to show title above all cards)
-              // Other cards stick below the title area
-              top: isFirst ? HEADER_HEIGHT : HEADER_HEIGHT + TITLE_AREA_HEIGHT,
+              top: isFirst
+                ? HEADER_HEIGHT
+                : HEADER_HEIGHT + TITLE_AREA_HEIGHT,
             }}
           >
             {/* Title only in first card - visible because other cards start below it */}
             {isFirst && (
-              <div className="pt-6">
+              <div className="pt-6 border-b border-foreground/10">
                 <Reveal>
-                  <h2 className="font-sans font-semibold text-4xl md:text-5xl lg:text-6xl tracking-tight pb-6">
+                  <h2 className="font-serif font-normal text-4xl md:text-5xl lg:text-6xl tracking-tight pb-6">
                     Featured Projects
                   </h2>
                 </Reveal>
               </div>
             )}
-            <ProjectCard project={project} />
+            <ProjectCard project={project} isFirst={isFirst} />
           </div>
         );
       })}

@@ -7,15 +7,15 @@ export function Contact() {
     <section id="contact" className="below-fold py-24 md:py-32 px-4">
       <div>
         <Reveal>
-          <h2 className="font-sans font-semibold text-4xl md:text-5xl lg:text-6xl tracking-tight mb-8">
+          <h2 className="font-serif font-normal text-4xl md:text-5xl lg:text-6xl tracking-tight mb-8">
             Contact
           </h2>
         </Reveal>
 
-        <div className="mt-16 md:mt-24">
+        <div className="mt-16 md:mt-24 text-center">
           <Reveal delay={0.1}>
             <p className="font-sans text-3xl md:text-4xl lg:text-5xl tracking-tight leading-tight">
-              Let's make an impact together.
+              Let&#39;s make an impact together.
             </p>
           </Reveal>
 

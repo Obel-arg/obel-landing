@@ -16,7 +16,7 @@ export function About() {
         {/* Top content: Title and Subtitle */}
         <Stagger className="space-y-6 lg:space-y-10">
           {/* Main Headline - large, bold, fills 2 lines on desktop */}
-          <h2 className="font-sans font-bold text-[2rem] md:text-[2.5rem] lg:text-[3rem] xl:text-[3.5rem] 2xl:text-[4rem] tracking-[-0.02em] leading-[1.08]">
+          <h2 className="font-serif font-normal text-[2rem] md:text-[2.5rem] lg:text-[3rem] xl:text-[3.5rem] 2xl:text-[4rem] tracking-[-0.02em] leading-[1.08]">
             Obel is an AI-first digital studio and branding
             <br className="hidden lg:block" />
             {" "}partner built for teams that move fast.

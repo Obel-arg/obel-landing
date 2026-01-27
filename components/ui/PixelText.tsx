@@ -2,6 +2,7 @@
 
 import { useRef, useLayoutEffect, useEffect, useState, useCallback } from "react";
 import { gsap, ScrollTrigger } from "@/lib/gsap";
+import { useReducedMotion } from "@/components/motion/useReducedMotion";
 
 // Use useLayoutEffect on client, useEffect on server (SSR safety)
 const useIsomorphicLayoutEffect =
@@ -49,18 +50,24 @@ export function PixelText({
   const isCompleteRef = useRef(false);
   const renderFnRef = useRef<() => void>(() => {});
   const measuredWidthRef = useRef(0);
+  const isVisibleRef = useRef(false);
   const [isReady, setIsReady] = useState(false);
-  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
+  const prefersReducedMotion = useReducedMotion();
   const [isComplete, setIsComplete] = useState(false);
 
-  // Check reduced motion preference
+  // Pause rAF when off-screen (Rule: use IntersectionObserver for visibility and pausing)
   useEffect(() => {
-    const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
-    setPrefersReducedMotion(mediaQuery.matches);
+    const container = containerRef.current;
+    if (!container) return;
 
-    const handler = (e: MediaQueryListEvent) => setPrefersReducedMotion(e.matches);
-    mediaQuery.addEventListener("change", handler);
-    return () => mediaQuery.removeEventListener("change", handler);
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        isVisibleRef.current = entry.isIntersecting;
+      },
+      { rootMargin: "100px" }
+    );
+    observer.observe(container);
+    return () => observer.disconnect();
   }, []);
 
   // Render function — uses refs for completion tracking to avoid circular deps
@@ -215,9 +222,11 @@ export function PixelText({
 
     const container = containerRef.current;
 
-    // Animation loop — uses renderFnRef for stable reference
+    // Animation loop — skips render when off-screen (Rule: no rAF loops without stop condition)
     const animate = () => {
-      renderFnRef.current();
+      if (isVisibleRef.current) {
+        renderFnRef.current();
+      }
       animFrameRef.current = requestAnimationFrame(animate);
     };
 

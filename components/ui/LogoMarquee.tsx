@@ -51,19 +51,17 @@ export function LogoMarquee({ className = "" }: LogoMarqueeProps) {
   useEffect(() => {
     if (!trackRef.current) return;
 
-    // Calculate width of one set of logos
-    const children = trackRef.current.children;
+    // Batch DOM reads before writes (Rule: batch all DOM reads before writes)
+    const track = trackRef.current;
+    const children = track.children;
     const logosPerSet = LOGOS.length;
-    let width = 0;
+    const gap = parseFloat(window.getComputedStyle(track).gap) || 80;
 
+    let width = 0;
     for (let i = 0; i < logosPerSet; i++) {
       const child = children[i] as HTMLElement;
       if (child) {
-        width += child.offsetWidth;
-        // Add gap (get computed style)
-        const style = window.getComputedStyle(trackRef.current);
-        const gap = parseFloat(style.gap) || 80;
-        width += gap;
+        width += child.offsetWidth + gap;
       }
     }
 

@@ -17,6 +17,8 @@ export function SpotlightPattern({ className = "", children }: SpotlightPatternP
   // Target position for smooth interpolation
   const targetPos = useRef({ x: 0, y: 0 });
   const currentPos = useRef({ x: 0, y: 0 });
+  // Cached rect — measured once on mouseenter, reused during mousemove (Rule: measure once, then animate)
+  const cachedRect = useRef<DOMRect | null>(null);
 
   const updateSpotlight = useCallback(() => {
     if (!spotlightRef.current) return;
@@ -33,14 +35,17 @@ export function SpotlightPattern({ className = "", children }: SpotlightPatternP
   }, []);
 
   const handleMouseMove = useCallback((e: MouseEvent) => {
-    if (!containerRef.current) return;
+    const rect = cachedRect.current;
+    if (!rect) return;
 
-    const rect = containerRef.current.getBoundingClientRect();
     targetPos.current.x = e.clientX - rect.left;
     targetPos.current.y = e.clientY - rect.top;
   }, []);
 
   const handleMouseEnter = useCallback(() => {
+    if (containerRef.current) {
+      cachedRect.current = containerRef.current.getBoundingClientRect();
+    }
     setIsHovered(true);
     rafRef.current = requestAnimationFrame(updateSpotlight);
   }, [updateSpotlight]);

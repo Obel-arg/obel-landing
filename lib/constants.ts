@@ -39,3 +39,33 @@ export const FOOTER_NAV_LINKS = [
   { label: "Services", href: "#services" },
   { label: "Hub", href: "#hub" },
 ] as const;
+
+// Footer columns (dark footer section)
+export const FOOTER_COLUMNS = [
+  {
+    title: "Channels",
+    links: [
+      { label: "LinkedIn", href: "https://linkedin.com/company/obel" },
+      { label: "Instagram", href: "https://instagram.com/obel" },
+      { label: "X", href: "https://twitter.com/obel" },
+    ],
+  },
+  {
+    title: "Navigate",
+    links: [
+      { label: "Home", href: "#" },
+      { label: "About", href: "#about" },
+      { label: "Works", href: "#works" },
+      { label: "Services", href: "#services" },
+      { label: "Hub", href: "#hub" },
+    ],
+  },
+  {
+    title: "Contact",
+    links: [
+      { label: "Become a Client", href: "#contact" },
+      { label: "Careers", href: "#careers" },
+      { label: "Press Inquiries", href: "mailto:press@obel.com" },
+    ],
+  },
+] as const;
