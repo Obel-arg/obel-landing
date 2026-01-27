@@ -17,9 +17,7 @@ const Services = dynamic(() =>
 const Contact = dynamic(() =>
   import("@/components/sections/Contact").then((m) => m.Contact)
 );
-const Footer = dynamic(() =>
-  import("@/components/layout/Footer").then((m) => m.Footer)
-);
+import { Footer } from "@/components/layout/Footer";
 
 export default function Home() {
   return (

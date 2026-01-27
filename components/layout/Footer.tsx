@@ -1,24 +1,54 @@
 "use client";
 
-import { useEffect, useRef, useLayoutEffect } from "react";
+import { useEffect, useRef, useLayoutEffect, useCallback } from "react";
 import Link from "next/link";
 import { Reveal } from "@/components/motion/Reveal";
 import {
   FOOTER_COLUMNS,
+  HEADER_HEIGHT,
   HEADER_HEIGHT_SCROLLED,
 } from "@/lib/constants";
+import { playPixelTransition } from "@/components/motion/PixelTransition";
 
 const useIsomorphicLayoutEffect =
   typeof window !== "undefined" ? useLayoutEffect : useEffect;
 
 function scrollToTop() {
-  window.scrollTo({ top: 0, behavior: "smooth" });
+  const lenis = (
+    window as unknown as {
+      lenis?: {
+        scrollTo: (
+          target: number,
+          opts?: { immediate?: boolean }
+        ) => void;
+      };
+    }
+  ).lenis;
+  if (lenis) {
+    playPixelTransition(() => {
+      lenis.scrollTo(0, { immediate: true });
+    });
+  } else {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
 }
 
 export function Footer() {
   const containerRef = useRef<HTMLDivElement>(null);
   const textRef = useRef<HTMLHeadingElement>(null);
+  const patternRef = useRef<HTMLSpanElement>(null);
+  const rafRef = useRef<number | null>(null);
+  const targetPos = useRef({ x: 0, y: 0 });
+  const currentPos = useRef({ x: 0, y: 0 });
 
+
+  // Preload pattern image so it's ready before first hover
+  useEffect(() => {
+    const img = new Image();
+    img.src = "/images/pattern-obel.png";
+  }, []);
+
+  // Dynamic font sizing
   useIsomorphicLayoutEffect(() => {
     const container = containerRef.current;
     const text = textRef.current;
@@ -39,6 +69,72 @@ export function Footer() {
     return () => observer.disconnect();
   }, []);
 
+  // Cursor spotlight — rAF loop with lerp (same pattern as SpotlightPattern)
+  const updateSpotlight = useCallback(() => {
+    if (!patternRef.current) return;
+
+    const ease = 0.12;
+    currentPos.current.x += (targetPos.current.x - currentPos.current.x) * ease;
+    currentPos.current.y += (targetPos.current.y - currentPos.current.y) * ease;
+
+    patternRef.current.style.setProperty("--x", `${currentPos.current.x}px`);
+    patternRef.current.style.setProperty("--y", `${currentPos.current.y}px`);
+
+    rafRef.current = requestAnimationFrame(updateSpotlight);
+  }, []);
+
+  const handleMouseMove = useCallback((e: MouseEvent) => {
+    const el = textRef.current;
+    if (!el) return;
+
+    const rect = el.getBoundingClientRect();
+    targetPos.current.x = e.clientX - rect.left;
+    targetPos.current.y = e.clientY - rect.top;
+  }, []);
+
+  const handleMouseEnter = useCallback((e: MouseEvent) => {
+    const el = textRef.current;
+    if (el) {
+      const rect = el.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      targetPos.current = { x, y };
+      currentPos.current = { x, y };
+    }
+    rafRef.current = requestAnimationFrame(updateSpotlight);
+  }, [updateSpotlight]);
+
+  const handleMouseLeave = useCallback(() => {
+    if (rafRef.current) {
+      cancelAnimationFrame(rafRef.current);
+      rafRef.current = null;
+    }
+    // Move spotlight offscreen
+    if (patternRef.current) {
+      patternRef.current.style.setProperty("--x", "-200px");
+      patternRef.current.style.setProperty("--y", "-200px");
+    }
+  }, []);
+
+  // Attach mouse listeners to the h2
+  useEffect(() => {
+    const el = textRef.current;
+    if (!el) return;
+
+    el.addEventListener("mousemove", handleMouseMove, { passive: true });
+    el.addEventListener("mouseenter", handleMouseEnter, { passive: true });
+    el.addEventListener("mouseleave", handleMouseLeave, { passive: true });
+
+    return () => {
+      el.removeEventListener("mousemove", handleMouseMove);
+      el.removeEventListener("mouseenter", handleMouseEnter);
+      el.removeEventListener("mouseleave", handleMouseLeave);
+      if (rafRef.current) {
+        cancelAnimationFrame(rafRef.current);
+      }
+    };
+  }, [handleMouseMove, handleMouseEnter, handleMouseLeave]);
+
   return (
     <footer>
       {/* Giant "obel" text section — light background */}
@@ -50,9 +146,30 @@ export function Footer() {
         <Reveal>
           <h2
             ref={textRef}
-            className="font-sans text-[30vw] leading-[0.85] tracking-tighter whitespace-nowrap select-none w-fit mx-auto"
+            className="relative font-sans text-[30vw] leading-[0.85] tracking-tighter whitespace-nowrap select-none w-fit mx-auto"
           >
-            obel
+            <span>obel</span>
+            {/* Pattern overlay — revealed in a radial spotlight around cursor */}
+            <span
+              ref={patternRef}
+              aria-hidden
+              className="absolute inset-0"
+              style={{
+                backgroundImage: "url('/images/pattern-obel.png')",
+                backgroundSize: "800px auto",
+                backgroundRepeat: "repeat",
+                WebkitBackgroundClip: "text",
+                backgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+                filter: "invert(1) grayscale(1) brightness(1.8)",
+                maskImage:
+                  "radial-gradient(circle 150px at var(--x, -200px) var(--y, -200px), black 0%, transparent 100%)",
+                WebkitMaskImage:
+                  "radial-gradient(circle 150px at var(--x, -200px) var(--y, -200px), black 0%, transparent 100%)",
+              }}
+            >
+              obel
+            </span>
           </h2>
         </Reveal>
       </div>
@@ -121,6 +238,38 @@ export function Footer() {
                         <li key={link.label}>
                           <Link
                             href={link.href}
+                            onClick={(e) => {
+                              if (link.href.startsWith("#")) {
+                                e.preventDefault();
+                                const lenis = (
+                                  window as unknown as {
+                                    lenis?: {
+                                      scrollTo: (
+                                        target: string | number,
+                                        opts?: {
+                                          offset?: number;
+                                          immediate?: boolean;
+                                        }
+                                      ) => void;
+                                    };
+                                  }
+                                ).lenis;
+                                if (lenis) {
+                                  playPixelTransition(() => {
+                                    lenis.scrollTo(
+                                      link.href === "#" ? 0 : link.href,
+                                      {
+                                        offset:
+                                          link.href === "#"
+                                            ? 0
+                                            : -HEADER_HEIGHT,
+                                        immediate: true,
+                                      }
+                                    );
+                                  });
+                                }
+                              }
+                            }}
                             className="font-sans text-base hover:opacity-60 transition-opacity duration-300"
                           >
                             {link.label}

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Instrument_Serif, Inter } from "next/font/google";
 import { SmoothScroll } from "@/components/providers/SmoothScroll";
+import { PixelTransition } from "@/components/motion/PixelTransition";
 import "./globals.css";
 
 const instrumentSerif = Instrument_Serif({
@@ -48,6 +49,7 @@ export default function RootLayout({
       <body
         className={`${instrumentSerif.variable} ${inter.variable} antialiased`}
       >
+        <PixelTransition />
         <SmoothScroll>{children}</SmoothScroll>
       </body>
     </html>
