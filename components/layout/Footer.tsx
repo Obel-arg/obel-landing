@@ -8,7 +8,6 @@ import {
   HEADER_HEIGHT,
   HEADER_HEIGHT_SCROLLED,
 } from "@/lib/constants";
-import { playPixelTransition } from "@/components/motion/PixelTransition";
 
 const useIsomorphicLayoutEffect =
   typeof window !== "undefined" ? useLayoutEffect : useEffect;
@@ -19,15 +18,15 @@ function scrollToTop() {
       lenis?: {
         scrollTo: (
           target: number,
-          opts?: { immediate?: boolean }
+          opts?: { duration?: number }
         ) => void;
       };
     }
   ).lenis;
   if (lenis) {
-    playPixelTransition(() => {
-      lenis.scrollTo(0, { immediate: true });
-    });
+    const distance = window.scrollY;
+    const duration = Math.min(4.5, Math.max(2, distance / 1200));
+    lenis.scrollTo(0, { duration });
   } else {
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
@@ -248,25 +247,36 @@ export function Footer() {
                                         target: string | number,
                                         opts?: {
                                           offset?: number;
-                                          immediate?: boolean;
+                                          duration?: number;
                                         }
                                       ) => void;
                                     };
                                   }
                                 ).lenis;
                                 if (lenis) {
-                                  playPixelTransition(() => {
-                                    lenis.scrollTo(
-                                      link.href === "#" ? 0 : link.href,
-                                      {
-                                        offset:
-                                          link.href === "#"
-                                            ? 0
-                                            : -HEADER_HEIGHT,
-                                        immediate: true,
-                                      }
-                                    );
-                                  });
+                                  const target =
+                                    link.href === "#"
+                                      ? null
+                                      : document.querySelector(link.href);
+                                  const dist = target
+                                    ? Math.abs(
+                                        target.getBoundingClientRect().top
+                                      )
+                                    : window.scrollY;
+                                  const dur = Math.min(
+                                    4.5,
+                                    Math.max(2, dist / 1200)
+                                  );
+                                  lenis.scrollTo(
+                                    link.href === "#" ? 0 : link.href,
+                                    {
+                                      offset:
+                                        link.href === "#"
+                                          ? 0
+                                          : -HEADER_HEIGHT,
+                                      duration: dur,
+                                    }
+                                  );
                                 }
                               }
                             }}

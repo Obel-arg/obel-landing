@@ -3,90 +3,39 @@
 import { useEffect, useRef } from "react";
 import { gsap } from "@/lib/gsap";
 
-const COLS = 13;
-const ROWS = 7;
-
-// Module-level singleton (same pattern as Lenis in SmoothScroll.tsx)
-let transitionInstance: {
-  play: (onMid: () => void) => Promise<void>;
-} | null = null;
-let isAnimating = false;
+const COLS = 70;
+const ROWS = 40;
 
 /**
- * Pixel transition overlay — Codrops demo 3 style.
- * Two-phase: show (cells scale+fade in) → onMid → hide (cells scale+fade out).
- * Grid stagger from "end" (bottom-right).
+ * Opening pixel curtain animation.
+ * Plays once on page load — cells start visible and scale out from center.
  */
-export function playPixelTransition(
-  onMid: () => void
-): Promise<void> | undefined {
-  if (isAnimating || !transitionInstance) return;
-  return transitionInstance.play(onMid);
-}
-
 export function PixelTransition() {
   const gridRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    transitionInstance = {
-      play: (onMid: () => void) => {
-        return new Promise<void>((resolve) => {
-          isAnimating = true;
-          const grid = gridRef.current;
-          if (!grid) {
-            isAnimating = false;
-            resolve();
-            return;
-          }
+    const grid = gridRef.current;
+    if (!grid) return;
 
-          const cells = Array.from(grid.children) as HTMLElement[];
+    const cells = Array.from(grid.children) as HTMLElement[];
 
-          // Make overlay visible
-          gsap.set(grid, { opacity: 1 });
-
-          // Phase 1: Show — cells scale+fade in from bottom-right
-          gsap.fromTo(
-            cells,
-            {
-              scale: 0,
-              opacity: 0,
-            },
-            {
-              duration: 0.3,
-              ease: "power1.inOut",
-              scale: 1.01,
-              opacity: 1,
-              stagger: {
-                grid: [ROWS, COLS],
-                from: "end",
-                each: 0.035,
-              },
-              onComplete: () => {
-                // Execute callback (scroll, etc.)
-                onMid();
-
-                // Smooth fade out the entire overlay as one unit
-                gsap.to(grid, {
-                  duration: 0.5,
-                  ease: "power2.out",
-                  opacity: 0,
-                  onComplete: () => {
-                    // Reset cells for next trigger
-                    gsap.set(cells, { scale: 0, opacity: 0 });
-                    isAnimating = false;
-                    resolve();
-                  },
-                });
-              },
-            }
-          );
-        });
-      },
-    };
-
-    return () => {
-      transitionInstance = null;
-    };
+    gsap.delayedCall(0.2, () => {
+      gsap.to(cells, {
+        scale: 0,
+        opacity: 0,
+        duration: 0.4,
+        ease: "power3.inOut",
+        stagger: {
+          grid: [ROWS, COLS],
+          from: "center",
+          each: 0.004,
+        },
+        onComplete: () => {
+          gsap.set(grid, { opacity: 0 });
+          gsap.set(cells, { scale: 0, opacity: 0 });
+        },
+      });
+    });
   }, []);
 
   return (
@@ -97,14 +46,15 @@ export function PixelTransition() {
       style={{
         display: "grid",
         gridTemplateColumns: `repeat(${COLS}, 1fr)`,
-        opacity: 0,
+        gridTemplateRows: `repeat(${ROWS}, 1fr)`,
+        opacity: 1,
       }}
     >
       {Array.from({ length: COLS * ROWS }).map((_, i) => (
         <div
           key={i}
           className="bg-primary"
-          style={{ transform: "scale(0)", opacity: 0 }}
+          style={{ transform: "scale(1.01)", opacity: 1 }}
         />
       ))}
     </div>

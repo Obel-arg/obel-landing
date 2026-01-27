@@ -3,7 +3,7 @@
 import { Reveal } from "@/components/motion/Reveal";
 import { Stagger } from "@/components/motion/Stagger";
 import { SpotlightPattern } from "@/components/ui/SpotlightPattern";
-import { LogoMarquee } from "@/components/ui/LogoMarquee";
+import { LogoGrid } from "@/components/ui/LogoGrid";
 
 export function About() {
   return (
@@ -38,7 +38,7 @@ export function About() {
             </h3>
           </Reveal>
 
-          <LogoMarquee />
+          <LogoGrid />
         </div>
       </div>
     </section>

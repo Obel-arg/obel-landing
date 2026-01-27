@@ -60,7 +60,7 @@ export function Hero() {
         opacity: 1,
         y: 0,
         duration: 1,
-        delay: 0.3, // Small initial delay for page load
+        delay: 0.8, // Wait for pixel curtain opening animation
       })
         .to(
           subtitleRef.current,
@@ -88,7 +88,7 @@ export function Hero() {
         repeat: -1,
         yoyo: true,
         ease: "power1.inOut",
-        delay: 1.5, // Start after intro completes
+        delay: 2, // Start after intro completes
       });
     }, sectionRef);
 

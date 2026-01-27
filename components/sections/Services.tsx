@@ -105,7 +105,7 @@ export function Services() {
         );
       }
 
-      // Subtitle — scroll-linked reveal
+      // Subtitle — scroll-linked reveal (earlier range so it's visible alongside the title)
       if (subtitleRef.current) {
         gsap.fromTo(
           subtitleRef.current,
@@ -117,8 +117,8 @@ export function Services() {
             ease: "none",
             scrollTrigger: {
               trigger: subtitleRef.current.parentElement,
-              start: "top 130%",
-              end: "top 50%",
+              start: "top 160%",
+              end: "top 70%",
               scrub: 0.5,
             },
           }

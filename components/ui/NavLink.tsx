@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { ReactNode, useCallback } from "react";
 import { HEADER_HEIGHT } from "@/lib/constants";
-import { playPixelTransition } from "@/components/motion/PixelTransition";
 
 interface NavLinkProps {
   href: string;
@@ -22,15 +21,18 @@ export function NavLink({ href, children, className = "", onClick }: NavLinkProp
             lenis?: {
               scrollTo: (
                 target: string | number,
-                opts?: { offset?: number; immediate?: boolean }
+                opts?: { offset?: number; duration?: number }
               ) => void;
             };
           }
         ).lenis;
         if (lenis) {
-          playPixelTransition(() => {
-            lenis.scrollTo(href, { offset: -HEADER_HEIGHT, immediate: true });
-          });
+          const target = document.querySelector(href);
+          const distance = target
+            ? Math.abs(target.getBoundingClientRect().top)
+            : 0;
+          const duration = Math.min(4.5, Math.max(1.5, distance / 1200));
+          lenis.scrollTo(href, { offset: -HEADER_HEIGHT, duration });
         }
       }
       onClick?.();
