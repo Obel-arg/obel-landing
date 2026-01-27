@@ -77,6 +77,7 @@ export function Services() {
   const carouselRef = useRef<HTMLDivElement>(null);
   const titleRef = useRef<HTMLHeadingElement>(null);
   const subtitleRef = useRef<HTMLParagraphElement>(null);
+  const snapCooldownRef = useRef(false);
   const prefersReducedMotion = useReducedMotion();
 
   // GSAP animations
@@ -88,14 +89,15 @@ export function Services() {
       if (titleRef.current) {
         gsap.fromTo(
           titleRef.current,
-          { yPercent: 100, opacity: 0 },
+          { yPercent: 100, opacity: 0, filter: "blur(20px)" },
           {
             yPercent: 0,
             opacity: 1,
+            filter: "blur(0px)",
             ease: "none",
             scrollTrigger: {
               trigger: titleRef.current.parentElement,
-              start: "top 90%",
+              start: "top 130%",
               end: "top 50%",
               scrub: 0.5,
             },
@@ -107,14 +109,15 @@ export function Services() {
       if (subtitleRef.current) {
         gsap.fromTo(
           subtitleRef.current,
-          { yPercent: 100, opacity: 0 },
+          { yPercent: 100, opacity: 0, filter: "blur(20px)" },
           {
             yPercent: 0,
             opacity: 1,
+            filter: "blur(0px)",
             ease: "none",
             scrollTrigger: {
               trigger: subtitleRef.current.parentElement,
-              start: "top 90%",
+              start: "top 130%",
               end: "top 50%",
               scrub: 0.5,
             },
@@ -125,6 +128,7 @@ export function Services() {
       // Horizontal scroll for cards
       if (cardsContainerRef.current && carouselRef.current) {
         const finalPosition = 215; // Percentage to scroll to
+        const xRange = 100 + finalPosition; // Total xPercent range (315)
 
         // Use gsap.fromTo with ScrollTrigger for cleaner animation
         gsap.fromTo(
@@ -139,6 +143,72 @@ export function Services() {
               // End exactly when sticky releases - scrub smoothing prevents diagonal movement
               end: "bottom bottom",
               scrub: 0.3,
+              snap: {
+                snapTo: (progress: number) => {
+                  // Desktop only (>= lg breakpoint)
+                  if (window.innerWidth < 1024) return progress;
+
+                  // Cooldown: skip snap if recently completed one
+                  if (snapCooldownRef.current) return progress;
+
+                  const carousel = carouselRef.current;
+                  if (!carousel) return progress;
+
+                  // Fresh measurements on every call (handles resize)
+                  const cards = Array.from(carousel.children) as HTMLElement[];
+                  const elWidth = carousel.offsetWidth;
+                  const vw = window.innerWidth;
+                  const viewportCenter = vw / 2;
+
+                  // Current xPercent at this progress
+                  const currentXPercent = 100 - xRange * progress;
+                  const translatePx = (currentXPercent / 100) * elWidth;
+
+                  let bestProgress = progress;
+                  let bestDist = Infinity;
+
+                  for (let i = 0; i < cards.length; i++) {
+                    const card = cards[i];
+                    const cardLeft = card.offsetLeft + translatePx;
+                    const cardRight = cardLeft + card.offsetWidth;
+
+                    // 20% visibility threshold — skip cards barely in view
+                    const visibleWidth = Math.max(
+                      0,
+                      Math.min(cardRight, vw) - Math.max(cardLeft, 0)
+                    );
+                    if (visibleWidth / card.offsetWidth < 0.2) continue;
+
+                    // Distance from card center to viewport center
+                    const cardCenter = cardLeft + card.offsetWidth / 2;
+                    const dist = Math.abs(cardCenter - viewportCenter);
+
+                    if (dist < bestDist) {
+                      bestDist = dist;
+                      // Compute the progress that centers this card
+                      const targetXPercent =
+                        ((viewportCenter - card.offsetLeft - card.offsetWidth / 2) /
+                          elWidth) *
+                        100;
+                      bestProgress = Math.max(
+                        0,
+                        Math.min(1, (100 - targetXPercent) / xRange)
+                      );
+                    }
+                  }
+
+                  return bestProgress;
+                },
+                duration: { min: 0.8, max: 1.4 },
+                delay: 0.15,
+                ease: "power1.inOut",
+                onComplete: () => {
+                  snapCooldownRef.current = true;
+                  setTimeout(() => {
+                    snapCooldownRef.current = false;
+                  }, 700);
+                },
+              },
             },
           }
         );
@@ -195,7 +265,7 @@ export function Services() {
       {/* Part 1: Intro */}
       <div className="flex flex-col px-4 pt-24 md:pt-32 lg:pt-40 pb-0">
         {/* Title - Y-translate reveal */}
-        <div className="overflow-hidden">
+        <div>
           <h2
             ref={titleRef}
             className="font-serif text-7xl md:text-8xl lg:text-[140px] tracking-tight leading-[1.1]"
@@ -205,7 +275,7 @@ export function Services() {
         </div>
 
         {/* Subtitle - Y-translate reveal, right aligned */}
-        <div className="overflow-hidden mt-40 md:mt-56 lg:mt-72">
+        <div className="mt-16 md:mt-20 lg:mt-24">
           <p
             ref={subtitleRef}
             className="ml-auto max-w-xl font-serif text-2xl md:text-3xl lg:text-[42px] leading-tight tracking-tight"
