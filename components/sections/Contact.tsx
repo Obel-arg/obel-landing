@@ -58,7 +58,7 @@ export function Contact() {
   }, [prefersReducedMotion]);
 
   return (
-    <section id="contact" className="below-fold py-24 md:py-32 px-4">
+    <section id="contact" className="below-fold bg-primary text-background py-24 md:py-32 px-4">
       <div>
         <h2
           ref={titleRef}

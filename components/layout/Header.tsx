@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { Logo } from "@/components/ui/Logo";
+import { Logo3D } from "@/components/ui/Logo3D";
 import { NavLink } from "@/components/ui/NavLink";
 import { NAV_LINKS, HEADER_SCROLL_THRESHOLD } from "@/lib/constants";
 
@@ -62,7 +62,7 @@ export function Header() {
       <div className="px-4 md:px-8 lg:px-16">
         <nav className="flex items-center justify-between">
           {/* Logo */}
-          <Logo />
+          <Logo3D />
 
           {/* Navigation Links - Center */}
           <div className="hidden lg:flex items-center gap-10 xl:gap-16">

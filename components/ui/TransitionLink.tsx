@@ -29,6 +29,17 @@ export function TransitionLink({
         duration: 0.4,
         ease: "power2.in",
         onComplete: () => {
+          // Scroll to top before navigation so new page opens at top
+          window.scrollTo(0, 0);
+          // Also reset Lenis if present
+          const lenis = (
+            window as unknown as {
+              lenis?: { scrollTo: (target: number, opts?: { immediate?: boolean }) => void };
+            }
+          ).lenis;
+          if (lenis) {
+            lenis.scrollTo(0, { immediate: true });
+          }
           router.push(href);
         },
       });

@@ -136,16 +136,16 @@ export function Footer() {
 
   return (
     <footer>
-      {/* Giant "obel" text section — light background */}
+      {/* Giant "obel" text section — blue background, white text */}
       <div
         ref={containerRef}
-        className="w-full pb-[50vh]"
+        className="w-full pb-[50vh] bg-primary"
         style={{ paddingTop: HEADER_HEIGHT_SCROLLED }}
       >
         <Reveal>
           <h2
             ref={textRef}
-            className="relative font-sans text-[30vw] leading-[0.85] tracking-tighter whitespace-nowrap select-none w-fit mx-auto"
+            className="relative font-sans text-[30vw] leading-[0.85] tracking-tighter whitespace-nowrap select-none w-fit mx-auto text-background"
           >
             <span>obel</span>
             {/* Pattern overlay — revealed in a radial spotlight around cursor */}
@@ -160,7 +160,7 @@ export function Footer() {
                 WebkitBackgroundClip: "text",
                 backgroundClip: "text",
                 WebkitTextFillColor: "transparent",
-                filter: "invert(1) grayscale(1) brightness(1.8)",
+                filter: "grayscale(1) brightness(1.5)",
                 maskImage:
                   "radial-gradient(circle 150px at var(--x, -200px) var(--y, -200px), black 0%, transparent 100%)",
                 WebkitMaskImage:

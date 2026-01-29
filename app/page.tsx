@@ -1,5 +1,6 @@
 import dynamic from "next/dynamic";
 import { Hero } from "@/components/sections/Hero";
+import { Footer } from "@/components/layout/Footer";
 
 // Below-fold sections — dynamic imports for bundle splitting (Rule: bundle-dynamic-imports)
 const About = dynamic(() =>
@@ -16,7 +17,6 @@ const Services = dynamic(() =>
 const Contact = dynamic(() =>
   import("@/components/sections/Contact").then((m) => m.Contact)
 );
-import { Footer } from "@/components/layout/Footer";
 
 export default function Home() {
   return (
@@ -27,8 +27,8 @@ export default function Home() {
         <FeaturedProjects />
         <Services />
         <Contact />
+        <Footer />
       </main>
-      <Footer />
     </>
   );
 }

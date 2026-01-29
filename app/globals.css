@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import "atropos/css";
 
 :root {
   --background: #FFFAF8;
@@ -94,4 +95,22 @@ html {
 .below-fold {
   content-visibility: auto;
   contain-intrinsic-size: auto 100vh;
+}
+
+/* Atropos Logo - 3D hover effect */
+.atropos-logo {
+  display: inline-flex;
+  padding: 8px;
+  margin: -8px;
+}
+
+.atropos-logo .atropos-inner {
+  display: flex;
+  align-items: center;
+  overflow: visible;
+}
+
+.atropos-logo .atropos-scale,
+.atropos-logo .atropos-rotate {
+  overflow: visible;
 }

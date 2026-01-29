@@ -3,6 +3,7 @@
 import { useRef, useLayoutEffect, useEffect } from "react";
 import { gsap } from "@/lib/gsap";
 import { useReducedMotion } from "@/components/motion/useReducedMotion";
+import { FluidCanvas } from "@/components/ui/FluidCanvas";
 
 // Use useLayoutEffect on client, useEffect on server (SSR safety)
 const useIsomorphicLayoutEffect =
@@ -30,8 +31,6 @@ const scrollIndicatorSvg = (
 
 export function Hero() {
   const sectionRef = useRef<HTMLElement>(null);
-  const titleRef = useRef<HTMLHeadingElement>(null);
-  const subtitleRef = useRef<HTMLParagraphElement>(null);
   const scrollIndicatorRef = useRef<HTMLDivElement>(null);
   const prefersReducedMotion = useReducedMotion();
 
@@ -40,46 +39,19 @@ export function Hero() {
     if (prefersReducedMotion) return;
 
     const ctx = gsap.context(() => {
-      // Create intro timeline
-      const tl = gsap.timeline({
-        defaults: { ease: "power3.out" },
-      });
-
-      // Set initial states
-      gsap.set([titleRef.current, subtitleRef.current], {
-        opacity: 0,
-        y: 50,
-      });
+      // Set initial state
       gsap.set(scrollIndicatorRef.current, {
         opacity: 0,
         y: -10,
       });
 
-      // Animate sequence
-      tl.to(titleRef.current, {
+      // Animate scroll indicator
+      gsap.to(scrollIndicatorRef.current, {
         opacity: 1,
         y: 0,
-        duration: 1,
-        delay: 0.8, // Wait for pixel curtain opening animation
-      })
-        .to(
-          subtitleRef.current,
-          {
-            opacity: 1,
-            y: 0,
-            duration: 0.8,
-          },
-          "-=0.5" // Overlap with title animation
-        )
-        .to(
-          scrollIndicatorRef.current,
-          {
-            opacity: 1,
-            y: 0,
-            duration: 0.6,
-          },
-          "-=0.3"
-        );
+        duration: 0.6,
+        delay: 1,
+      });
 
       // Continuous bounce animation for scroll indicator
       gsap.to(scrollIndicatorRef.current, {
@@ -88,7 +60,7 @@ export function Hero() {
         repeat: -1,
         yoyo: true,
         ease: "power1.inOut",
-        delay: 2, // Start after intro completes
+        delay: 2,
       });
     }, sectionRef);
 
@@ -97,35 +69,22 @@ export function Hero() {
 
   return (
     <section ref={sectionRef} className="relative h-screen w-full overflow-hidden">
-      {/* Background — video sources not yet available, using placeholder */}
-      <div className="absolute inset-0">
+      {/* z-0: Background */}
+      <div className="absolute inset-0 z-0">
         <div className="absolute inset-0 bg-foreground/10" />
-
-        {/* Overlay gradient */}
         <div className="absolute inset-0 bg-gradient-to-b from-background/20 via-transparent to-background/40" />
       </div>
 
-      {/* Content Overlay */}
-      <div className="relative z-10 flex flex-col items-center justify-center h-full px-4">
-        <h1
-          ref={titleRef}
-          className="hero-title font-serif text-5xl md:text-7xl lg:text-8xl text-center tracking-tight"
-        >
-          OBEL
-        </h1>
+      {/* z-10: Fluid Canvas cursor effect */}
+      <FluidCanvas
+        className="absolute inset-0 z-10"
+        enabled={!prefersReducedMotion}
+      />
 
-        <p
-          ref={subtitleRef}
-          className="hero-subtitle mt-4 md:mt-6 text-lg md:text-xl text-center max-w-md opacity-80"
-        >
-          AI-first digital studio
-        </p>
-      </div>
-
-      {/* Scroll Indicator */}
+      {/* z-20: Scroll Indicator */}
       <div
         ref={scrollIndicatorRef}
-        className="hero-scroll-indicator absolute bottom-8 left-1/2 -translate-x-1/2"
+        className="hero-scroll-indicator absolute bottom-8 left-1/2 -translate-x-1/2 z-20"
       >
         {scrollIndicatorSvg}
       </div>
