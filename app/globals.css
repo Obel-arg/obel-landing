@@ -19,6 +19,7 @@
   /* Fonts */
   --font-serif: var(--font-instrument-serif), serif;
   --font-sans: var(--font-inter), sans-serif;
+  --font-pixel: var(--font-pixel), monospace;
 
   /* Letter spacing */
   --letter-spacing-tighter: -0.03em;

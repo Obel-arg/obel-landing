@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
-import { Instrument_Serif, Inter } from "next/font/google";
+import { Instrument_Serif, Inter, Press_Start_2P } from "next/font/google";
 import { Header } from "@/components/layout/Header";
 import { SmoothScroll } from "@/components/providers/SmoothScroll";
 import { PixelTransition } from "@/components/motion/PixelTransition";
+import { RouteTransition } from "@/components/motion/RouteTransition";
 import "./globals.css";
 
 const instrumentSerif = Instrument_Serif({
@@ -15,6 +16,13 @@ const instrumentSerif = Instrument_Serif({
 const inter = Inter({
   variable: "--font-inter",
   subsets: ["latin"],
+  display: "swap",
+});
+
+const pressStart2P = Press_Start_2P({
+  variable: "--font-pixel",
+  subsets: ["latin"],
+  weight: "400",
   display: "swap",
 });
 
@@ -48,9 +56,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${instrumentSerif.variable} ${inter.variable} antialiased`}
+        className={`${instrumentSerif.variable} ${inter.variable} ${pressStart2P.variable} antialiased`}
       >
         <PixelTransition />
+        <RouteTransition />
         <Header />
         <SmoothScroll>{children}</SmoothScroll>
       </body>

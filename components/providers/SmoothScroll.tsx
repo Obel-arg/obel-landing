@@ -44,7 +44,13 @@ export function SmoothScroll({ children }: { children: React.ReactNode }) {
     // Disable lag smoothing for precise scroll synchronization
     gsap.ticker.lagSmoothing(0);
 
+    // Refresh ScrollTrigger after dynamic content loads (handles dynamic imports)
+    const refreshTimeout = setTimeout(() => {
+      ScrollTrigger.refresh();
+    }, 100);
+
     return () => {
+      clearTimeout(refreshTimeout);
       lenis.destroy();
       lenisInstance = null;
     };

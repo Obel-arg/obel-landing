@@ -20,15 +20,13 @@ const Contact = dynamic(() =>
 
 export default function Home() {
   return (
-    <>
-      <main>
-        <Hero />
-        <About />
-        <FeaturedProjects />
-        <Services />
-        <Contact />
-        <Footer />
-      </main>
-    </>
+    <main>
+      <Hero />
+      <About />
+      <FeaturedProjects />
+      <Services />
+      <Contact />
+      <Footer />
+    </main>
   );
 }

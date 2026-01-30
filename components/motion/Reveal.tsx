@@ -46,7 +46,17 @@ export function Reveal({
 
     const offsets = getOffsets(direction);
 
-    // Set initial state
+    // Check if element is already in viewport (handles race conditions with dynamic imports)
+    const rect = el.getBoundingClientRect();
+    const isInViewport = rect.top < window.innerHeight * 0.85;
+
+    if (isInViewport) {
+      // Element already visible - show immediately without animation
+      gsap.set(el, { opacity: 1, x: 0, y: 0 });
+      return;
+    }
+
+    // Set initial state (hidden)
     gsap.set(el, {
       opacity: 0,
       ...offsets,

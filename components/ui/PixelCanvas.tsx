@@ -37,13 +37,13 @@ class Pixel {
     this.color = color;
     this.speed = (Math.random() * 0.8 + 0.1) * speed;
     this.size = 0;
-    this.sizeStep = Math.random() * 0.4;
+    this.sizeStep = Math.random() * 0.4 + 0.3;
     this.minSize = 0.5;
     this.maxSizeInteger = 2;
     this.maxSize = Math.random() * (this.maxSizeInteger - this.minSize) + this.minSize;
     this.delay = delay;
     this.counter = 0;
-    this.counterStep = Math.random() * 4 + (canvas.width + canvas.height) * 0.01;
+    this.counterStep = Math.random() * 8 + (canvas.width + canvas.height) * 0.02;
     this.isIdle = false;
     this.isReverse = false;
     this.isShimmer = false;
@@ -155,7 +155,7 @@ export function PixelCanvas({
           const color = colors[Math.floor(Math.random() * colors.length)];
           const dx = x - centerX;
           const dy = y - centerY;
-          const delay = reducedMotion ? 0 : Math.sqrt(dx * dx + dy * dy);
+          const delay = reducedMotion ? 0 : Math.sqrt(dx * dx + dy * dy) * 0.5;
           pixels.push(new Pixel(canvas, ctx, x, y, color, computedSpeed, delay));
         }
       }

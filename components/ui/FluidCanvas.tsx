@@ -4,17 +4,16 @@ import { useRef, useEffect, useState, useCallback } from "react";
 import { FluidField, FieldAccessor } from "@/lib/fluidField";
 import { useReducedMotion } from "@/components/motion/useReducedMotion";
 
-// Brand colors from globals.css
-const PARTICLE_COLOR = {
-  r: 16, // #10 from foreground
-  g: 26, // #1A from foreground
-  b: 49, // #31 from foreground
-};
+// Logo trail settings
+const LOGO_SIZE = 14; // px - small for trail effect
+const DENSITY_THRESHOLD = 12; // minimum density to show logo
+const SAMPLE_INTERVAL = 2; // check every N cells for density
+const MAX_OPACITY = 0.45; // cap opacity for subtlety
 
 // Performance settings
 const TARGET_FPS = 30;
 const FRAME_INTERVAL = 1000 / TARGET_FPS;
-const DENSITY = 80; // Lower = more subtle trail (was 200)
+const DENSITY = 80; // Density added on cursor move
 
 interface DeviceCapability {
   tier: "low" | "medium" | "high";
@@ -37,10 +36,10 @@ function getDeviceCapability(): DeviceCapability {
   }
 
   if (isMobile || (cores <= 4 && memory <= 4)) {
-    return { tier: "medium", shouldDisable: false, fieldSize: 6 };
+    return { tier: "medium", shouldDisable: false, fieldSize: 8 };
   }
 
-  return { tier: "high", shouldDisable: false, fieldSize: 4 };
+  return { tier: "high", shouldDisable: false, fieldSize: 6 };
 }
 
 interface FluidCanvasProps {
@@ -57,6 +56,7 @@ export function FluidCanvas({
   const prefersReducedMotion = useReducedMotion();
   const [isMounted, setIsMounted] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
+  const [logoLoaded, setLogoLoaded] = useState(false);
 
   const containerRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -64,13 +64,14 @@ export function FluidCanvas({
   const fluidRef = useRef<FluidField | null>(null);
   const rafRef = useRef<number | null>(null);
   const lastFrameTimeRef = useRef(0);
+  const logoRef = useRef<HTMLCanvasElement | null>(null);
 
   // Mouse state (using refs to avoid re-renders)
   const mouseRef = useRef({ x: 0, y: 0, ox: 0, oy: 0, drawing: false });
   const rectRef = useRef<DOMRect | null>(null);
 
-  // Buffer for pixel data
-  const bufferRef = useRef<ImageData | null>(null);
+  // Dimension refs for animation loop
+  const dimsRef = useRef({ displayWidth: 0, displayHeight: 0, fieldWidth: 0, fieldHeight: 0 });
 
   // Device capability detection
   const [capability] = useState(() => getDeviceCapability());
@@ -81,6 +82,33 @@ export function FluidCanvas({
     setIsMounted(true);
   }, []);
 
+  // Load and prepare white logo
+  useEffect(() => {
+    if (!isMounted) return;
+
+    const img = new Image();
+    img.crossOrigin = "anonymous";
+    img.src = "/images/logo-icon.svg";
+
+    img.onload = () => {
+      // Create offscreen canvas with white version of logo
+      const offscreen = document.createElement("canvas");
+      const size = LOGO_SIZE * 2; // Higher res for quality
+      offscreen.width = size;
+      offscreen.height = size;
+
+      const offCtx = offscreen.getContext("2d");
+      if (!offCtx) return;
+
+      // Draw logo and invert to white
+      offCtx.filter = "invert(1) brightness(1.15)";
+      offCtx.drawImage(img, 0, 0, size, size);
+
+      logoRef.current = offscreen;
+      setLogoLoaded(true);
+    };
+  }, [isMounted]);
+
   // Visibility tracking (tab visibility)
   useEffect(() => {
     const handleVisibilityChange = () => {
@@ -90,32 +118,50 @@ export function FluidCanvas({
     return () => document.removeEventListener("visibilitychange", handleVisibilityChange);
   }, []);
 
-  // Draw frame function
+  // Draw frame function - renders logos at high-density points
   const drawFrame = useCallback(
-    (field: FieldAccessor, ctx: CanvasRenderingContext2D, buffer: ImageData, fieldWidth: number, fieldHeight: number) => {
-      const data = buffer.data;
+    (field: FieldAccessor, ctx: CanvasRenderingContext2D) => {
+      const { displayWidth, displayHeight, fieldWidth, fieldHeight } = dimsRef.current;
+      const logo = logoRef.current;
 
-      for (let x = fieldWidth; x--; ) {
-        for (let y = fieldHeight; y--; ) {
+      ctx.clearRect(0, 0, displayWidth, displayHeight);
+
+      if (!logo) return;
+
+      // Sample grid and draw logos where density is high
+      for (let x = 0; x < fieldWidth; x += SAMPLE_INTERVAL) {
+        for (let y = 0; y < fieldHeight; y += SAMPLE_INTERVAL) {
           const density = field.getDensity(x, y);
-          const idx = (y * fieldWidth + x) * 4;
+          if (density < DENSITY_THRESHOLD) continue;
 
-          // Navy blue with slight variation
-          data[idx] = PARTICLE_COLOR.r;
-          data[idx + 1] = PARTICLE_COLOR.g;
-          data[idx + 2] = PARTICLE_COLOR.b + Math.floor(Math.random() * 20);
-          data[idx + 3] = Math.min(255, Math.floor(density * 0xff * 0.4)); // Lower opacity for subtler effect
+          // Calculate opacity based on density
+          const opacity = Math.min(MAX_OPACITY, (density / 255) * 0.8);
+          ctx.globalAlpha = opacity;
+
+          // Convert field coords to display coords
+          const px = (x / fieldWidth) * displayWidth;
+          const py = (y / fieldHeight) * displayHeight;
+
+          // Draw logo centered at position
+          ctx.drawImage(
+            logo,
+            px - LOGO_SIZE / 2,
+            py - LOGO_SIZE / 2,
+            LOGO_SIZE,
+            LOGO_SIZE
+          );
         }
       }
 
-      ctx.putImageData(buffer, 0, 0);
+      ctx.globalAlpha = 1;
     },
     []
   );
 
   // Update frame function (input handling)
   const updateFrame = useCallback(
-    (field: FieldAccessor, displayWidth: number, displayHeight: number, fieldWidth: number, fieldHeight: number) => {
+    (field: FieldAccessor) => {
+      const { displayWidth, displayHeight, fieldWidth, fieldHeight } = dimsRef.current;
       const mouse = mouseRef.current;
 
       if (mouse.drawing) {
@@ -144,7 +190,7 @@ export function FluidCanvas({
 
   // Main effect: setup canvas, fluid, animation loop
   useEffect(() => {
-    if (!isMounted || prefersReducedMotion || !enabled || capability.shouldDisable) {
+    if (!isMounted || prefersReducedMotion || !enabled || capability.shouldDisable || !logoLoaded) {
       return;
     }
 
@@ -156,26 +202,27 @@ export function FluidCanvas({
     if (!ctx) return;
     ctxRef.current = ctx;
 
-    let displayWidth = 0;
-    let displayHeight = 0;
-    let fieldWidth = 0;
-    let fieldHeight = 0;
-
     const initSize = () => {
       const rect = container.getBoundingClientRect();
-      displayWidth = Math.floor(rect.width);
-      displayHeight = Math.floor(rect.height);
+      const dpr = Math.min(window.devicePixelRatio, 2);
+
+      const displayWidth = Math.floor(rect.width);
+      const displayHeight = Math.floor(rect.height);
 
       if (displayWidth === 0 || displayHeight === 0) return false;
 
-      fieldWidth = Math.floor(displayWidth / fieldSize);
-      fieldHeight = Math.floor(displayHeight / fieldSize);
+      const fieldWidth = Math.floor(displayWidth / fieldSize);
+      const fieldHeight = Math.floor(displayHeight / fieldSize);
 
-      canvas.width = fieldWidth;
-      canvas.height = fieldHeight;
+      // Set canvas to display size (not field size)
+      canvas.width = displayWidth * dpr;
+      canvas.height = displayHeight * dpr;
+      canvas.style.width = `${displayWidth}px`;
+      canvas.style.height = `${displayHeight}px`;
+      ctx.scale(dpr, dpr);
 
-      // Create buffer for pixel manipulation
-      bufferRef.current = ctx.createImageData(fieldWidth, fieldHeight);
+      // Store dimensions for animation loop
+      dimsRef.current = { displayWidth, displayHeight, fieldWidth, fieldHeight };
 
       // Initialize fluid field
       if (!fluidRef.current) {
@@ -216,15 +263,14 @@ export function FluidCanvas({
       }
 
       const fluid = fluidRef.current;
-      const buffer = bufferRef.current;
-      if (!fluid || !buffer) {
+      if (!fluid) {
         rafRef.current = requestAnimationFrame(animate);
         return;
       }
 
       fluid.update(
-        (field) => updateFrame(field, displayWidth, displayHeight, fieldWidth, fieldHeight),
-        (field) => drawFrame(field, ctx, buffer, fieldWidth, fieldHeight)
+        (field) => updateFrame(field),
+        (field) => drawFrame(field, ctx)
       );
 
       rafRef.current = requestAnimationFrame(animate);
@@ -309,6 +355,8 @@ export function FluidCanvas({
     const resizeObserver = new ResizeObserver(() => {
       clearTimeout(resizeTimeout);
       resizeTimeout = setTimeout(() => {
+        // Reset scale before reinitializing
+        ctx.setTransform(1, 0, 0, 1, 0, 0);
         initSize();
         // Refresh rect cache after resize
         rectRef.current = canvas.getBoundingClientRect();
@@ -336,9 +384,8 @@ export function FluidCanvas({
 
       fluidRef.current?.dispose();
       fluidRef.current = null;
-      bufferRef.current = null;
     };
-  }, [isMounted, prefersReducedMotion, enabled, capability.shouldDisable, fieldSize, isVisible, drawFrame, updateFrame]);
+  }, [isMounted, prefersReducedMotion, enabled, capability.shouldDisable, fieldSize, isVisible, logoLoaded, drawFrame, updateFrame]);
 
   // Don't render if reduced motion, disabled, or low-end device
   if (prefersReducedMotion || !enabled || capability.shouldDisable) {
@@ -355,7 +402,6 @@ export function FluidCanvas({
       <canvas
         ref={canvasRef}
         className="w-full h-full"
-        style={{ imageRendering: "pixelated" }}
       />
     </div>
   );

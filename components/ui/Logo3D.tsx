@@ -29,12 +29,20 @@ function useIsMobile(breakpoint: number = 768) {
 interface Logo3DProps {
   className?: string;
   iconOnly?: boolean;
+  inverted?: boolean;
 }
 
 // Static logo component - same size as glitch version (120x46)
-function StaticLogo() {
+function StaticLogo({ inverted = false }: { inverted?: boolean }) {
   return (
-    <div className="flex items-center" style={{ width: 120, height: 46 }}>
+    <div
+      className="flex items-center"
+      style={{
+        width: 120,
+        height: 46,
+        filter: inverted ? "brightness(0) invert(1)" : "none",
+      }}
+    >
       <Image
         src="/images/logo-icon.svg"
         alt="OBEL"
@@ -56,7 +64,7 @@ function StaticLogo() {
   );
 }
 
-export function Logo3D({ className = "" }: Logo3DProps) {
+export function Logo3D({ className = "", inverted = false }: Logo3DProps) {
   const prefersReducedMotion = useReducedMotion();
   const isMobile = useIsMobile();
 
@@ -64,13 +72,17 @@ export function Logo3D({ className = "" }: Logo3DProps) {
   if (prefersReducedMotion || isMobile) {
     return (
       <Link href="/" className={`block ${className}`}>
-        <StaticLogo />
+        <StaticLogo inverted={inverted} />
       </Link>
     );
   }
 
   return (
-    <Link href="/" className={`block ${className}`}>
+    <Link
+      href="/"
+      className={`block ${className}`}
+      style={{ filter: inverted ? "brightness(0) invert(1)" : "none" }}
+    >
       <LogoGlitch width={120} height={46} />
     </Link>
   );
