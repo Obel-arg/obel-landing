@@ -1,78 +1,139 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { motion, useScroll, useTransform, useMotionValueEvent } from "framer-motion";
-import { Logo } from "@/components/ui/Logo";
+import { useEffect, useRef, useState } from "react";
+import { usePathname } from "next/navigation";
+import { Logo3D } from "@/components/ui/Logo3D";
 import { NavLink } from "@/components/ui/NavLink";
 import { NAV_LINKS, HEADER_SCROLL_THRESHOLD } from "@/lib/constants";
 
+const hamburgerIcon = (
+  <svg
+    width="24"
+    height="24"
+    viewBox="0 0 24 24"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      d="M3 12H21M3 6H21M3 18H21"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+);
+
+const HEADER_HEIGHT = 72;
+
 export function Header() {
+  const sentinelRef = useRef<HTMLDivElement>(null);
+  const pathname = usePathname();
   const [isScrolled, setIsScrolled] = useState(false);
-  const { scrollY } = useScroll();
+  const [isOverDark, setIsOverDark] = useState(false);
 
-  // Listen to scroll position changes
-  useMotionValueEvent(scrollY, "change", (latest) => {
-    setIsScrolled(latest > HEADER_SCROLL_THRESHOLD);
-  });
+  // Check if header overlaps any dark section
+  const checkOverlap = () => {
+    const darkSections = document.querySelectorAll("[data-header-dark]");
 
-  // Interpolate padding based on scroll
-  const paddingY = useTransform(
-    scrollY,
-    [0, HEADER_SCROLL_THRESHOLD],
-    [32, 16]
-  );
+    for (const section of darkSections) {
+      const rect = section.getBoundingClientRect();
+      // Header is at top 0 to HEADER_HEIGHT
+      // Overlap occurs when section.top < HEADER_HEIGHT AND section.bottom > 0
+      if (rect.top < HEADER_HEIGHT && rect.bottom > 0) {
+        return true;
+      }
+    }
+    return false;
+  };
+
+  // Scroll detection
+  useEffect(() => {
+    const sentinel = sentinelRef.current;
+    if (!sentinel) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => setIsScrolled(!entry.isIntersecting),
+      { threshold: 0 }
+    );
+    observer.observe(sentinel);
+    return () => observer.disconnect();
+  }, []);
+
+  // Dark section detection - using scroll event with rAF throttle
+  // Re-runs when pathname changes to handle route navigation
+  useEffect(() => {
+    let rafId: number | null = null;
+
+    const update = () => {
+      setIsOverDark(checkOverlap());
+      rafId = null;
+    };
+
+    const handleScroll = () => {
+      if (rafId === null) {
+        rafId = requestAnimationFrame(update);
+      }
+    };
+
+    // Initial check (delayed to handle scroll restoration and page transition)
+    const initialCheck = () => {
+      setIsOverDark(checkOverlap());
+    };
+
+    // Run immediately and after delays for scroll restoration / page transitions
+    initialCheck();
+    const timeoutId1 = setTimeout(initialCheck, 50);
+    const timeoutId2 = setTimeout(initialCheck, 150);
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      clearTimeout(timeoutId1);
+      clearTimeout(timeoutId2);
+      if (rafId !== null) cancelAnimationFrame(rafId);
+    };
+  }, [pathname]);
 
   return (
-    <motion.header
-      className={`
-        fixed top-0 left-0 right-0 z-50
-        transition-colors duration-300
-        ${isScrolled ? "bg-background/80 backdrop-blur-md" : "bg-transparent"}
-      `}
-      style={{ paddingTop: paddingY, paddingBottom: paddingY }}
-    >
-      <div className="px-4 md:px-8 lg:px-16">
-        <nav className="flex items-center justify-between">
-          {/* Logo */}
-          <Logo />
+    <>
+      <div
+        ref={sentinelRef}
+        className="absolute top-0 left-0 w-full pointer-events-none"
+        style={{ height: HEADER_SCROLL_THRESHOLD }}
+        aria-hidden
+      />
+      <header
+        className={`
+          fixed top-0 left-0 right-0 z-50
+          transition-all duration-300 ease-out
+          ${isScrolled ? "py-4" : "py-8"}
+          ${isOverDark ? "bg-primary text-background" : "bg-background/80 backdrop-blur-md text-foreground"}
+        `}
+      >
+        <div className="px-4 md:px-8 lg:px-16">
+          <nav className="flex items-center justify-between">
+            <Logo3D inverted={isOverDark} />
 
-          {/* Navigation Links - Center */}
-          <div className="hidden lg:flex items-center gap-10 xl:gap-16">
-            {NAV_LINKS.map((link) => (
-              <NavLink key={link.href} href={link.href}>
-                {link.label}
-              </NavLink>
-            ))}
-          </div>
+            <div className="hidden lg:flex items-center gap-10 xl:gap-16">
+              {NAV_LINKS.map((link) => (
+                <NavLink key={link.href} href={link.href}>
+                  {link.label}
+                </NavLink>
+              ))}
+            </div>
 
-          {/* Contact CTA - Right */}
-          <NavLink href="#contact" className="hidden md:block">
-            Contact us
-          </NavLink>
+            <NavLink href="#contact" className="hidden md:block">
+              Contact us
+            </NavLink>
 
-          {/* Mobile Menu Button */}
-          <button
-            className="lg:hidden p-2"
-            aria-label="Open menu"
-          >
-            <svg
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M3 12H21M3 6H21M3 18H21"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-          </button>
-        </nav>
-      </div>
-    </motion.header>
+            <button className="lg:hidden p-2" aria-label="Open menu">
+              {hamburgerIcon}
+            </button>
+          </nav>
+        </div>
+      </header>
+    </>
   );
 }

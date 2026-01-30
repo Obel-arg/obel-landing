@@ -12,7 +12,7 @@ export function Logo({ className = "", iconOnly = false }: LogoProps) {
   return (
     <Link href="/" className={`flex items-center gap-1 ${className}`}>
       {/* Logo Icon */}
-      <div className="relative w-12 h-12 md:w-14 md:h-14" style={{ transform: "rotate(-3deg)" }}>
+      <div className="relative w-6 h-6 md:w-7 md:h-7" style={{ transform: "rotate(-3deg)" }}>
         <Image
           src="/images/logo-icon.svg"
           alt="OBEL"
@@ -24,7 +24,7 @@ export function Logo({ className = "", iconOnly = false }: LogoProps) {
 
       {/* Wordmark */}
       {!iconOnly && (
-        <div className="relative w-20 h-8 md:w-24 md:h-10">
+        <div className="relative w-12 h-5 md:w-14 md:h-6">
           <Image
             src="/images/logo-wordmark.svg"
             alt="obel"

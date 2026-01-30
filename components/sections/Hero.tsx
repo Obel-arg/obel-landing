@@ -1,94 +1,37 @@
-"use client";
-
-import { useReducedMotion } from "framer-motion";
-import { motion } from "framer-motion";
-import { Reveal } from "@/components/motion";
-import { ANIMATION_EASE } from "@/lib/constants";
+const DESCRIPTION_COLUMNS = [
+  "We're a boutique studio of ambitious creatives working at the edge of performant and immersive digital experiences, giving 110% to bring projects from a realm of ideas to reality through branding, visual design & development of the highest quality.",
+  "We don't settle, we are intentional about building with surgical precision and creating extraordinary experiences. We go the extra mile, and then walk a couple more, just for fun.",
+];
 
 export function Hero() {
-  const prefersReducedMotion = useReducedMotion();
-
   return (
-    <section className="relative h-screen w-full overflow-hidden">
-      {/* Video Background */}
-      <div className="absolute inset-0">
-        {prefersReducedMotion ? (
-          // Static image for reduced motion
-          <div
-            className="absolute inset-0 bg-foreground/10"
-            style={{
-              backgroundImage: "url(/videos/hero-poster.jpg)",
-              backgroundSize: "cover",
-              backgroundPosition: "center",
-            }}
-          />
-        ) : (
-          <video
-            autoPlay
-            loop
-            muted
-            playsInline
-            preload="metadata"
-            poster="/videos/hero-poster.jpg"
-            className="absolute inset-0 w-full h-full object-cover"
-          >
-            <source src="/videos/hero.webm" type="video/webm" />
-            <source src="/videos/hero.mp4" type="video/mp4" />
-          </video>
-        )}
-
-        {/* Overlay gradient */}
-        <div className="absolute inset-0 bg-gradient-to-b from-background/20 via-transparent to-background/40" />
-      </div>
-
-      {/* Content Overlay */}
-      <div className="relative z-10 flex flex-col items-center justify-center h-full px-4">
-        <Reveal delay={0.2}>
-          <h1 className="font-serif text-5xl md:text-7xl lg:text-8xl text-center tracking-tight">
-            OBEL
+    <section data-header-dark className="relative min-h-screen bg-primary text-background">
+      <div className="relative z-10 h-screen flex flex-col justify-between pt-32 pb-8 px-4">
+        <div className="flex-1 flex flex-col justify-center">
+          <div className="flex justify-between items-baseline w-full">
+            <h1 className="font-serif text-[17vw] leading-none tracking-tighter">WE</h1>
+            <h1 className="font-serif text-[17vw] leading-none tracking-tighter">CREATE</h1>
+          </div>
+          <h1 className="font-pixel text-[10vw] text-center leading-none my-4">
+            COOL SHIT
           </h1>
-        </Reveal>
+          <div className="flex justify-between items-baseline w-full">
+            <h1 className="font-serif text-[17vw] leading-none tracking-tighter">THAT</h1>
+            <h1 className="font-serif text-[17vw] leading-none tracking-tighter">PERFORMS</h1>
+          </div>
+        </div>
 
-        <Reveal delay={0.4}>
-          <p className="mt-4 md:mt-6 text-lg md:text-xl text-center max-w-md opacity-80">
-            AI-first digital studio
+        {/* Subtitles */}
+        <div className="grid grid-cols-[1fr_auto_1fr] gap-4 md:gap-6 items-start mt-8">
+          <p className="font-sans text-xs md:text-sm opacity-70 leading-relaxed">
+            {DESCRIPTION_COLUMNS[0]}
           </p>
-        </Reveal>
+          <span className="text-lg md:text-xl opacity-70">→</span>
+          <p className="font-sans text-xs md:text-sm opacity-70 leading-relaxed">
+            {DESCRIPTION_COLUMNS[1]}
+          </p>
+        </div>
       </div>
-
-      {/* Scroll Indicator */}
-      <motion.div
-        className="absolute bottom-8 left-1/2 -translate-x-1/2"
-        initial={{ opacity: 0, y: -10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 1, duration: 0.6, ease: ANIMATION_EASE }}
-      >
-        <motion.div
-          animate={{ y: [0, 8, 0] }}
-          transition={{
-            duration: 1.5,
-            repeat: Infinity,
-            ease: "easeInOut",
-          }}
-        >
-          <svg
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-            className="opacity-60"
-          >
-            <path
-              d="M12 5V19M12 19L5 12M12 19L19 12"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
-        </motion.div>
-      </motion.div>
     </section>
   );
 }

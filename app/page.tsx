@@ -1,23 +1,32 @@
-import { Header } from "@/components/layout/Header";
-import { Footer } from "@/components/layout/Footer";
+import dynamic from "next/dynamic";
 import { Hero } from "@/components/sections/Hero";
-import { About } from "@/components/sections/About";
-import { FeaturedProjects } from "@/components/sections/FeaturedProjects";
-import { Services } from "@/components/sections/Services";
-import { Contact } from "@/components/sections/Contact";
+import { Footer } from "@/components/layout/Footer";
+
+// Below-fold sections — dynamic imports for bundle splitting (Rule: bundle-dynamic-imports)
+const About = dynamic(() =>
+  import("@/components/sections/About").then((m) => m.About)
+);
+const FeaturedProjects = dynamic(() =>
+  import("@/components/sections/FeaturedProjects").then(
+    (m) => m.FeaturedProjects
+  )
+);
+const Services = dynamic(() =>
+  import("@/components/sections/Services").then((m) => m.Services)
+);
+const Contact = dynamic(() =>
+  import("@/components/sections/Contact").then((m) => m.Contact)
+);
 
 export default function Home() {
   return (
-    <>
-      <Header />
-      <main>
-        <Hero />
-        <About />
-        <FeaturedProjects />
-        <Services />
-        <Contact />
-      </main>
+    <main>
+      <Hero />
+      <About />
+      <FeaturedProjects />
+      <Services />
+      <Contact />
       <Footer />
-    </>
+    </main>
   );
 }

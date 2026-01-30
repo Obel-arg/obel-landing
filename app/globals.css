@@ -1,8 +1,9 @@
 @import "tailwindcss";
+@import "atropos/css";
 
 :root {
   --background: #FFFAF8;
-  --foreground: #090E19;
+  --foreground: #101A31;
   --primary: #090E19;
 
   /* Header offset for sticky elements */
@@ -18,6 +19,7 @@
   /* Fonts */
   --font-serif: var(--font-instrument-serif), serif;
   --font-sans: var(--font-inter), sans-serif;
+  --font-pixel: var(--font-pixel), monospace;
 
   /* Letter spacing */
   --letter-spacing-tighter: -0.03em;
@@ -88,4 +90,28 @@ html {
 /* Grid layout utility */
 .grid-layout {
   @apply mx-auto grid w-full max-w-full grid-cols-4 gap-3 px-4 lg:grid-cols-12;
+}
+
+/* Defer off-screen rendering for below-fold sections (Rule: rendering-content-visibility) */
+.below-fold {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 100vh;
+}
+
+/* Atropos Logo - 3D hover effect */
+.atropos-logo {
+  display: inline-flex;
+  padding: 8px;
+  margin: -8px;
+}
+
+.atropos-logo .atropos-inner {
+  display: flex;
+  align-items: center;
+  overflow: visible;
+}
+
+.atropos-logo .atropos-scale,
+.atropos-logo .atropos-rotate {
+  overflow: visible;
 }

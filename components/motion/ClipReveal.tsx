@@ -3,13 +3,12 @@
 import { ReactNode, useRef, useLayoutEffect, useEffect } from "react";
 import { gsap, ScrollTrigger } from "@/lib/gsap";
 import { useReducedMotion } from "@/components/motion/useReducedMotion";
-import { ANIMATION_DURATION } from "@/lib/constants";
 
 // Use useLayoutEffect on client, useEffect on server (SSR safety)
 const useIsomorphicLayoutEffect =
   typeof window !== "undefined" ? useLayoutEffect : useEffect;
 
-interface RevealProps {
+interface ClipRevealProps {
   children: ReactNode;
   direction?: "up" | "down" | "left" | "right";
   delay?: number;
@@ -18,25 +17,38 @@ interface RevealProps {
   className?: string;
 }
 
-const getOffsets = (direction: RevealProps["direction"]) => {
-  const offset = 30;
-  const offsets = {
-    up: { y: offset, x: 0 },
-    down: { y: -offset, x: 0 },
-    left: { x: offset, y: 0 },
-    right: { x: -offset, y: 0 },
+// Get clip-path values based on direction
+// The element starts "clipped" (hidden) and reveals in the specified direction
+const getClipPaths = (direction: ClipRevealProps["direction"]) => {
+  const clipPaths = {
+    up: {
+      from: "inset(100% 0% 0% 0%)", // Hidden from bottom
+      to: "inset(0% 0% 0% 0%)", // Fully visible
+    },
+    down: {
+      from: "inset(0% 0% 100% 0%)", // Hidden from top
+      to: "inset(0% 0% 0% 0%)",
+    },
+    left: {
+      from: "inset(0% 0% 0% 100%)", // Hidden from right
+      to: "inset(0% 0% 0% 0%)",
+    },
+    right: {
+      from: "inset(0% 100% 0% 0%)", // Hidden from left
+      to: "inset(0% 0% 0% 0%)",
+    },
   };
-  return direction ? offsets[direction] : offsets.up;
+  return direction ? clipPaths[direction] : clipPaths.up;
 };
 
-export function Reveal({
+export function ClipReveal({
   children,
   direction = "up",
   delay = 0,
-  duration = ANIMATION_DURATION,
+  duration = 1,
   once = true,
   className,
-}: RevealProps) {
+}: ClipRevealProps) {
   const ref = useRef<HTMLDivElement>(null);
   const prefersReducedMotion = useReducedMotion();
 
@@ -44,23 +56,10 @@ export function Reveal({
     const el = ref.current;
     if (!el || prefersReducedMotion) return;
 
-    const offsets = getOffsets(direction);
+    const clips = getClipPaths(direction);
 
-    // Check if element is already in viewport (handles race conditions with dynamic imports)
-    const rect = el.getBoundingClientRect();
-    const isInViewport = rect.top < window.innerHeight * 0.85;
-
-    if (isInViewport) {
-      // Element already visible - show immediately without animation
-      gsap.set(el, { opacity: 1, x: 0, y: 0 });
-      return;
-    }
-
-    // Set initial state (hidden)
-    gsap.set(el, {
-      opacity: 0,
-      ...offsets,
-    });
+    // Set initial clipped state
+    gsap.set(el, { clipPath: clips.from });
 
     // Create scroll trigger
     const trigger = ScrollTrigger.create({
@@ -68,9 +67,7 @@ export function Reveal({
       start: "top 85%",
       onEnter: () => {
         gsap.to(el, {
-          opacity: 1,
-          x: 0,
-          y: 0,
+          clipPath: clips.to,
           duration,
           delay,
           ease: "power3.out",
@@ -80,8 +77,7 @@ export function Reveal({
         ? undefined
         : () => {
             gsap.to(el, {
-              opacity: 0,
-              ...offsets,
+              clipPath: clips.from,
               duration: duration * 0.5,
               ease: "power3.in",
             });
@@ -100,7 +96,7 @@ export function Reveal({
   }
 
   return (
-    <div ref={ref} className={className}>
+    <div ref={ref} className={`overflow-hidden ${className || ""}`}>
       {children}
     </div>
   );

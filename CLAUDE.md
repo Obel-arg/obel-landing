@@ -85,6 +85,22 @@ Animation-forward landing page for OBEL, an AI-first digital studio, using Next.
 
 ---
 
+## Git Workflow
+
+**IMPORTANT:**
+- Only commit changes when the user explicitly asks. Never commit automatically or proactively.
+- Work on the `dev` branch, not `main`. Keep `main` for stable releases only.
+
+```bash
+git status                    # Check for changes
+git add .                     # Stage all changes
+git commit -m "message"       # Commit with message
+git push -u origin dev        # Push dev branch to GitHub
+git checkout main && git merge dev  # Merge to main when ready for release
+```
+
+---
+
 ## Verification Commands
 ```bash
 npm run dev     # Start development server
