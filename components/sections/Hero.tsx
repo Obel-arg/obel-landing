@@ -5,7 +5,7 @@ const DESCRIPTION_COLUMNS = [
 
 export function Hero() {
   return (
-    <section className="relative min-h-screen bg-primary text-background">
+    <section data-header-dark className="relative min-h-screen bg-primary text-background">
       <div className="relative z-10 h-screen flex flex-col justify-between pt-32 pb-8 px-4">
         <div className="flex-1 flex flex-col justify-center">
           <div className="flex justify-between items-baseline w-full">

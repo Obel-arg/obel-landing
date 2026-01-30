@@ -139,6 +139,7 @@ export function Footer() {
       {/* Giant "obel" text section — blue background, white text */}
       <div
         ref={containerRef}
+        data-header-dark
         className="w-full pb-[50vh] bg-primary"
         style={{ paddingTop: HEADER_HEIGHT_SCROLLED }}
       >
@@ -174,7 +175,7 @@ export function Footer() {
       </div>
 
       {/* Dark footer section */}
-      <div className="bg-primary text-background">
+      <div data-header-dark className="bg-primary text-background">
         {/* Main content */}
         <div className="px-6 md:px-10 lg:px-16 pt-16 pb-12 md:pt-24 md:pb-16">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-8">
