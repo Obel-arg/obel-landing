@@ -112,6 +112,34 @@ const glitchDelay = new Vector2(0.5, 2); // Glitch every 0.5-2 seconds (was 2-5)
 const glitchDuration = new Vector2(0.1, 0.3); // Slightly longer duration
 const glitchStrength = new Vector2(0.05, 0.15);
 
+// Separate component for effects to ensure GL context is ready
+function GlitchEffects() {
+  const { gl } = useThree();
+  const [ready, setReady] = useState(false);
+
+  useEffect(() => {
+    // Wait for GL context to be fully initialized
+    if (gl) {
+      setReady(true);
+    }
+  }, [gl]);
+
+  if (!ready) return null;
+
+  return (
+    <EffectComposer>
+      <Glitch
+        delay={glitchDelay}
+        duration={glitchDuration}
+        strength={glitchStrength}
+        mode={GlitchMode.SPORADIC}
+        active
+        ratio={0.85}
+      />
+    </EffectComposer>
+  );
+}
+
 type LogoGlitchProps = {
   className?: string;
   width?: number;
@@ -131,16 +159,7 @@ export function LogoGlitch({
         style={{ width: "100%", height: "100%" }}
       >
         <LogoPlane />
-        <EffectComposer>
-          <Glitch
-            delay={glitchDelay}
-            duration={glitchDuration}
-            strength={glitchStrength}
-            mode={GlitchMode.SPORADIC}
-            active
-            ratio={0.85}
-          />
-        </EffectComposer>
+        <GlitchEffects />
       </Canvas>
     </div>
   );

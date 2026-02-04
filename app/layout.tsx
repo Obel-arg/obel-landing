@@ -4,6 +4,7 @@ import { Header } from "@/components/layout/Header";
 import { SmoothScroll } from "@/components/providers/SmoothScroll";
 import { PixelTransition } from "@/components/motion/PixelTransition";
 import { RouteTransition } from "@/components/motion/RouteTransition";
+import { ContactModal } from "@/components/ui/ContactModal";
 import "./globals.css";
 
 const instrumentSerif = Instrument_Serif({
@@ -60,6 +61,7 @@ export default function RootLayout({
       >
         <PixelTransition />
         <RouteTransition />
+        <ContactModal />
         <Header />
         <SmoothScroll>{children}</SmoothScroll>
       </body>

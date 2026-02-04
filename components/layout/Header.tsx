@@ -6,6 +6,16 @@ import { Logo3D } from "@/components/ui/Logo3D";
 import { NavLink } from "@/components/ui/NavLink";
 import { NAV_LINKS, HEADER_SCROLL_THRESHOLD } from "@/lib/constants";
 
+// Extend Window interface for contactModal
+declare global {
+  interface Window {
+    contactModal?: {
+      open: () => void;
+      close: () => void;
+    };
+  }
+}
+
 const hamburgerIcon = (
   <svg
     width="24"
@@ -124,9 +134,12 @@ export function Header() {
               ))}
             </div>
 
-            <NavLink href="#contact" className="hidden md:block">
+            <button
+              onClick={() => window.contactModal?.open()}
+              className="hidden md:block font-sans text-base md:text-lg tracking-tight font-medium hover:opacity-60 transition-opacity duration-300 cursor-pointer"
+            >
               Contact us
-            </NavLink>
+            </button>
 
             <button className="lg:hidden p-2" aria-label="Open menu">
               {hamburgerIcon}

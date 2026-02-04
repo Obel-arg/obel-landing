@@ -225,7 +225,7 @@ export function Services() {
         <div className="px-4">
           <Reveal>
             <h2 className="font-sans font-semibold text-4xl md:text-5xl lg:text-6xl xl:text-7xl tracking-tight mb-16">
-              What we do —
+              What we do
             </h2>
           </Reveal>
 
@@ -270,7 +270,7 @@ export function Services() {
             ref={titleRef}
             className="font-serif text-7xl md:text-8xl lg:text-[140px] tracking-tight leading-[1.1]"
           >
-            What we do —
+            What we do
           </h2>
         </div>
 
