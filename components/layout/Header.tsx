@@ -34,7 +34,8 @@ const hamburgerIcon = (
   </svg>
 );
 
-const HEADER_HEIGHT = 72;
+const getHeaderHeight = () =>
+  parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--header-height')) || 72;
 
 export function Header() {
   const sentinelRef = useRef<HTMLDivElement>(null);
@@ -45,12 +46,11 @@ export function Header() {
   // Check if header overlaps any dark section
   const checkOverlap = () => {
     const darkSections = document.querySelectorAll("[data-header-dark]");
+    const headerH = getHeaderHeight();
 
     for (const section of darkSections) {
       const rect = section.getBoundingClientRect();
-      // Header is at top 0 to HEADER_HEIGHT
-      // Overlap occurs when section.top < HEADER_HEIGHT AND section.bottom > 0
-      if (rect.top < HEADER_HEIGHT && rect.bottom > 0) {
+      if (rect.top < headerH && rect.bottom > 0) {
         return true;
       }
     }
@@ -118,7 +118,7 @@ export function Header() {
         className={`
           fixed top-0 left-0 right-0 z-50
           transition-all duration-300 ease-out
-          ${isScrolled ? "py-4" : "py-8"}
+          ${isScrolled ? "py-3 xl:py-[clamp(0.75rem,0.93vw,1rem)]" : "py-6 xl:py-[clamp(1.5rem,1.85vw,2rem)]"}
           ${isOverDark ? "bg-primary text-background" : "bg-background/80 backdrop-blur-md text-foreground"}
         `}
       >

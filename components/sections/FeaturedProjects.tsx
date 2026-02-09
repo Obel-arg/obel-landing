@@ -4,7 +4,6 @@ import Image from "next/image";
 import { cn } from "@/lib/cn";
 import { Reveal } from "@/components/motion/Reveal";
 import { TransitionLink } from "@/components/ui/TransitionLink";
-import { HEADER_HEIGHT } from "@/lib/constants";
 import { getAllProjects, type Project } from "@/lib/projects";
 
 // Title area height (title + padding)
@@ -47,15 +46,45 @@ function ProjectCard({
             <span className="font-sans text-xs font-medium opacity-50 uppercase tracking-wider">
               {project.company}
             </span>
-            <h3 className="mt-1 font-sans font-semibold text-xl md:text-2xl tracking-tight group-hover:opacity-70 transition-opacity duration-300">
+            <h3 className="mt-1 font-sans font-semibold text-[1.1rem] md:text-[1.4rem] lg:text-[1.775rem] tracking-tight group-hover:opacity-70 transition-opacity duration-300">
               {project.title}
             </h3>
-            <p className="mt-2 font-sans text-sm md:text-base opacity-70 leading-relaxed line-clamp-2">
+            <p className="mt-2 font-sans text-sm md:text-base opacity-50 leading-relaxed">
               {project.description}
             </p>
+
+            {/* Problem & Solution */}
+            <div className="mt-8 space-y-4">
+              <div>
+                <h4 className="font-sans font-semibold text-sm md:text-base underline underline-offset-4">
+                  The problem:
+                </h4>
+                <p className="mt-2 font-sans text-sm md:text-base leading-relaxed">
+                  {project.problem}
+                </p>
+              </div>
+
+              <Image
+                src="/images/obel-mark.svg"
+                alt=""
+                width={100}
+                height={46}
+                aria-hidden="true"
+                className="w-10 h-auto -scale-x-100"
+              />
+
+              <div>
+                <h4 className="font-sans font-semibold text-sm md:text-base underline underline-offset-4">
+                  The Solution:
+                </h4>
+                <p className="mt-2 font-sans text-sm md:text-base leading-relaxed">
+                  {project.solution}
+                </p>
+              </div>
+            </div>
           </div>
 
-          <div className="mt-4 flex flex-wrap gap-1.5">
+          <div className="mt-8 flex flex-wrap gap-1.5">
             {project.services.map((service) => (
               <span
                 key={service}
@@ -87,15 +116,15 @@ export function FeaturedProjects() {
             style={{
               zIndex: index + 1,
               top: isFirst
-                ? HEADER_HEIGHT
-                : HEADER_HEIGHT + TITLE_AREA_HEIGHT,
+                ? 'var(--header-height)'
+                : `calc(var(--header-height) + ${TITLE_AREA_HEIGHT}px)`,
             }}
           >
             {/* Title only in first card */}
             {isFirst && (
               <div className="pt-6 border-b border-foreground/10">
                 <Reveal>
-                  <h2 className="font-neuebit text-[2.5rem] md:text-[4rem] lg:text-[5.5rem] xl:text-[90px] leading-[0.67] tracking-[-0.023em] pb-6">
+                  <h2 className="font-neuebit text-[2.5rem] md:text-[4rem] lg:text-[5.5rem] xl:text-[clamp(5.5rem,5.21vw,90px)] leading-[0.67] tracking-[-0.023em] pb-6">
                     Featured Projects
                   </h2>
                 </Reveal>

@@ -6,7 +6,7 @@ import { Stagger } from "@/components/motion/Stagger";
 
 export function About() {
   return (
-    <section id="about" className="below-fold relative min-h-screen py-32 md:py-40 lg:py-48 xl:py-[200px]">
+    <section id="about" className="below-fold relative min-h-screen py-32 md:py-40 lg:py-48 xl:py-[clamp(12rem,11.57vw,200px)]">
       {/* Static OBEL pattern background */}
       <div
         className="absolute inset-0 pointer-events-none"
@@ -20,16 +20,16 @@ export function About() {
         }}
       />
 
-      <div className="relative z-10 px-4 md:px-8 lg:px-16 xl:pl-[86px] xl:pr-4 flex flex-col">
+      <div className="relative z-10 px-4 md:px-8 lg:px-16 xl:pl-[clamp(4rem,4.98vw,86px)] xl:pr-4 flex flex-col">
         {/* Title block */}
         <Stagger className="flex flex-col">
           {/* Headline + Subtitle — treated as one continuous text block */}
           <div>
-            <h2 className="font-neuebit text-[2.5rem] md:text-[4rem] lg:text-[5.5rem] xl:text-[111px] leading-[0.67] tracking-[-0.023em] xl:max-w-[48vw]">
+            <h2 className="font-neuebit text-[2.5rem] md:text-[4rem] lg:text-[5.5rem] xl:text-[clamp(5.5rem,6.42vw,111px)] leading-[0.67] tracking-[-0.023em] xl:max-w-[48vw]">
               We design products, solutions, and processes
-              <span className="font-sans font-semibold text-[1.5rem] md:text-[2.5rem] lg:text-[3.5rem] xl:text-[63px]">.</span>
+              <span className="font-sans font-semibold text-[1.5rem] md:text-[2.5rem] lg:text-[3.5rem] xl:text-[clamp(3.5rem,3.65vw,63px)]">.</span>
             </h2>
-            <p className="font-sans text-xl md:text-[1.75rem] lg:text-[2.75rem] xl:text-[57px] leading-[1.15] tracking-tight xl:max-w-[65vw]">
+            <p className="font-sans text-xl md:text-[1.75rem] lg:text-[2.75rem] xl:text-[clamp(2.75rem,3.3vw,57px)] leading-[1.15] tracking-tight xl:max-w-[65vw]">
               But we also support implementation, learning, and the adjustments needed for everything to work in real-world contexts.
             </p>
           </div>
@@ -41,14 +41,14 @@ export function About() {
           alt=""
           width={100}
           height={46}
-          className="w-14 md:w-18 lg:w-24 h-auto -scale-x-100 my-8 md:my-12 lg:my-14 xl:my-[60px]"
+          className="w-14 md:w-18 lg:w-24 h-auto -scale-x-100 my-8 md:my-12 lg:my-14 xl:my-[clamp(3.5rem,3.47vw,60px)]"
           aria-hidden="true"
         />
 
         {/* Subtitle block: Highlighted phrase + Body paragraph */}
         <Reveal>
           <div className="space-y-1.5 xl:max-w-[70vw]">
-            <p className="font-sans font-medium text-base md:text-lg lg:text-xl xl:text-[31px] tracking-tight leading-normal">
+            <p className="font-sans font-medium text-base md:text-lg lg:text-xl xl:text-[clamp(1.25rem,1.79vw,31px)] tracking-tight leading-normal">
               <mark
                 className="bg-primary text-background px-1.5 py-1 not-italic"
                 style={{
@@ -59,7 +59,7 @@ export function About() {
                 We don&apos;t just build. We get involved.
               </mark>
             </p>
-            <p className="font-sans text-sm md:text-base lg:text-lg xl:text-[28px] tracking-tight leading-relaxed">
+            <p className="font-sans text-sm md:text-base lg:text-lg xl:text-[clamp(1.125rem,1.62vw,28px)] tracking-tight leading-relaxed xl:max-w-[clamp(767px,69vw,1193px)]">
               OBEL is a team that works end to end: from building solutions to ensuring their real adoption. We don&apos;t believe in delivering products and disappearing. We care about how they&apos;re used, how they integrate into workflows, and how they change people&apos;s daily routines.
             </p>
           </div>
