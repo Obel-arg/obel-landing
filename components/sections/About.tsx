@@ -1,45 +1,69 @@
 "use client";
 
+import Image from "next/image";
 import { Reveal } from "@/components/motion/Reveal";
 import { Stagger } from "@/components/motion/Stagger";
-import { SpotlightPattern } from "@/components/ui/SpotlightPattern";
-import { LogoGrid } from "@/components/ui/LogoGrid";
 
 export function About() {
   return (
-    <section id="about" className="below-fold relative min-h-screen py-24 md:py-32">
-      <SpotlightPattern className="absolute inset-0" />
+    <section id="about" className="below-fold relative min-h-screen py-32 md:py-40 lg:py-48 xl:py-[200px]">
+      {/* Static OBEL pattern background */}
+      <div
+        className="absolute inset-0 pointer-events-none"
+        aria-hidden="true"
+        style={{
+          backgroundImage: 'url("/images/pattern-obel.png")',
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          backgroundRepeat: "no-repeat",
+          opacity: 0.04,
+        }}
+      />
 
-      {/* Content aligned with header padding (matching logo position) */}
-      {/* Use flex to push Trusted by to the bottom */}
-      <div className="relative z-10 px-4 min-h-[calc(100vh-12rem)] md:min-h-[calc(100vh-16rem)] flex flex-col justify-between">
-        {/* Top content: Title and Subtitle */}
-        <Stagger className="space-y-6 lg:space-y-10">
-          {/* Main Headline - large, bold, fills 2 lines on desktop */}
-          <h2 className="font-serif font-normal text-[2rem] md:text-[2.5rem] lg:text-[3rem] xl:text-[3.5rem] 2xl:text-[4rem] tracking-[-0.02em] leading-[1.08]">
-            Obel is an AI-first digital studio and branding
-            <br className="hidden lg:block" />
-            {" "}partner built for teams that move fast.
-          </h2>
-
-          {/* Supporting Paragraph - smaller, regular weight, fills 2 lines on desktop */}
-          <p className="font-sans font-normal text-sm md:text-base lg:text-lg xl:text-xl 2xl:text-[1.35rem] tracking-normal opacity-70 leading-[1.5]">
-            We work with ambitious startups, scale-ups, and brands to craft sharp identities and high-performing
-            <br className="hidden lg:block" />
-            {" "}digital experiences powered by agents, strategy, design, and technology working as one.
-          </p>
+      <div className="relative z-10 px-4 md:px-8 lg:px-16 xl:pl-[86px] xl:pr-4 flex flex-col">
+        {/* Title block */}
+        <Stagger className="flex flex-col">
+          {/* Headline + Subtitle — treated as one continuous text block */}
+          <div>
+            <h2 className="font-neuebit text-[2.5rem] md:text-[4rem] lg:text-[5.5rem] xl:text-[111px] leading-[0.67] tracking-[-0.023em] xl:max-w-[48vw]">
+              We design products, solutions, and processes
+              <span className="font-sans font-semibold text-[1.5rem] md:text-[2.5rem] lg:text-[3.5rem] xl:text-[63px]">.</span>
+            </h2>
+            <p className="font-sans text-xl md:text-[1.75rem] lg:text-[2.75rem] xl:text-[57px] leading-[1.15] tracking-tight xl:max-w-[65vw]">
+              But we also support implementation, learning, and the adjustments needed for everything to work in real-world contexts.
+            </p>
+          </div>
         </Stagger>
 
-        {/* Bottom content: Trusted By Section - pushed to bottom, close to Featured Projects */}
-        <div className="mt-auto">
-          <Reveal>
-            <h3 className="font-sans font-semibold text-xl md:text-2xl mb-6">
-              Trusted by
-            </h3>
-          </Reveal>
+        {/* OBEL decorative mark — centered in the gap between title and subtitle */}
+        <Image
+          src="/images/obel-mark.svg"
+          alt=""
+          width={100}
+          height={46}
+          className="w-14 md:w-18 lg:w-24 h-auto -scale-x-100 my-8 md:my-12 lg:my-14 xl:my-[60px]"
+          aria-hidden="true"
+        />
 
-          <LogoGrid />
-        </div>
+        {/* Subtitle block: Highlighted phrase + Body paragraph */}
+        <Reveal>
+          <div className="space-y-1.5 xl:max-w-[70vw]">
+            <p className="font-sans font-medium text-base md:text-lg lg:text-xl xl:text-[31px] tracking-tight leading-normal">
+              <mark
+                className="bg-primary text-background px-1.5 py-1 not-italic"
+                style={{
+                  boxDecorationBreak: "clone",
+                  WebkitBoxDecorationBreak: "clone",
+                }}
+              >
+                We don&apos;t just build. We get involved.
+              </mark>
+            </p>
+            <p className="font-sans text-sm md:text-base lg:text-lg xl:text-[28px] tracking-tight leading-relaxed">
+              OBEL is a team that works end to end: from building solutions to ensuring their real adoption. We don&apos;t believe in delivering products and disappearing. We care about how they&apos;re used, how they integrate into workflows, and how they change people&apos;s daily routines.
+            </p>
+          </div>
+        </Reveal>
       </div>
     </section>
   );

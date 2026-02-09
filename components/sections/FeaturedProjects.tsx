@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { cn } from "@/lib/cn";
 import { Reveal } from "@/components/motion/Reveal";
 import { TransitionLink } from "@/components/ui/TransitionLink";
@@ -29,10 +30,14 @@ function ProjectCard({
       <div className="flex flex-col lg:flex-row gap-4 lg:gap-8">
         {/* Project Image */}
         <div className="lg:w-1/2 xl:w-[55%]">
-          <div className="aspect-[16/10] bg-foreground/5 rounded-sm overflow-hidden border border-foreground/10 transition-all duration-500 group-hover:border-foreground/25">
-            <div className="w-full h-full flex items-center justify-center text-foreground/30">
-              <span className="font-sans text-sm">Preview Image</span>
-            </div>
+          <div className="relative aspect-[16/10] bg-foreground/5 rounded-sm overflow-hidden border border-foreground/10 transition-all duration-500 group-hover:border-foreground/25">
+            <Image
+              src={project.image}
+              alt={project.title}
+              fill
+              className="object-cover"
+              sizes="(max-width: 1024px) 100vw, 55vw"
+            />
           </div>
         </div>
 
@@ -90,7 +95,7 @@ export function FeaturedProjects() {
             {isFirst && (
               <div className="pt-6 border-b border-foreground/10">
                 <Reveal>
-                  <h2 className="font-serif font-normal text-4xl md:text-5xl lg:text-6xl tracking-tight pb-6">
+                  <h2 className="font-neuebit text-[2.5rem] md:text-[4rem] lg:text-[5.5rem] xl:text-[90px] leading-[0.67] tracking-[-0.023em] pb-6">
                     Featured Projects
                   </h2>
                 </Reveal>
