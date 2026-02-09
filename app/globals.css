@@ -13,9 +13,9 @@
   --foreground: #101A31;
   --primary: #090E19;
 
-  /* Header offset for sticky elements */
-  --header-height: 96px;
-  --header-height-scrolled: 64px;
+  /* Header offset for sticky elements — scales proportionally (1728px Figma canvas) */
+  --header-height: clamp(72px, 5.56vw, 96px);
+  --header-height-scrolled: clamp(48px, 3.7vw, 64px);
 }
 
 @theme inline {

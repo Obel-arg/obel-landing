@@ -4,7 +4,7 @@ import { useRef, useLayoutEffect, useEffect } from "react";
 import { gsap, ScrollTrigger } from "@/lib/gsap";
 import { Reveal } from "@/components/motion/Reveal";
 import { useReducedMotion } from "@/components/motion/useReducedMotion";
-import { HEADER_HEIGHT } from "@/lib/constants";
+import { getComputedHeaderHeight } from "@/lib/constants";
 
 // Use useLayoutEffect on client, useEffect on server (SSR safety)
 const useIsomorphicLayoutEffect =
@@ -139,7 +139,7 @@ export function Services() {
             ease: "none",
             scrollTrigger: {
               trigger: cardsContainerRef.current,
-              start: `top ${HEADER_HEIGHT}px`,
+              start: `top ${getComputedHeaderHeight()}px`,
               // End exactly when sticky releases - scrub smoothing prevents diagonal movement
               end: "bottom bottom",
               scrub: 0.3,
@@ -296,8 +296,8 @@ export function Services() {
         <div
           className="sticky overflow-hidden"
           style={{
-            top: HEADER_HEIGHT,
-            height: `calc(100vh - ${HEADER_HEIGHT}px)`,
+            top: 'var(--header-height)',
+            height: 'calc(100vh - var(--header-height))',
           }}
         >
           {/* Horizontal carousel - cards side by side */}

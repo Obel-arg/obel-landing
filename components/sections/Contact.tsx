@@ -40,12 +40,15 @@ export function Contact() {
   return (
     <section id="contact" className="below-fold py-24 md:py-32 px-4">
       <div className="text-center" ref={subtitleRef}>
-        <p className="font-sans text-3xl md:text-4xl lg:text-5xl tracking-tight leading-tight">
-          Let&#39;s make an impact together.
+        <p className="font-sans font-bold text-2xl md:text-3xl lg:text-4xl xl:text-[clamp(3rem,3.3vw,4.5rem)] tracking-tight leading-tight">
+          From Argentina to your daily operations.
+        </p>
+        <p className="font-sans text-2xl md:text-3xl lg:text-4xl xl:text-[clamp(3rem,3.3vw,4.5rem)] tracking-tight leading-tight">
+          Real solutions. Real adoption.
         </p>
         <a
           href="mailto:hello@obel.la"
-          className="mt-4 inline-block font-sans font-semibold text-3xl md:text-4xl lg:text-5xl tracking-tight hover:opacity-60 transition-opacity duration-300"
+          className="mt-10 md:mt-14 inline-block font-sans font-bold text-3xl md:text-4xl lg:text-5xl tracking-tight hover:opacity-60 transition-opacity duration-300"
         >
           hello@obel.la
         </a>

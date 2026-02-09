@@ -2,7 +2,7 @@ export function Hero() {
   return (
     <section
       data-header-dark
-      className="relative h-screen bg-primary text-background overflow-hidden"
+      className="relative h-screen bg-primary text-background overflow-hidden shadow-[0_2px_0_0_var(--primary)]"
     >
       {/* Pixel border frame */}
       <img
@@ -13,15 +13,18 @@ export function Hero() {
       />
 
       {/* Text content - centered */}
-      <div className="absolute top-[calc(var(--header-height)+1vw)] left-0 right-0 bottom-[0.8vw] flex flex-col items-center justify-center pt-[4vw] z-10">
-        <h1 className="font-neuebit text-[27.8vw] leading-[0.6] tracking-tight text-center">
+      <div
+        className="absolute top-[calc(var(--header-height)+1vw)] left-[0.8vw] right-[0.8vw] bottom-[0.8vw] flex flex-col items-center justify-center pt-[4vw] z-10"
+        style={{ clipPath: 'inset(4vw)' }}
+      >
+        <h1 className="font-neuebit text-[min(27.8vw,459px)] leading-[0.6] tracking-tight text-center">
           Technology
         </h1>
-        <div className="flex items-center gap-[8vw] font-geist-mono text-[3.5vw] leading-none tracking-[-0.04em] uppercase mb-[0.5vw]">
+        <div className="flex items-center gap-[8vw] font-geist-mono text-[min(3.5vw,58px)] leading-none tracking-[-0.04em] uppercase mb-[0.5vw]">
           <span className="ml-[-3.5vw]">from</span>
           <span className="translate-x-[7vw]">inside the</span>
         </div>
-        <h1 className="font-neuebit text-[40.8vw] leading-[0.6] tracking-tight text-center -mt-[4vw]">
+        <h1 className="font-neuebit text-[min(40.8vw,673px)] leading-[0.6] tracking-tight text-center -mt-[4vw]">
           Culture
         </h1>
       </div>

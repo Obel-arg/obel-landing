@@ -1,16 +1,12 @@
 "use client";
 
-import { useEffect, useRef, useLayoutEffect, useCallback } from "react";
+import { useEffect, useRef, useCallback } from "react";
 import Link from "next/link";
 import { Reveal } from "@/components/motion/Reveal";
 import {
   FOOTER_COLUMNS,
-  HEADER_HEIGHT,
-  HEADER_HEIGHT_SCROLLED,
+  getComputedHeaderHeight,
 } from "@/lib/constants";
-
-const useIsomorphicLayoutEffect =
-  typeof window !== "undefined" ? useLayoutEffect : useEffect;
 
 function scrollToTop() {
   const lenis = (
@@ -33,7 +29,6 @@ function scrollToTop() {
 }
 
 export function Footer() {
-  const containerRef = useRef<HTMLDivElement>(null);
   const textRef = useRef<HTMLHeadingElement>(null);
   const patternRef = useRef<HTMLSpanElement>(null);
   const rafRef = useRef<number | null>(null);
@@ -47,26 +42,6 @@ export function Footer() {
     img.src = "/images/pattern-obel.png";
   }, []);
 
-  // Dynamic font sizing
-  useIsomorphicLayoutEffect(() => {
-    const container = containerRef.current;
-    const text = textRef.current;
-    if (!container || !text) return;
-
-    const resize = () => {
-      // Reset to a known base size for measurement
-      text.style.fontSize = "100px";
-      const textWidth = text.scrollWidth;
-      const containerWidth = container.clientWidth;
-      // Scale font size so text fills the full container width
-      text.style.fontSize = `${(containerWidth / textWidth) * 100}px`;
-    };
-
-    resize();
-    const observer = new ResizeObserver(resize);
-    observer.observe(container);
-    return () => observer.disconnect();
-  }, []);
 
   // Cursor spotlight — rAF loop with lerp (same pattern as SpotlightPattern)
   const updateSpotlight = useCallback(() => {
@@ -136,92 +111,28 @@ export function Footer() {
 
   return (
     <footer>
-      {/* Giant "obel" text section — blue background, white text */}
-      <div
-        ref={containerRef}
-        data-header-dark
-        className="w-full pb-[50vh] bg-primary"
-        style={{ paddingTop: HEADER_HEIGHT_SCROLLED }}
-      >
-        <Reveal>
-          <h2
-            ref={textRef}
-            className="relative font-sans text-[30vw] leading-[0.85] tracking-tighter whitespace-nowrap select-none w-fit mx-auto text-background"
-          >
-            <span>obel</span>
-            {/* Pattern overlay — revealed in a radial spotlight around cursor */}
-            <span
-              ref={patternRef}
-              aria-hidden
-              className="absolute inset-0"
-              style={{
-                backgroundImage: "url('/images/pattern-obel.png')",
-                backgroundSize: "800px auto",
-                backgroundRepeat: "repeat",
-                WebkitBackgroundClip: "text",
-                backgroundClip: "text",
-                WebkitTextFillColor: "transparent",
-                filter: "grayscale(1) brightness(1.5)",
-                maskImage:
-                  "radial-gradient(circle 150px at var(--x, -200px) var(--y, -200px), black 0%, transparent 100%)",
-                WebkitMaskImage:
-                  "radial-gradient(circle 150px at var(--x, -200px) var(--y, -200px), black 0%, transparent 100%)",
-              }}
-            >
-              obel
-            </span>
-          </h2>
-        </Reveal>
-      </div>
-
       {/* Dark footer section */}
-      <div data-header-dark className="bg-primary text-background">
+      <div data-header-dark className="bg-primary text-background"
+        style={{ paddingTop: 'var(--header-height-scrolled)' }}
+      >
         {/* Main content */}
         <div className="px-6 md:px-10 lg:px-16 pt-16 pb-12 md:pt-24 md:pb-16">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-8">
             {/* Left: CTA + Email */}
             <div className="max-w-md">
               <Reveal>
-                <h3 className="font-serif italic text-3xl md:text-4xl lg:text-5xl leading-tight tracking-tight mb-10">
-                  Get to know more about our work.
+                <h3 className="font-serif text-3xl md:text-4xl lg:text-5xl leading-tight tracking-tight mb-10">
+                  Get to know more<br />about our work.
                 </h3>
               </Reveal>
 
               <Reveal delay={0.1}>
-                <form
-                  onSubmit={(e) => e.preventDefault()}
-                  className="space-y-6"
+                <button
+                  onClick={() => window.contactModal?.open()}
+                  className="cursor-pointer w-full text-left bg-transparent border border-background/30 px-4 py-3 text-background/40 font-sans text-base hover:border-background/50 transition-colors"
                 >
-                  <div>
-                    <input
-                      type="email"
-                      placeholder="Email Address *"
-                      required
-                      className="w-full bg-transparent border border-[#FF4141] px-4 py-3 text-background placeholder:text-background/40 focus:outline-none focus:border-[#FF4141] transition-colors"
-                    />
-                    <p className="mt-2 text-xs text-[#FF4141]">
-                      Must be valid email. example@yourdomain.com
-                    </p>
-                  </div>
-
-                  <button
-                    type="submit"
-                    className="cursor-pointer px-8 py-3 bg-background text-foreground font-sans text-sm tracking-wide hover:bg-background/90 transition-colors"
-                  >
-                    Submit
-                  </button>
-
-                  <p className="text-sm text-background/50 leading-relaxed">
-                    Learn more about how your information will be used in our{" "}
-                    <Link
-                      href="/privacy"
-                      className="underline hover:text-background/80 transition-colors"
-                    >
-                      Privacy Policy
-                    </Link>
-                    .
-                  </p>
-                </form>
+                  Email Address *
+                </button>
               </Reveal>
             </div>
 
@@ -274,7 +185,7 @@ export function Footer() {
                                       offset:
                                         link.href === "#"
                                           ? 0
-                                          : -HEADER_HEIGHT,
+                                          : -getComputedHeaderHeight(),
                                       duration: dur,
                                     }
                                   );
@@ -326,6 +237,42 @@ export function Footer() {
             </button>
           </div>
         </div>
+      </div>
+
+      {/* Giant "obel" text section — below footer */}
+      <div
+        data-header-dark
+        className="w-full pt-12 pb-12 bg-primary overflow-hidden"
+      >
+        <Reveal>
+          <h2
+            ref={textRef}
+            className="relative font-sans text-[53vw] leading-[0.85] tracking-tighter whitespace-nowrap select-none w-fit text-background"
+          >
+            <span>obel</span>
+            {/* Pattern overlay — revealed in a radial spotlight around cursor */}
+            <span
+              ref={patternRef}
+              aria-hidden
+              className="absolute inset-0"
+              style={{
+                backgroundImage: "url('/images/pattern-obel.png')",
+                backgroundSize: "800px auto",
+                backgroundRepeat: "repeat",
+                WebkitBackgroundClip: "text",
+                backgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+                filter: "grayscale(1) brightness(1.5)",
+                maskImage:
+                  "radial-gradient(circle 150px at var(--x, -200px) var(--y, -200px), black 0%, transparent 100%)",
+                WebkitMaskImage:
+                  "radial-gradient(circle 150px at var(--x, -200px) var(--y, -200px), black 0%, transparent 100%)",
+              }}
+            >
+              obel
+            </span>
+          </h2>
+        </Reveal>
       </div>
     </footer>
   );

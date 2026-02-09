@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { ReactNode, useCallback } from "react";
-import { HEADER_HEIGHT } from "@/lib/constants";
+import { getComputedHeaderHeight } from "@/lib/constants";
 
 interface NavLinkProps {
   href: string;
@@ -32,7 +32,7 @@ export function NavLink({ href, children, className = "", onClick }: NavLinkProp
             ? Math.abs(target.getBoundingClientRect().top)
             : 0;
           const duration = Math.min(4.5, Math.max(1.5, distance / 1200));
-          lenis.scrollTo(href, { offset: -HEADER_HEIGHT, duration });
+          lenis.scrollTo(href, { offset: -getComputedHeaderHeight(), duration });
         }
       }
       onClick?.();
