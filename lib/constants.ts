@@ -21,7 +21,7 @@ export const NAV_LINKS = [
   { label: "About", href: "#about" },
   { label: "Works", href: "#works" },
   { label: "Services", href: "#services" },
-  { label: "Hub", href: "#hub" },
+  { label: "Hub", href: "https://www.obel.la/hub" },
 ] as const;
 
 // Social links
@@ -37,7 +37,7 @@ export const FOOTER_NAV_LINKS = [
   { label: "About", href: "#about" },
   { label: "Works", href: "#works" },
   { label: "Services", href: "#services" },
-  { label: "Hub", href: "#hub" },
+  { label: "Hub", href: "https://www.obel.la/hub" },
 ] as const;
 
 // Footer columns (dark footer section)
@@ -57,7 +57,7 @@ export const FOOTER_COLUMNS = [
       { label: "About", href: "#about" },
       { label: "Works", href: "#works" },
       { label: "Services", href: "#services" },
-      { label: "Hub", href: "#hub" },
+      { label: "Hub", href: "https://www.obel.la/hub" },
     ],
   },
   {

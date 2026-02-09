@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
 import { Instrument_Serif, Inter, Press_Start_2P } from "next/font/google";
+import { GeistMono } from "geist/font/mono";
 import { Header } from "@/components/layout/Header";
 import { SmoothScroll } from "@/components/providers/SmoothScroll";
 import { PixelTransition } from "@/components/motion/PixelTransition";
 import { RouteTransition } from "@/components/motion/RouteTransition";
+import { ContactModal } from "@/components/ui/ContactModal";
 import "./globals.css";
 
 const instrumentSerif = Instrument_Serif({
@@ -25,6 +27,7 @@ const pressStart2P = Press_Start_2P({
   weight: "400",
   display: "swap",
 });
+
 
 export const metadata: Metadata = {
   title: "OBEL - AI-First Digital Studio",
@@ -56,12 +59,14 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${instrumentSerif.variable} ${inter.variable} ${pressStart2P.variable} antialiased`}
+        className={`${instrumentSerif.variable} ${inter.variable} ${pressStart2P.variable} ${GeistMono.variable} antialiased`}
       >
         <PixelTransition />
         <RouteTransition />
+        <ContactModal />
         <Header />
         <SmoothScroll>{children}</SmoothScroll>
+
       </body>
     </html>
   );

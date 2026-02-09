@@ -1,6 +1,13 @@
 @import "tailwindcss";
 @import "atropos/css";
 
+@font-face {
+  font-family: 'PPNeueBit';
+  src: url('/fonts/ppneuebit-bold.otf') format('opentype');
+  font-weight: 700;
+  font-display: swap;
+}
+
 :root {
   --background: #FFFAF8;
   --foreground: #101A31;
@@ -20,6 +27,8 @@
   --font-serif: var(--font-instrument-serif), serif;
   --font-sans: var(--font-inter), sans-serif;
   --font-pixel: var(--font-pixel), monospace;
+  --font-neuebit: 'PPNeueBit', sans-serif;
+  --font-geist-mono: var(--font-geist-mono), monospace;
 
   /* Letter spacing */
   --letter-spacing-tighter: -0.03em;
@@ -114,4 +123,31 @@ html {
 .atropos-logo .atropos-scale,
 .atropos-logo .atropos-rotate {
   overflow: visible;
+}
+
+/* Contact modal autofill override */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 1000px transparent inset !important;
+  -webkit-text-fill-color: #FFFAF8 !important;
+  background-color: transparent !important;
+  transition: background-color 5000s ease-in-out 0s;
+}
+
+/* Fade in animation for form messages */
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.3s ease-out forwards;
 }

@@ -1,131 +1,121 @@
-# OBEL Landing Page - Project Instructions
+# CLAUDE.md
+
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
 ## Overview
-Animation-forward landing page for OBEL, an AI-first digital studio, using Next.js App Router + Tailwind CSS + Framer Motion.
+
+Animation-forward landing page for OBEL, an AI-first digital studio. Built with Next.js 16 App Router, Tailwind CSS 4, and GSAP for scroll-driven animations.
+
+## Commands
+
+```bash
+npm run dev             # Development server (localhost:3000)
+npm run build           # Production build
+npm run lint            # ESLint check
+npm run remotion:dev    # Remotion video studio
+npm run remotion:render # Render logo animation to WebM
+```
 
 ## Tech Stack
-- **Framework:** Next.js 14+ (App Router)
-- **Styling:** Tailwind CSS
-- **Animations:** Framer Motion
-- **Fonts:** Instrument Serif + Inter (Google Fonts)
+
+- **Framework:** Next.js 16 (App Router)
+- **Styling:** Tailwind CSS 4
+- **Animations:** GSAP + ScrollTrigger (NOT Framer Motion)
+- **Smooth Scroll:** Lenis (integrated with GSAP ticker)
+- **3D:** three.js + @react-three/fiber
+- **Scroll Effects:** @bsmnt/scrollytelling
+- **Video:** Remotion (for logo animations)
+
+## Architecture
+
+### Animation System
+
+All animations use GSAP, imported from `@/lib/gsap` which pre-registers ScrollTrigger:
+
+```tsx
+import { gsap, ScrollTrigger } from "@/lib/gsap";
+```
+
+Lenis smooth scroll is integrated in `components/providers/SmoothScroll.tsx` and synced with GSAP's ticker for frame-perfect scroll animations.
+
+### Route Transitions
+
+- `app/template.tsx` - Wraps all pages with GSAP fade-in animation
+- `PixelTransition` + `RouteTransition` - Global transition overlays in layout.tsx
+- `TransitionLink` - Use instead of Next.js `Link` for animated page transitions
+
+### Key Constants (`lib/constants.ts`)
+
+- `HEADER_HEIGHT` / `HEADER_HEIGHT_SCROLLED` - Account for sticky header in scroll calculations
+- `ANIMATION_DURATION` / `ANIMATION_EASE` - Consistent timing across animations
+
+### Dynamic Routes
+
+- `/projects/[slug]` - Project detail pages, data from `lib/projects.ts`
 
 ## Design Reference
+
 - Figma: https://www.figma.com/design/SWO0rKk4VcKU9WJYlpSrRl/OBEL-LANDING-PAGE?node-id=65-433
 - Inspiration: basement.studio, hugeinc.com
 
----
-
-## Global Theme (IMPORTANT)
+## Global Theme (CRITICAL)
 
 | Token | Value | Usage |
 |-------|-------|-------|
-| Background | `#FFFAF8` | Site background, section backgrounds (NO pure white) |
-| Primary Dark | `#090E19` | Text, borders, hover states (NO pure black #000) |
-| Font Body | Inter | Body text, descriptions |
-| Font Display | Instrument Serif | Navigation, headings |
+| Background | `#FFFAF8` | All backgrounds (NO pure white) |
+| Primary Dark | `#090E19` | Text, borders (NO pure black) |
+| Font Body | Inter | Body text |
+| Font Display | Instrument Serif | Headings, navigation |
+| Font Pixel | Press Start 2P | Pixel effects |
 
-**CRITICAL:** Never use `#000000` or `#FFFFFF` anywhere in the codebase.
+**Never use `#000000` or `#FFFFFF` anywhere.**
 
----
+## Animation Guidelines
 
-## Code Standards
-
-### Component Structure
-- Keep components reusable with single responsibility
-- Separate layout, sections, motion, and UI components
-- Use TypeScript for all components
-- Export with named exports
-
-### Animations
+- Use GSAP with `@/lib/gsap` import (NOT Framer Motion)
+- Use `ScrollTrigger` for scroll-driven animations
 - All animations must respect `prefers-reduced-motion`
-- Use transform and opacity only (performance)
-- Use Framer Motion's `whileInView` for scroll reveals
-- Keep animations subtle and purposeful
+- Use transform and opacity only for performance
+- Access Lenis instance via `window.lenis` when needed
 
-### Styling
-- Use Tailwind utility classes
-- Custom values go in `tailwind.config.ts`
-- No inline styles unless absolutely necessary
-- Use CSS variables for dynamic values (spotlight effects)
+## React Three Fiber Guidelines
 
----
+When using `@react-three/postprocessing` (EffectComposer, Glitch, etc.):
 
-## Key Implementation Notes
+**CRITICAL:** Never render `EffectComposer` directly inside `<Canvas>`. The GL context may not be ready, causing "Cannot read properties of null" errors.
 
-### Header
-- Always sticky (`position: sticky`, `top: 0`, `z-index: 50`)
-- Shrink on scroll (after ~20-40px): reduce padding and font size
-- Backdrop blur with semi-transparent background when scrolled
+Always create a separate component that waits for the GL context:
 
-### About Section (Spotlight)
-- Pattern background with cursor-following spotlight
-- Use `requestAnimationFrame` + refs for performance (no re-renders on mouse move)
-- `mask-image: radial-gradient()` technique
-- Logos inside spotlight: full color; outside: muted/grayscale
+```tsx
+function Effects() {
+  const { gl } = useThree();
+  const [ready, setReady] = useState(false);
 
-### Trusted By Marquee
-- Auto-sliding continuous loop (duplicate logos for seamless)
-- Slow down on hover (but keep moving)
-- Stop completely with `prefers-reduced-motion`
+  useEffect(() => {
+    if (gl) setReady(true);
+  }, [gl]);
 
-### Featured Projects (Stacking)
-- Sticky title that stays while scrolling through cards
-- Cards stack on top of each other (basement.studio style)
-- Account for `HEADER_OFFSET` on sticky elements
+  if (!ready) return null;
 
-### Services (Horizontal Scroll)
-- Vertical scroll drives horizontal movement
-- Pinned/sticky container with scroll-mapped translateX
-- No wheel hijacking - natural scroll continues after last panel
-- Mobile: vertical stack fallback
+  return (
+    <EffectComposer>
+      {/* effects here */}
+    </EffectComposer>
+  );
+}
+```
 
-### Footer
-- Final "obel" screen fills `100svh`
-- No extra bottom spacing - this is the end of document
+## Change Policy
 
----
+**CRITICAL: Only make changes that are explicitly requested.**
+
+- Do NOT change styling, fonts, colors, or sizes unless specifically asked
+- Do NOT refactor or "improve" code that wasn't part of the request
+- Do NOT add features beyond what was requested
+- When modifying existing code, preserve all existing behavior and styling unless instructed otherwise
+- If replacing a component (e.g., NavLink → button), copy the exact styling classes from the original
 
 ## Git Workflow
 
-**IMPORTANT:**
-- Only commit changes when the user explicitly asks. Never commit automatically or proactively.
-- Work on the `dev` branch, not `main`. Keep `main` for stable releases only.
-
-```bash
-git status                    # Check for changes
-git add .                     # Stage all changes
-git commit -m "message"       # Commit with message
-git push -u origin dev        # Push dev branch to GitHub
-git checkout main && git merge dev  # Merge to main when ready for release
-```
-
----
-
-## Verification Commands
-```bash
-npm run dev     # Start development server
-npm run build   # Production build
-npm run lint    # Lint check
-```
-
----
-
-## File Structure
-```
-obel-landing/
-├── app/
-│   ├── layout.tsx
-│   ├── page.tsx
-│   └── globals.css
-├── components/
-│   ├── layout/        # Header, Footer
-│   ├── sections/      # Hero, About, FeaturedProjects, Services, Contact
-│   ├── motion/        # Reveal, Stagger, variants, useReducedMotion
-│   └── ui/            # Logo, LogoMarquee, NavLink, SpotlightPattern
-├── lib/
-│   ├── constants.ts
-│   └── fonts.ts
-└── public/
-    ├── videos/
-    └── images/
-```
+- Work on `dev` branch, keep `main` for stable releases
+- Only commit when explicitly asked
