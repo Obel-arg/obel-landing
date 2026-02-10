@@ -26,28 +26,46 @@ function useIsMobile(breakpoint: number = 768) {
   return isMobile;
 }
 
+// Scale logo proportionally on wide screens (baseline: 1920px)
+function useLogoScale() {
+  const [scale, setScale] = useState(1);
+
+  useEffect(() => {
+    const update = () => setScale(Math.max(1, window.innerWidth / 1920));
+    update();
+    window.addEventListener("resize", update);
+    return () => window.removeEventListener("resize", update);
+  }, []);
+
+  return scale;
+}
+
 interface Logo3DProps {
   className?: string;
   iconOnly?: boolean;
   inverted?: boolean;
 }
 
-// Static logo component - same size as glitch version (120x46)
-function StaticLogo({ inverted = false }: { inverted?: boolean }) {
+// Base logo dimensions
+const LOGO_W = 120;
+const LOGO_H = 46;
+
+// Static logo component - scales with viewport on wide screens
+function StaticLogo({ inverted = false, scale = 1 }: { inverted?: boolean; scale?: number }) {
   return (
     <div
       className="flex items-center"
       style={{
-        width: 120,
-        height: 46,
+        width: LOGO_W * scale,
+        height: LOGO_H * scale,
         filter: inverted ? "brightness(0) invert(1)" : "none",
       }}
     >
       <Image
         src="/images/logo-icon.svg"
         alt="OBEL"
-        width={46}
-        height={46}
+        width={46 * scale}
+        height={46 * scale}
         className="object-contain"
         style={{ transform: "rotate(-3deg)" }}
         priority
@@ -55,8 +73,8 @@ function StaticLogo({ inverted = false }: { inverted?: boolean }) {
       <Image
         src="/images/logo-wordmark.svg"
         alt="obel"
-        width={70}
-        height={28}
+        width={70 * scale}
+        height={28 * scale}
         className="object-contain"
         priority
       />
@@ -67,12 +85,13 @@ function StaticLogo({ inverted = false }: { inverted?: boolean }) {
 export function Logo3D({ className = "", inverted = false }: Logo3DProps) {
   const prefersReducedMotion = useReducedMotion();
   const isMobile = useIsMobile();
+  const scale = useLogoScale();
 
   // Static logo for reduced motion or mobile devices
   if (prefersReducedMotion || isMobile) {
     return (
       <Link href="/" className={`block ${className}`}>
-        <StaticLogo inverted={inverted} />
+        <StaticLogo inverted={inverted} scale={scale} />
       </Link>
     );
   }
@@ -83,7 +102,7 @@ export function Logo3D({ className = "", inverted = false }: Logo3DProps) {
       className={`block ${className}`}
       style={{ filter: inverted ? "brightness(0) invert(1)" : "none" }}
     >
-      <LogoGlitch width={120} height={46} />
+      <LogoGlitch width={Math.round(LOGO_W * scale)} height={Math.round(LOGO_H * scale)} />
     </Link>
   );
 }
