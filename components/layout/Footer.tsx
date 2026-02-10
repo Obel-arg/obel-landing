@@ -208,11 +208,7 @@ export function Footer() {
 
         {/* Bottom bar */}
         <div className="px-6 md:px-10 lg:px-16 py-6 border-t border-background/10">
-          <div className="flex items-center justify-between">
-            <p className="font-sans text-sm text-background/50">
-              Copyright &copy; {new Date().getFullYear()} Obel Labs LLC. All
-              rights reserved
-            </p>
+          <div className="flex items-center justify-end">
             <button
               onClick={scrollToTop}
               className="cursor-pointer hidden md:flex items-center gap-2 px-4 py-2 border border-background/30 font-sans text-sm hover:bg-background/10 transition-colors"
@@ -242,7 +238,7 @@ export function Footer() {
       {/* Giant "obel" text section — below footer */}
       <div
         data-header-dark
-        className="w-full pt-12 pb-12 bg-primary overflow-hidden"
+        className="w-full pt-12 bg-primary overflow-hidden"
       >
         <Reveal>
           <h2
@@ -273,6 +269,10 @@ export function Footer() {
             </span>
           </h2>
         </Reveal>
+        <p className="font-sans text-sm text-background/50 px-6 md:px-10 lg:px-16 pt-6 pb-8">
+          Copyright &copy; {new Date().getFullYear()} Obel Labs LLC. All
+          rights reserved
+        </p>
       </div>
     </footer>
   );

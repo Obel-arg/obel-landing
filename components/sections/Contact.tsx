@@ -38,12 +38,12 @@ export function Contact() {
   }, [prefersReducedMotion]);
 
   return (
-    <section id="contact" className="below-fold py-24 md:py-32 px-4">
+    <section id="contact" className="below-fold min-h-[50vh] flex items-center justify-center px-4">
       <div className="text-center" ref={subtitleRef}>
-        <p className="font-sans font-bold text-2xl md:text-3xl lg:text-4xl xl:text-[clamp(3rem,3.3vw,4.5rem)] tracking-tight leading-tight">
+        <p className="font-sans font-bold text-xl md:text-2xl lg:text-3xl xl:text-[clamp(2rem,2.2vw,3rem)] tracking-tight leading-tight">
           From Argentina to your daily operations.
         </p>
-        <p className="font-sans text-2xl md:text-3xl lg:text-4xl xl:text-[clamp(3rem,3.3vw,4.5rem)] tracking-tight leading-tight">
+        <p className="font-sans text-xl md:text-2xl lg:text-3xl xl:text-[clamp(2rem,2.2vw,3rem)] tracking-tight leading-tight">
           Real solutions. Real adoption.
         </p>
         <button
