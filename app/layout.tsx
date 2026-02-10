@@ -58,6 +58,15 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        <link
+          rel="preload"
+          href="/fonts/ppneuebit-bold.otf"
+          as="font"
+          type="font/otf"
+          crossOrigin="anonymous"
+        />
+      </head>
       <body
         className={`${instrumentSerif.variable} ${inter.variable} ${pressStart2P.variable} ${GeistMono.variable} antialiased`}
       >

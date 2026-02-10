@@ -9,9 +9,10 @@ interface NavLinkProps {
   children: ReactNode;
   className?: string;
   onClick?: () => void;
+  scale?: number;
 }
 
-export function NavLink({ href, children, className = "", onClick }: NavLinkProps) {
+export function NavLink({ href, children, className = "", onClick, scale = 1 }: NavLinkProps) {
   const handleClick = useCallback(
     (e: React.MouseEvent<HTMLAnchorElement>) => {
       if (href.startsWith("#")) {
@@ -45,12 +46,13 @@ export function NavLink({ href, children, className = "", onClick }: NavLinkProp
       href={href}
       onClick={handleClick}
       className={`
-        font-sans text-base md:text-lg tracking-tight font-medium
+        font-sans tracking-tight font-medium
         relative
         transition-opacity duration-300
         hover:opacity-60
         ${className}
       `}
+      style={{ fontSize: `${18 * scale}px` }}
     >
       {children}
     </Link>

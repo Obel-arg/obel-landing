@@ -46,12 +46,12 @@ export function Contact() {
         <p className="font-sans text-2xl md:text-3xl lg:text-4xl xl:text-[clamp(3rem,3.3vw,4.5rem)] tracking-tight leading-tight">
           Real solutions. Real adoption.
         </p>
-        <a
-          href="mailto:hello@obel.la"
-          className="mt-10 md:mt-14 inline-block font-sans font-bold text-3xl md:text-4xl lg:text-5xl tracking-tight hover:opacity-60 transition-opacity duration-300"
+        <button
+          onClick={() => window.contactModal?.open()}
+          className="mt-10 md:mt-14 inline-block font-sans font-bold text-3xl md:text-4xl lg:text-5xl tracking-tight hover:opacity-60 transition-opacity duration-300 cursor-pointer"
         >
           hello@obel.la
-        </a>
+        </button>
       </div>
     </section>
   );

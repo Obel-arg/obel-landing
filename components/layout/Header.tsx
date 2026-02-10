@@ -1,10 +1,24 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import { usePathname } from "next/navigation";
 import { Logo3D } from "@/components/ui/Logo3D";
 import { NavLink } from "@/components/ui/NavLink";
 import { NAV_LINKS, HEADER_SCROLL_THRESHOLD } from "@/lib/constants";
+
+// Scale header proportionally on wide screens (baseline: 1920px)
+function useHeaderScale() {
+  const [scale, setScale] = useState(1);
+
+  useEffect(() => {
+    const update = () => setScale(Math.max(1, window.innerWidth / 1920));
+    update();
+    window.addEventListener("resize", update);
+    return () => window.removeEventListener("resize", update);
+  }, []);
+
+  return scale;
+}
 
 // Extend Window interface for contactModal
 declare global {
@@ -42,6 +56,7 @@ export function Header() {
   const pathname = usePathname();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isOverDark, setIsOverDark] = useState(false);
+  const scale = useHeaderScale();
 
   // Check if header overlaps any dark section
   const checkOverlap = () => {
@@ -118,17 +133,28 @@ export function Header() {
         className={`
           fixed top-0 left-0 right-0 z-50
           transition-all duration-300 ease-out
-          ${isScrolled ? "py-3 xl:py-[clamp(0.75rem,0.93vw,1rem)]" : "py-6 xl:py-[clamp(1.5rem,1.85vw,2rem)]"}
-          ${isOverDark ? "bg-primary text-background" : "bg-background/80 backdrop-blur-md text-foreground"}
+          ${isScrolled ? "py-3" : "py-6"}
+          ${isOverDark ? "text-background" : "text-foreground"}
+          ${isScrolled ? (isOverDark ? "bg-primary" : "bg-background/80 backdrop-blur-md") : "bg-transparent"}
         `}
+        style={{ padding: `${(isScrolled ? 12 : 24) * scale}px 0` }}
       >
-        <div className="px-4 md:px-8 lg:px-16">
-          <nav className="flex items-center justify-between">
+        <div
+          className="px-4 md:px-8 lg:px-16"
+          style={{ padding: `0 ${64 * scale}px` }}
+        >
+          <nav
+            className="flex items-center justify-between"
+            style={{ gap: `${40 * scale}px`, fontSize: `${18 * scale}px` }}
+          >
             <Logo3D inverted={isOverDark} />
 
-            <div className="hidden lg:flex items-center gap-10 xl:gap-16">
+            <div
+              className="hidden lg:flex items-center"
+              style={{ gap: `${64 * scale}px` }}
+            >
               {NAV_LINKS.map((link) => (
-                <NavLink key={link.href} href={link.href}>
+                <NavLink key={link.href} href={link.href} scale={scale}>
                   {link.label}
                 </NavLink>
               ))}
@@ -136,7 +162,8 @@ export function Header() {
 
             <button
               onClick={() => window.contactModal?.open()}
-              className="hidden md:block font-sans text-base md:text-lg tracking-tight font-medium hover:opacity-60 transition-opacity duration-300 cursor-pointer"
+              className="hidden md:block font-sans tracking-tight font-medium hover:opacity-60 transition-opacity duration-300 cursor-pointer"
+              style={{ fontSize: `${18 * scale}px` }}
             >
               Contact us
             </button>
