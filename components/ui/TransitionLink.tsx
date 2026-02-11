@@ -27,6 +27,10 @@ export function TransitionLink({
         const lenis = (window as unknown as { lenis?: Lenis }).lenis;
         const hasHash = href.includes("#");
 
+        // Save current scroll position before leaving this page
+        const scrollY = lenis ? Math.round(lenis.scroll) : window.scrollY;
+        sessionStorage.setItem(`scroll-${window.location.pathname}`, String(scrollY));
+
         // For links without hash, scroll to top before navigation
         if (!hasHash) {
           if (lenis) {
@@ -36,7 +40,11 @@ export function TransitionLink({
           }
         }
 
-        router.push(href);
+        // Strip hash from URL to prevent Next.js from auto-scrolling to the
+        // hash element (scroll:false doesn't work for hash URLs — known bug).
+        // Our SmoothScroll restoration handles position from sessionStorage.
+        const url = new URL(href, window.location.origin);
+        router.push(url.pathname, { scroll: false });
       };
 
       // Use pixel transition if available, otherwise navigate directly

@@ -16,6 +16,15 @@ export function Contact() {
 
     const ctx = gsap.context(() => {
       if (subtitleRef.current) {
+        // Check if already in viewport (handles dynamic imports + restored scroll)
+        const rect = subtitleRef.current.getBoundingClientRect();
+        const isInViewport = rect.top < window.innerHeight * 0.95;
+
+        if (isInViewport) {
+          gsap.set(subtitleRef.current, { y: 0, opacity: 1 });
+          return;
+        }
+
         gsap.fromTo(
           subtitleRef.current,
           { y: 60, opacity: 0 },

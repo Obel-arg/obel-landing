@@ -43,7 +43,7 @@ export function Hero() {
         </h1>
         <div className="flex items-center gap-[min(6vw,10.2vh)] font-geist-mono text-[min(3.7vw,6.2vh)] leading-none tracking-[-0.04em] uppercase mt-[min(1.5vw,2.5vh)] md:-translate-y-[6px]">
           <span className="translate-x-[1vw]">from</span>
-          <span className="translate-x-[7vw]">inside the</span>
+          <span className="translate-x-[7vw] md:translate-x-[calc(7vw-2px)]">inside the</span>
         </div>
         <h1 className="font-neuebit text-[min(37vw,59vh)] leading-[0.6] tracking-tight text-center mt-0 md:-mt-[min(4vw,6.8vh)]">
           Culture

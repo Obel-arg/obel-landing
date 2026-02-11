@@ -33,7 +33,16 @@ export function Stagger({
     const items = container.querySelectorAll(".stagger-item");
     if (items.length === 0) return;
 
-    // Set initial state
+    // Check if container is already in viewport (handles dynamic imports + restored scroll)
+    const rect = container.getBoundingClientRect();
+    const isInViewport = rect.top < window.innerHeight * 0.85;
+
+    if (isInViewport) {
+      // Already visible — don't hide, skip animation
+      return;
+    }
+
+    // Set initial state (hidden — ScrollTrigger will reveal)
     gsap.set(items, {
       opacity: 0,
       y: 20,

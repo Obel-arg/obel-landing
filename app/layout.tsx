@@ -69,7 +69,7 @@ export default function RootLayout({
         />
       </head>
       <body
-        className={`${instrumentSerif.variable} ${inter.variable} ${pressStart2P.variable} ${GeistMono.variable} antialiased`}
+        className={`${instrumentSerif.variable} ${inter.variable} ${pressStart2P.variable} ${GeistMono.variable} antialiased text-pretty`}
       >
         <PixelTransition />
         <RouteTransition />

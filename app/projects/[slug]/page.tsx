@@ -66,8 +66,8 @@ export default async function ProjectPage({
         {/* Left sidebar */}
         <div className="lg:w-[280px] xl:w-[320px] lg:shrink-0 lg:sticky lg:top-[96px] lg:self-start">
           {/* Title */}
-          <h1 className="font-serif font-normal text-4xl md:text-5xl lg:text-6xl tracking-tight mb-10">
-            Featured projects
+          <h1 className="font-neuebit text-5xl sm:text-6xl md:text-7xl lg:text-8xl tracking-tight leading-[0.67] mb-10">
+            Featured<br />projects
           </h1>
 
           {/* Metadata table */}
@@ -132,30 +132,30 @@ export default async function ProjectPage({
 
         {/* Right: Image gallery */}
         <div className="flex-1 min-w-0">
-          {/* Top row: 2 images side by side */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+          {/* Top row: 2 images side by side (~60/40 split) */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-5">
             {project.images.slice(0, 2).map((img, i) => (
               <div
                 key={i}
-                className="aspect-[685/335] bg-foreground/5 border border-foreground/10 overflow-hidden"
+                className="overflow-hidden rounded-lg border border-foreground/10 aspect-[2/1]"
               >
-                <div className="w-full h-full flex items-center justify-center text-foreground/30">
-                  <span className="font-sans text-sm font-semibold">
-                    Preview image
-                  </span>
-                </div>
+                <img
+                  src={img}
+                  alt={`${project.company} — image ${i + 1}`}
+                  className="w-full h-full object-cover"
+                />
               </div>
             ))}
           </div>
 
           {/* Bottom: 1 large image */}
           {project.images[2] && (
-            <div className="aspect-[1387/608] bg-foreground/5 border border-foreground/10 overflow-hidden">
-              <div className="w-full h-full flex items-center justify-center text-foreground/30">
-                <span className="font-sans text-sm font-semibold">
-                  Preview image
-                </span>
-              </div>
+            <div className="overflow-hidden rounded-lg border border-foreground/10 aspect-[1202/531]">
+              <img
+                src={project.images[2]}
+                alt={`${project.company} — image 3`}
+                className="w-full h-full object-cover"
+              />
             </div>
           )}
         </div>

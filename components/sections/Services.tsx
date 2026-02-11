@@ -14,31 +14,59 @@ const useIsomorphicLayoutEffect =
 const SERVICE_CARDS = [
   {
     id: 1,
-    title: "Brand Strategy & Design",
-    headline: "Sharp identities that stand out.",
+    title: "Product Design & Development",
+    headline: "Technology built for real use.",
     description:
-      "We craft brands that resonate with your audiencie and drive business growth. Strategy, visual identity, and design sistems that scale.",
+      "We design and build digital products that solve operational problems and scale with your organization. From concept to launch, focused on performance, usability and real impact.",
+    includes: [
+      "Product strategy and definition",
+      "UX/UI design",
+      "Custom platform and app development",
+      "AI integration and automation",
+      "Scalable cloud architecture",
+    ],
   },
   {
     id: 2,
-    title: "Digital Experience",
-    headline: "High-performing digital products.",
+    title: "AI Solutions",
+    headline: "From experimentation to real adoption.",
     description:
-      "Web platforms, applications, and digital experiences designed for conversion and built for performance.",
+      "We turn artificial intelligence into practical tools for everyday work. Our focus is not only on building AI, but on making it useful, reliable and integrated into real workflows.",
+    includes: [
+      "Use case identification and prioritization",
+      "Custom AI models and workflows",
+      "Process automation with AI",
+      "Data analysis and decision support",
+      "Responsible and human-centered implementation",
+    ],
   },
   {
     id: 3,
-    title: "AI Integration",
-    headline: "AI-powered solutions for modern teams.",
+    title: "Implementation & Adoption (OBEL Hub)",
+    headline: "Technology only matters when it's used.",
     description:
-      "Custom AI agents, automation workflows, and intelligent systems that enhance your operations.",
+      "We work with teams to integrate new solutions into their daily operations, removing friction and building sustainable habits.",
+    includes: [
+      "Workflow integration and rollout support",
+      "Friction and usage analysis",
+      "Training through real use cases",
+      "Development of AI-driven skills",
+      "Continuous improvement and optimization",
+    ],
   },
   {
     id: 4,
-    title: "Growth & Analytics",
-    headline: "Data-driven decisions at scale.",
+    title: "Process Mapping & Optimization",
+    headline: "Make the invisible visible.",
     description:
-      "Performance tracking, conversion optimization, and analytics infrastructure that drives measurable business outcomes.",
+      "We analyze operations to detect bottlenecks, inefficiencies and opportunities where technology and AI can create real value.",
+    includes: [
+      "Operational diagnostics",
+      "Process mapping and prioritization",
+      "Opportunity identification for automation",
+      "Impact and feasibility analysis",
+      "Actionable implementation roadmap",
+    ],
   },
 ];
 
@@ -76,6 +104,21 @@ function ServiceCard({
             <p className="font-sans text-[#FFFAF8] text-base sm:text-lg md:text-2xl lg:text-3xl tracking-tight leading-tight line-clamp-3">
               {service.headline}
             </p>
+
+            {/* Includes list — desktop only */}
+            {service.includes && (
+              <div className="hidden lg:block mt-4 xl:mt-6">
+                <p className="font-sans text-[#FFFAF8]/60 text-sm xl:text-base font-semibold mb-2">Includes:</p>
+                <ul className="space-y-1">
+                  {service.includes.map((item, i) => (
+                    <li key={i} className="font-sans text-[#FFFAF8]/70 text-sm xl:text-base flex items-baseline gap-2">
+                      <span className="shrink-0">&#8226;</span>
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
           </div>
 
           {/* Bottom: description */}
@@ -117,7 +160,7 @@ export function Services() {
             scrollTrigger: {
               trigger: cardsContainerRef.current,
               start: "top top",
-              end: "10% top",
+              end: "15% top",
               scrub: true,
             },
           }
@@ -141,7 +184,7 @@ export function Services() {
         // so xStart 105 only gives a 5% gap (~19px on 375px phone) before the first
         // card appears. Bump to 125 on smaller screens for a visible "background only"
         // intro phase (~25% gap = 94px on 375px). Desktop stays at 105 (unchanged).
-        const xStart = window.innerWidth < 1024 ? 125 : 105;
+        const xStart = window.innerWidth < 1024 ? 150 : 105;
         const xEnd = computeXEnd();
         xStartRef.current = xStart;
         xEndRef.current = xEnd;
@@ -162,7 +205,7 @@ export function Services() {
               invalidateOnRefresh: true,
               onRefresh: () => {
                 // Recalculate on resize so xPercent range stays accurate
-                const newStart = window.innerWidth < 1024 ? 125 : 105;
+                const newStart = window.innerWidth < 1024 ? 150 : 105;
                 const newEnd = computeXEnd();
                 xStartRef.current = newStart;
                 xEndRef.current = newEnd;
@@ -170,9 +213,6 @@ export function Services() {
               },
               snap: {
                 snapTo: (progress: number) => {
-                  // Cooldown: skip snap if recently completed one
-                  if (snapCooldownRef.current) return progress;
-
                   const carousel = carouselRef.current;
                   if (!carousel) return progress;
 
@@ -190,7 +230,8 @@ export function Services() {
                   const currentXPercent = currentXStart - currentXRange * progress;
                   const translatePx = (currentXPercent / 100) * elWidth;
 
-                  // Boundary checks — exit/enter zones based on visual card position
+                  // Boundary checks — ALWAYS run (ignore cooldown)
+                  // so the user can always exit/enter the section
                   const firstCard = cards[0];
                   const lastCard = cards[cards.length - 1];
                   const firstVisualCenter = firstCard.offsetLeft + firstCard.offsetWidth / 2 + translatePx;
@@ -205,6 +246,9 @@ export function Services() {
                   if (firstVisualCenter > viewportCenter + firstCard.offsetWidth * 0.15) {
                     return 0;
                   }
+
+                  // Cooldown: skip card-centering snap if recently completed one
+                  if (snapCooldownRef.current) return progress;
 
                   let bestProgress = progress;
                   let bestDist = Infinity;
@@ -283,9 +327,12 @@ export function Services() {
             <h2 className="font-neuebit text-[#FFFAF8] text-6xl sm:text-7xl md:text-8xl lg:text-9xl xl:text-[140px] tracking-tight leading-none">
               Our Services
             </h2>
-            <span className="font-pixel text-[#FFFAF8] text-2xl sm:text-3xl md:text-4xl lg:text-5xl leading-none md:translate-y-[0.1em]">
-              →
-            </span>
+            <img
+              src="/images/pixel-arrow.svg"
+              alt=""
+              aria-hidden="true"
+              className="w-16 sm:w-20 md:w-28 lg:w-36 xl:w-44 h-auto md:translate-y-[0.1em] pointer-events-none select-none"
+            />
           </div>
         </div>
 
@@ -322,13 +369,10 @@ export function Services() {
 
   return (
     <section id="services" ref={sectionRef} data-header-transparent className="below-fold relative bg-[#090E19]">
-      {/* Scroll trigger container — 500vh = 400vh effective scroll for slower pace */}
+      {/* Scroll trigger container — responsive height: 400vh mobile, 500vh desktop */}
       <div
         ref={cardsContainerRef}
-        className="relative z-10"
-        style={{
-          height: '500vh',
-        }}
+        className="relative z-10 h-[350vh] md:h-[400vh] lg:h-[500vh]"
       >
         {/* Sticky viewport — pins at top: 0 so background covers full screen including behind header */}
         <div
@@ -362,9 +406,12 @@ export function Services() {
               <h2 className="font-neuebit text-[#FFFAF8] text-6xl sm:text-7xl md:text-8xl lg:text-9xl xl:text-[140px] tracking-tight leading-none">
                 Our Services
               </h2>
-              <span className="font-pixel text-[#FFFAF8] text-2xl sm:text-3xl md:text-4xl lg:text-5xl leading-none md:translate-y-[0.1em]">
-                →
-              </span>
+              <img
+                src="/images/pixel-arrow.svg"
+                alt=""
+                aria-hidden="true"
+                className="w-16 sm:w-20 md:w-28 lg:w-36 xl:w-44 h-auto md:translate-y-[0.1em] pointer-events-none select-none"
+              />
             </div>
           </div>
 

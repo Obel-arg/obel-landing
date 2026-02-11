@@ -1,9 +1,10 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import dynamic from "next/dynamic";
+import { usePathname } from "next/navigation";
 import { useReducedMotion } from "@/components/motion";
 
 // Dynamic import to avoid SSR issues with Three.js
@@ -88,11 +89,36 @@ export function Logo3D({ className = "", inverted = false }: Logo3DProps) {
   const prefersReducedMotion = useReducedMotion();
   const isMobile = useIsMobile();
   const scale = useLogoScale();
+  const pathname = usePathname();
+
+  // On homepage: smooth-scroll to top instead of navigating
+  const handleLogoClick = useCallback(
+    (e: React.MouseEvent) => {
+      if (pathname === "/") {
+        e.preventDefault();
+        const lenis = (
+          window as unknown as {
+            lenis?: {
+              scrollTo: (
+                target: number,
+                opts?: { duration?: number }
+              ) => void;
+            };
+          }
+        ).lenis;
+        if (lenis) {
+          const duration = Math.min(3, Math.max(1, window.scrollY / 1500));
+          lenis.scrollTo(0, { duration });
+        }
+      }
+    },
+    [pathname]
+  );
 
   // Static logo for reduced motion or mobile devices
   if (prefersReducedMotion || isMobile) {
     return (
-      <Link href="/" className={`block ${className}`}>
+      <Link href="/" onClick={handleLogoClick} className={`block ${className}`}>
         <StaticLogo inverted={inverted} scale={scale} iconOnly={isMobile} />
       </Link>
     );
@@ -101,6 +127,7 @@ export function Logo3D({ className = "", inverted = false }: Logo3DProps) {
   return (
     <Link
       href="/"
+      onClick={handleLogoClick}
       className={`block ${className}`}
       style={{ filter: inverted ? "brightness(0) invert(1)" : "none" }}
     >

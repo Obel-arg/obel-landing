@@ -24,17 +24,17 @@ const PROJECTS: Project[] = [
     description:
       "Complete brand overhaul and digital platform for a leading tech company.",
     longDescription:
-      "When this call came, we knew one thing: it was time to release the beast. A full-throttle sprint where every move had to match the scale of millions watching—and buying. No second chances, no half-measures.\n\nWe built an e-commerce experience engineered for high-traffic, high-stakes drops, ensuring every fan could snag their piece without breaking the internet.\n\nWe built an experience that hit hard, moved fast, and kept the crowd on their toes. This one snagged our first Webby, our trophy for making the internet a little wilder.",
+      "HANG connects brands and creators in a single platform where they can discover opportunities, apply with one click, manage deliverables, track progress and ensure content quality. By organizing the entire process — from matching to execution and performance — it professionalizes influencer marketing and brings visibility, efficiency and long-term collaboration to the ecosystem.",
     problem:
-      "A growing brand needed to stand out in a crowded market, but lacked a cohesive identity and a digital platform built to handle high-traffic product drops.",
+      "Influencer marketing is fragmented, inefficient and hard to scale. Brands struggle to find the right creators and manage campaigns, while creators waste time applying to opportunities that aren't a real fit.",
     solution:
-      "We delivered a full brand overhaul and built an e-commerce experience engineered for high-stakes launches — fast, resilient, and designed to convert under pressure.",
+      "HANG is a structured marketplace with intelligent matching, centralized campaign management and clear workflows — reducing friction and turning collaborations into a scalable, measurable system for brands and creators.",
     services: ["Brand Strategy", "Visual Identity", "Web Development"],
-    image: "/images/projects/hang.png",
+    image: "/images/projects/hang-cover.png",
     images: [
-      "/images/projects/hang.png",
-      "/images/projects/hang.png",
-      "/images/projects/hang.png",
+      "/images/projects/hang-wordmark.png",
+      "/images/projects/hang1.png",
+      "/images/projects/hang2.png",
     ],
   },
   {
@@ -42,21 +42,21 @@ const PROJECTS: Project[] = [
     slug: "iusports",
     company: "iuSports",
     title: "App Design & Development",
-    year: "2025",
+    year: "2026",
     description:
       "Full-cycle mobile app design and development for a sports technology platform.",
     longDescription:
-      "iuSports came to us with a vision: make sports tracking smarter, faster, and more intuitive. We took that vision and turned it into a product people actually want to use.\n\nFrom UX research to pixel-perfect design to native development, we owned every step. The result is an app that feels as sharp as the athletes who use it—fast, focused, and built to perform.",
+      "iuSports is a platform that allows amateur players and teams to watch their recorded matches, clip their best plays and goals, and easily share them on social media or within the app. At the same time, it centralizes the entire game experience: booking fields, building teams, challenging others, and competing in a digital environment that combines video, community, and management. It brings a professional-level experience to everyday sports, focusing on enjoyment, visibility, and connection between people.",
     problem:
       "Amateur sports run on passion, but operations, video and performance tracking are still manual, fragmented and hard to scale.",
     solution:
-      "We designed and built a native app from the ground up — from UX research to pixel-perfect UI to performant code — giving athletes and teams a single platform that's as sharp as they are.",
+      "iuSports automates recording, highlights, analytics and management in one platform — bringing professional tools and visibility to the amateur ecosystem.",
     services: ["UX Design", "App Development", "Brand Identity"],
-    image: "/images/projects/iusports.png",
+    image: "/images/projects/iusports-cover.png",
     images: [
-      "/images/projects/iusports.png",
-      "/images/projects/iusports.png",
-      "/images/projects/iusports.png",
+      "/images/projects/iusports-logos.png",
+      "/images/projects/iusports1.png",
+      "/images/projects/iusports2.png",
     ],
   },
 ];

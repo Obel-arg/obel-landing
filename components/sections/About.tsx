@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { Reveal } from "@/components/motion/Reveal";
-import { Stagger } from "@/components/motion/Stagger";
+import { ScrollTextReveal } from "@/components/motion/ScrollTextReveal";
 
 export function About() {
   return (
@@ -22,8 +22,7 @@ export function About() {
 
       <div className="relative z-10 px-4 md:px-8 lg:px-16 xl:pl-[clamp(4rem,4.98vw,86px)] xl:pr-4 flex flex-col">
         {/* Title block */}
-        <Stagger className="flex flex-col">
-          {/* Headline + Subtitle — treated as one continuous text block */}
+        <ScrollTextReveal className="flex flex-col">
           <div>
             <h2 className="font-neuebit text-[2.5rem] md:text-[4rem] lg:text-[5.5rem] xl:text-[clamp(5.5rem,6.42vw,111px)] leading-[0.67] tracking-[-0.023em] xl:max-w-[48vw] text-balance">
               We design products, solutions, and processes
@@ -33,17 +32,19 @@ export function About() {
               But we also support implementation, learning, and the adjustments needed for everything to work in real-world contexts.
             </p>
           </div>
-        </Stagger>
+        </ScrollTextReveal>
 
         {/* OBEL decorative mark — centered in the gap between title and subtitle */}
-        <Image
-          src="/images/obel-mark.svg"
-          alt=""
-          width={100}
-          height={46}
-          className="w-14 md:w-18 lg:w-24 h-auto -scale-x-100 my-8 md:my-12 lg:my-14 xl:my-[clamp(3.5rem,3.47vw,60px)]"
-          aria-hidden="true"
-        />
+        <Reveal>
+          <Image
+            src="/images/obel-mark.svg"
+            alt=""
+            width={100}
+            height={46}
+            className="w-14 md:w-18 lg:w-24 h-auto -scale-x-100 my-8 md:my-12 lg:my-14 xl:my-[clamp(3.5rem,3.47vw,60px)]"
+            aria-hidden="true"
+          />
+        </Reveal>
 
         {/* Subtitle block: Highlighted phrase + Body paragraph */}
         <Reveal>
