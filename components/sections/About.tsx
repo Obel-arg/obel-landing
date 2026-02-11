@@ -6,7 +6,7 @@ import { Stagger } from "@/components/motion/Stagger";
 
 export function About() {
   return (
-    <section id="about" className="below-fold relative min-h-screen py-32 md:py-40 lg:py-48 xl:py-[clamp(12rem,11.57vw,200px)]">
+    <section id="about" className="below-fold relative md:min-h-screen flex flex-col justify-center py-20 md:py-24 lg:py-32 xl:py-[clamp(12rem,11.57vw,200px)]">
       {/* Static OBEL pattern background */}
       <div
         className="absolute inset-0 pointer-events-none"
@@ -25,11 +25,11 @@ export function About() {
         <Stagger className="flex flex-col">
           {/* Headline + Subtitle — treated as one continuous text block */}
           <div>
-            <h2 className="font-neuebit text-[2.5rem] md:text-[4rem] lg:text-[5.5rem] xl:text-[clamp(5.5rem,6.42vw,111px)] leading-[0.67] tracking-[-0.023em] xl:max-w-[48vw]">
+            <h2 className="font-neuebit text-[2.5rem] md:text-[4rem] lg:text-[5.5rem] xl:text-[clamp(5.5rem,6.42vw,111px)] leading-[0.67] tracking-[-0.023em] xl:max-w-[48vw] text-balance">
               We design products, solutions, and processes
               <span className="font-sans font-semibold text-[1.5rem] md:text-[2.5rem] lg:text-[3.5rem] xl:text-[clamp(3.5rem,3.65vw,63px)]">.</span>
             </h2>
-            <p className="font-sans text-xl md:text-[1.75rem] lg:text-[2.75rem] xl:text-[clamp(2.75rem,3.3vw,57px)] leading-[1.15] tracking-tight xl:max-w-[65vw]">
+            <p className="font-sans text-xl md:text-[1.75rem] lg:text-[2.75rem] xl:text-[clamp(2.75rem,3.3vw,57px)] leading-[1.15] tracking-tight xl:max-w-[65vw] text-pretty">
               But we also support implementation, learning, and the adjustments needed for everything to work in real-world contexts.
             </p>
           </div>
@@ -59,7 +59,7 @@ export function About() {
                 We don&apos;t just build. We get involved.
               </mark>
             </p>
-            <p className="font-sans text-sm md:text-base lg:text-lg xl:text-[clamp(1.125rem,1.62vw,28px)] tracking-tight leading-relaxed xl:max-w-[clamp(767px,69vw,1193px)]">
+            <p className="font-sans text-sm md:text-base lg:text-lg xl:text-[clamp(1.125rem,1.62vw,28px)] tracking-tight leading-relaxed xl:max-w-[clamp(767px,69vw,1193px)] text-pretty">
               OBEL is a team that works end to end: from building solutions to ensuring their real adoption. We don&apos;t believe in delivering products and disappearing. We care about how they&apos;re used, how they integrate into workflows, and how they change people&apos;s daily routines.
             </p>
           </div>

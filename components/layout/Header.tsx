@@ -153,18 +153,18 @@ export function Header() {
         className={`
           fixed top-0 left-0 right-0 z-50
           transition-all duration-300 ease-out
-          ${isScrolled ? "py-3" : "py-6"}
+          ${isScrolled ? "py-3" : "py-8 md:py-6"}
           ${isOverDark || isOverTransparent ? "text-background" : "text-foreground"}
           ${isOverTransparent ? "" : isScrolled ? (isOverDark ? "bg-primary" : "bg-background/80 backdrop-blur-md") : ""}
         `}
         style={{
-          padding: `${(isScrolled ? 12 : 24) * scale}px 0`,
+          ...(scale > 1 ? { padding: `${(isScrolled ? 12 : 24) * scale}px 0` } : {}),
           ...(isOverTransparent ? { backgroundColor: 'transparent', backdropFilter: 'none' } : {}),
         }}
       >
         <div
           className="px-4 md:px-8 lg:px-16"
-          style={{ padding: `0 ${64 * scale}px` }}
+          style={scale > 1 ? { padding: `0 ${64 * scale}px` } : undefined}
         >
           <nav
             className="flex items-center justify-between"
@@ -185,7 +185,7 @@ export function Header() {
 
             <button
               onClick={() => window.contactModal?.open()}
-              className="hidden md:block font-sans tracking-tight font-medium hover:opacity-60 transition-opacity duration-300 cursor-pointer"
+              className="hidden lg:block font-sans tracking-tight font-medium hover:opacity-60 transition-opacity duration-300 cursor-pointer"
               style={{ fontSize: `${18 * scale}px` }}
             >
               Contact us

@@ -41,11 +41,11 @@ export function Hero() {
         <h1 className="font-neuebit text-[min(25vw,40vh)] leading-[0.6] tracking-tight text-center">
           Technology
         </h1>
-        <div className="flex items-center gap-[min(8vw,13.6vh)] font-geist-mono text-[max(16px,min(3vw,5vh))] leading-none tracking-[-0.04em] uppercase mb-[min(0.5vw,0.85vh)]">
-          <span className="translate-x-[-3.5vw]">from</span>
+        <div className="flex items-center gap-[min(6vw,10.2vh)] font-geist-mono text-[min(3.7vw,6.2vh)] leading-none tracking-[-0.04em] uppercase mt-[min(1.5vw,2.5vh)] md:-translate-y-[6px]">
+          <span className="translate-x-[1vw]">from</span>
           <span className="translate-x-[7vw]">inside the</span>
         </div>
-        <h1 className="font-neuebit text-[min(37vw,59vh)] leading-[0.6] tracking-tight text-center -mt-[min(4vw,6.8vh)]">
+        <h1 className="font-neuebit text-[min(37vw,59vh)] leading-[0.6] tracking-tight text-center mt-0 md:-mt-[min(4vw,6.8vh)]">
           Culture
         </h1>
 
@@ -61,7 +61,7 @@ export function Hero() {
       {/* Bouncing scroll arrow */}
       <button
         onClick={scrollToAbout}
-        className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 animate-bounce cursor-pointer"
+        className="md:hidden absolute bottom-8 left-1/2 -translate-x-1/2 z-10 animate-bounce cursor-pointer p-3"
         aria-label="Scroll down"
       >
         <svg

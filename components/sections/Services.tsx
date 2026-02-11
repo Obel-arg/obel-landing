@@ -48,9 +48,9 @@ function ServiceCard({
   service: (typeof SERVICE_CARDS)[0];
 }) {
   return (
-    <div className="service-card min-w-[85vw] md:min-w-[80vw] lg:min-w-[75vw] h-full flex items-center justify-center px-2 sm:px-4 md:px-8 lg:px-12 xl:px-16 flex-shrink-0">
+    <div className="service-card w-[65vw] sm:w-[70vw] md:w-[80vw] lg:w-[75vw] min-w-[65vw] sm:min-w-[70vw] md:min-w-[80vw] lg:min-w-[75vw] h-full flex items-center justify-center px-2 md:px-8 lg:px-12 xl:px-16 flex-shrink-0">
       <Atropos
-        className="w-full max-w-4xl xl:max-w-5xl 2xl:max-w-6xl h-[clamp(260px,80%,700px)]"
+        className="w-full max-w-4xl xl:max-w-5xl 2xl:max-w-6xl h-[clamp(220px,50%,380px)] md:h-[clamp(300px,70%,550px)] lg:h-[clamp(340px,80%,700px)]"
         rotateXMax={10}
         rotateYMax={10}
         rotateTouch={false}
@@ -58,7 +58,7 @@ function ServiceCard({
         highlight={false}
       >
         <div
-          className="rounded-[27px] p-5 sm:p-6 md:p-10 lg:p-14 xl:p-16 h-full flex flex-col justify-between bg-[rgba(212,212,219,0.25)] backdrop-blur-[8px] border border-white/[0.12] supports-[not(backdrop-filter)]:bg-[#090E19]/60"
+          className="rounded-2xl md:rounded-[27px] p-4 sm:p-5 md:p-8 lg:p-12 xl:p-16 h-full flex flex-col justify-between bg-[rgba(212,212,219,0.25)] backdrop-blur-[8px] border border-white/[0.12] supports-[not(backdrop-filter)]:bg-[#090E19]/60"
         >
           {/* Top: icon + title + headline */}
           <div>
@@ -67,19 +67,19 @@ function ServiceCard({
               alt=""
               width={60}
               height={28}
-              className="w-10 md:w-12 lg:w-14 h-auto mb-4 sm:mb-6 md:mb-8 brightness-0 invert"
+              className="w-8 sm:w-10 md:w-12 lg:w-14 h-auto mb-2 sm:mb-4 md:mb-8 brightness-0 invert"
               aria-hidden="true"
             />
-            <h3 className="font-sans font-semibold text-[#FFFAF8] text-2xl md:text-3xl lg:text-4xl tracking-tight mb-2 sm:mb-3 md:mb-4 line-clamp-2">
+            <h3 className="font-sans font-semibold text-[#FFFAF8] text-lg sm:text-xl md:text-3xl lg:text-4xl tracking-tight mb-1 sm:mb-2 md:mb-4 line-clamp-2">
               {service.title}
             </h3>
-            <p className="font-sans text-[#FFFAF8] text-lg sm:text-xl md:text-2xl lg:text-3xl tracking-tight leading-tight line-clamp-3">
+            <p className="font-sans text-[#FFFAF8] text-base sm:text-lg md:text-2xl lg:text-3xl tracking-tight leading-tight line-clamp-3">
               {service.headline}
             </p>
           </div>
 
           {/* Bottom: description */}
-          <p className="font-sans text-[#FFFAF8] text-base md:text-lg max-w-full md:max-w-xl leading-relaxed mt-4 sm:mt-6 md:mt-8">
+          <p className="font-sans text-[#FFFAF8] text-sm sm:text-base md:text-lg max-w-full md:max-w-xl leading-relaxed mt-3 sm:mt-4 md:mt-8">
             {service.description}
           </p>
         </div>
@@ -92,6 +92,7 @@ export function Services() {
   const sectionRef = useRef<HTMLElement>(null);
   const cardsContainerRef = useRef<HTMLDivElement>(null);
   const carouselRef = useRef<HTMLDivElement>(null);
+  const titleRef = useRef<HTMLDivElement>(null);
   const snapCooldownRef = useRef(false);
   const prefersReducedMotion = useReducedMotion();
 
@@ -105,6 +106,24 @@ export function Services() {
     if (prefersReducedMotion) return;
 
     const ctx = gsap.context(() => {
+      // Fade out "Our Services" title as cards scroll in
+      if (titleRef.current && cardsContainerRef.current) {
+        gsap.fromTo(
+          titleRef.current,
+          { opacity: 1 },
+          {
+            opacity: 0,
+            ease: "none",
+            scrollTrigger: {
+              trigger: cardsContainerRef.current,
+              start: "top top",
+              end: "10% top",
+              scrub: true,
+            },
+          }
+        );
+      }
+
       // Horizontal scroll for cards
       if (cardsContainerRef.current && carouselRef.current) {
         // Compute xEnd dynamically based on actual card widths.
@@ -151,9 +170,6 @@ export function Services() {
               },
               snap: {
                 snapTo: (progress: number) => {
-                  // Desktop only (>= lg breakpoint)
-                  if (window.innerWidth < 1024) return progress;
-
                   // Cooldown: skip snap if recently completed one
                   if (snapCooldownRef.current) return progress;
 
@@ -173,6 +189,22 @@ export function Services() {
                   // Current xPercent at this progress
                   const currentXPercent = currentXStart - currentXRange * progress;
                   const translatePx = (currentXPercent / 100) * elWidth;
+
+                  // Boundary checks — exit/enter zones based on visual card position
+                  const firstCard = cards[0];
+                  const lastCard = cards[cards.length - 1];
+                  const firstVisualCenter = firstCard.offsetLeft + firstCard.offsetWidth / 2 + translatePx;
+                  const lastVisualCenter = lastCard.offsetLeft + lastCard.offsetWidth / 2 + translatePx;
+
+                  // If the last card's center has moved left of viewport center, snap to exit
+                  if (lastVisualCenter < viewportCenter - lastCard.offsetWidth * 0.15) {
+                    return 1;
+                  }
+
+                  // If the first card's center is still right of viewport center, snap to entry
+                  if (firstVisualCenter > viewportCenter + firstCard.offsetWidth * 0.15) {
+                    return 0;
+                  }
 
                   let bestProgress = progress;
                   let bestDist = Infinity;
@@ -245,12 +277,24 @@ export function Services() {
           <div className="absolute inset-0 bg-[#090E19]/30" />
         </div>
 
+        {/* Title */}
+        <div className="relative z-10 flex items-center justify-center py-16 md:py-24">
+          <div className="flex flex-col md:flex-row items-center gap-4 md:gap-8">
+            <h2 className="font-neuebit text-[#FFFAF8] text-6xl sm:text-7xl md:text-8xl lg:text-9xl xl:text-[140px] tracking-tight leading-none">
+              Our Services
+            </h2>
+            <span className="font-pixel text-[#FFFAF8] text-2xl sm:text-3xl md:text-4xl lg:text-5xl leading-none md:translate-y-[0.1em]">
+              →
+            </span>
+          </div>
+        </div>
+
         {/* Cards in vertical stack */}
-        <div className="relative z-10 px-2 sm:px-4 md:px-8 lg:px-16 space-y-6 sm:space-y-8">
+        <div className="relative z-10 px-4 md:px-8 lg:px-16 space-y-6 sm:space-y-8">
           {SERVICE_CARDS.map((service) => (
             <div
               key={service.id}
-              className="rounded-[27px] p-5 sm:p-6 md:p-10 lg:p-14 xl:p-16 bg-[rgba(212,212,219,0.25)] backdrop-blur-[8px] border border-white/[0.12] supports-[not(backdrop-filter)]:bg-[#090E19]/60"
+              className="rounded-2xl md:rounded-[27px] p-4 sm:p-5 md:p-8 lg:p-12 xl:p-16 bg-[rgba(212,212,219,0.25)] backdrop-blur-[8px] border border-white/[0.12] supports-[not(backdrop-filter)]:bg-[#090E19]/60"
             >
               <Image
                 src="/images/obel-mark.svg"
@@ -291,7 +335,7 @@ export function Services() {
           className="sticky overflow-hidden"
           style={{
             top: 0,
-            height: '100vh',
+            height: '100dvh',
           }}
         >
           {/* Background image - inside sticky so it stays fixed while scrolling */}
@@ -306,6 +350,22 @@ export function Services() {
             />
             {/* Dark overlay for glassmorphism contrast */}
             <div className="absolute inset-0 bg-[#090E19]/30" />
+          </div>
+
+          {/* "Our Services" title — visible before cards scroll in */}
+          <div
+            ref={titleRef}
+            className="absolute inset-0 z-[5] flex items-center justify-center pointer-events-none"
+            style={{ paddingTop: 'var(--header-height)' }}
+          >
+            <div className="flex flex-col md:flex-row items-center gap-4 md:gap-8">
+              <h2 className="font-neuebit text-[#FFFAF8] text-6xl sm:text-7xl md:text-8xl lg:text-9xl xl:text-[140px] tracking-tight leading-none">
+                Our Services
+              </h2>
+              <span className="font-pixel text-[#FFFAF8] text-2xl sm:text-3xl md:text-4xl lg:text-5xl leading-none md:translate-y-[0.1em]">
+                →
+              </span>
+            </div>
           </div>
 
           {/* Horizontal carousel - padded below header */}

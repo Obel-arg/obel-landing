@@ -38,12 +38,12 @@ function ProjectCard({
         </div>
 
         {/* Project Info */}
-        <div className="lg:w-1/2 xl:w-[45%] flex flex-col justify-between py-2">
+        <div className="lg:w-1/2 xl:w-[45%] flex flex-col py-2">
           <div>
             <span className="font-sans text-xs font-medium opacity-50 uppercase tracking-wider">
               {project.company}
             </span>
-            <h3 className="mt-1 font-sans font-semibold text-[1.1rem] md:text-[1.4rem] lg:text-[1.775rem] tracking-tight group-hover:opacity-70 transition-opacity duration-300">
+            <h3 className="mt-1 font-sans font-semibold text-[1.1rem] md:text-[1.4rem] lg:text-[1.775rem] tracking-tight">
               {project.title}
             </h3>
             <p className="mt-2 font-sans text-sm md:text-base opacity-50 leading-relaxed">
@@ -51,31 +51,22 @@ function ProjectCard({
             </p>
           </div>
 
-          {/* Problem & Solution — separate child so justify-between pushes it to bottom */}
-          <div className="mt-8 space-y-4">
+          {/* Problem & Solution */}
+          <div className="mt-4 md:mt-6 space-y-6 md:space-y-8 max-w-[70%]">
             <div>
-              <h4 className="font-sans font-semibold text-sm md:text-base underline underline-offset-4">
+              <h4 className="font-sans font-semibold text-sm md:text-base">
                 The problem:
               </h4>
-              <p className="mt-2 font-sans text-sm md:text-base leading-relaxed">
+              <p className="mt-1.5 font-sans text-sm md:text-base leading-relaxed opacity-60">
                 {project.problem}
               </p>
             </div>
 
-            <Image
-              src="/images/obel-mark.svg"
-              alt=""
-              width={100}
-              height={46}
-              aria-hidden="true"
-              className="w-10 h-auto -scale-x-100"
-            />
-
             <div>
-              <h4 className="font-sans font-semibold text-sm md:text-base underline underline-offset-4">
+              <h4 className="font-sans font-semibold text-sm md:text-base">
                 The Solution:
               </h4>
-              <p className="mt-2 font-sans text-sm md:text-base leading-relaxed">
+              <p className="mt-1.5 font-sans text-sm md:text-base leading-relaxed opacity-60">
                 {project.solution}
               </p>
             </div>

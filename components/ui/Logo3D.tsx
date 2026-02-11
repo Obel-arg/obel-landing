@@ -51,12 +51,12 @@ const LOGO_W = 120;
 const LOGO_H = 46;
 
 // Static logo component - scales with viewport on wide screens
-function StaticLogo({ inverted = false, scale = 1 }: { inverted?: boolean; scale?: number }) {
+function StaticLogo({ inverted = false, scale = 1, iconOnly = false }: { inverted?: boolean; scale?: number; iconOnly?: boolean }) {
   return (
     <div
       className="flex items-center"
       style={{
-        width: LOGO_W * scale,
+        width: (iconOnly ? 46 : LOGO_W) * scale,
         height: LOGO_H * scale,
         filter: inverted ? "brightness(0) invert(1)" : "none",
       }}
@@ -70,14 +70,16 @@ function StaticLogo({ inverted = false, scale = 1 }: { inverted?: boolean; scale
         style={{ transform: "rotate(-3deg)" }}
         priority
       />
-      <Image
-        src="/images/logo-wordmark.svg"
-        alt="obel"
-        width={70 * scale}
-        height={28 * scale}
-        className="object-contain"
-        priority
-      />
+      {!iconOnly && (
+        <Image
+          src="/images/logo-wordmark.svg"
+          alt="obel"
+          width={70 * scale}
+          height={28 * scale}
+          className="object-contain"
+          priority
+        />
+      )}
     </div>
   );
 }
@@ -91,7 +93,7 @@ export function Logo3D({ className = "", inverted = false }: Logo3DProps) {
   if (prefersReducedMotion || isMobile) {
     return (
       <Link href="/" className={`block ${className}`}>
-        <StaticLogo inverted={inverted} scale={scale} />
+        <StaticLogo inverted={inverted} scale={scale} iconOnly={isMobile} />
       </Link>
     );
   }
