@@ -1,3 +1,26 @@
+"use client";
+
+function scrollToAbout() {
+  const lenis = (
+    window as unknown as {
+      lenis?: {
+        scrollTo: (
+          target: string | number,
+          opts?: { offset?: number; duration?: number }
+        ) => void;
+      };
+    }
+  ).lenis;
+  if (lenis) {
+    const target = document.querySelector("#about");
+    const distance = target
+      ? Math.abs(target.getBoundingClientRect().top)
+      : window.innerHeight;
+    const duration = Math.min(4.5, Math.max(1.5, distance / 1200));
+    lenis.scrollTo("#about", { offset: -72, duration });
+  }
+}
+
 export function Hero() {
   return (
     <section
@@ -25,7 +48,39 @@ export function Hero() {
         <h1 className="font-neuebit text-[min(37vw,59vh)] leading-[0.6] tracking-tight text-center -mt-[min(4vw,6.8vh)]">
           Culture
         </h1>
+
+        {/* Ornament swirl — mobile only (desktop has hero-border.png) */}
+        <img
+          src="/images/hero-ornament.svg"
+          alt=""
+          aria-hidden="true"
+          className="md:hidden w-[80%] max-w-[308px] h-auto mt-[min(3vw,5vh)] rotate-180 pointer-events-none select-none"
+        />
       </div>
+
+      {/* Bouncing scroll arrow */}
+      <button
+        onClick={scrollToAbout}
+        className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 animate-bounce cursor-pointer"
+        aria-label="Scroll down"
+      >
+        <svg
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          aria-hidden="true"
+        >
+          <path
+            d="M12 5V19M12 19L5 12M12 19L19 12"
+            stroke="currentColor"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </svg>
+      </button>
     </section>
   );
 }

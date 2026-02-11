@@ -4,6 +4,7 @@ import { useEffect, useRef, useState, useCallback } from "react";
 import { usePathname } from "next/navigation";
 import { Logo3D } from "@/components/ui/Logo3D";
 import { NavLink } from "@/components/ui/NavLink";
+import { MobileMenu } from "@/components/layout/MobileMenu";
 import { NAV_LINKS, HEADER_SCROLL_THRESHOLD } from "@/lib/constants";
 
 // Scale header proportionally on wide screens (baseline: 1920px)
@@ -57,6 +58,7 @@ export function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isOverDark, setIsOverDark] = useState(false);
   const [isOverTransparent, setIsOverTransparent] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
   const scale = useHeaderScale();
 
   // Check if header overlaps any dark or transparent section
@@ -189,12 +191,17 @@ export function Header() {
               Contact us
             </button>
 
-            <button className="lg:hidden p-2" aria-label="Open menu">
+            <button
+              className="lg:hidden p-2 cursor-pointer"
+              aria-label="Open menu"
+              onClick={() => setMenuOpen(true)}
+            >
               {hamburgerIcon}
             </button>
           </nav>
         </div>
       </header>
+      <MobileMenu isOpen={menuOpen} onClose={() => setMenuOpen(false)} />
     </>
   );
 }
