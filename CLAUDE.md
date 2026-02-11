@@ -44,6 +44,15 @@ Lenis smooth scroll is integrated in `components/providers/SmoothScroll.tsx` and
 - `PixelTransition` + `RouteTransition` - Global transition overlays in layout.tsx
 - `TransitionLink` - Use instead of Next.js `Link` for animated page transitions
 
+### Header Theme Attributes
+
+Sections can control header appearance by adding data attributes:
+
+- `data-header-dark` — White text + solid dark background (`bg-primary`) when scrolled over the section
+- `data-header-transparent` — White text + fully transparent background (no bg at all). Uses inline styles to guarantee override over Tailwind classes.
+
+The Header component (`components/layout/Header.tsx`) detects these via `document.querySelectorAll` on scroll with rAF throttling.
+
 ### Key Constants (`lib/constants.ts`)
 
 - `HEADER_HEIGHT` / `HEADER_HEIGHT_SCROLLED` - Account for sticky header in scroll calculations
@@ -77,6 +86,9 @@ Lenis smooth scroll is integrated in `components/providers/SmoothScroll.tsx` and
 - All animations must respect `prefers-reduced-motion`
 - Use transform and opacity only for performance
 - Access Lenis instance via `window.lenis` when needed
+- **GSAP xPercent** is relative to the element's `offsetWidth` (NOT total content width). For horizontal carousels, calculate: `totalContentWidth / offsetWidth * 100` to determine the xPercent needed.
+- **gsap.fromTo + ScrollTrigger scrub**: Always use `immediateRender: true` to apply `from` values immediately, preventing flash of default position before trigger activates.
+- Extract animation range into named variables (`xStart`, `xEnd`, `xRange`) instead of hardcoding — snap formulas and progress calculations must stay in sync.
 
 ## React Three Fiber Guidelines
 

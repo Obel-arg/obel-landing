@@ -52,47 +52,36 @@ function ProjectCard({
             <p className="mt-2 font-sans text-sm md:text-base opacity-50 leading-relaxed">
               {project.description}
             </p>
-
-            {/* Problem & Solution */}
-            <div className="mt-8 space-y-4">
-              <div>
-                <h4 className="font-sans font-semibold text-sm md:text-base underline underline-offset-4">
-                  The problem:
-                </h4>
-                <p className="mt-2 font-sans text-sm md:text-base leading-relaxed">
-                  {project.problem}
-                </p>
-              </div>
-
-              <Image
-                src="/images/obel-mark.svg"
-                alt=""
-                width={100}
-                height={46}
-                aria-hidden="true"
-                className="w-10 h-auto -scale-x-100"
-              />
-
-              <div>
-                <h4 className="font-sans font-semibold text-sm md:text-base underline underline-offset-4">
-                  The Solution:
-                </h4>
-                <p className="mt-2 font-sans text-sm md:text-base leading-relaxed">
-                  {project.solution}
-                </p>
-              </div>
-            </div>
           </div>
 
-          <div className="mt-8 flex flex-wrap gap-1.5">
-            {project.services.map((service) => (
-              <span
-                key={service}
-                className="px-2 py-0.5 text-xs border border-foreground/15 rounded-full opacity-70"
-              >
-                {service}
-              </span>
-            ))}
+          {/* Problem & Solution — separate child so justify-between pushes it to bottom */}
+          <div className="mt-8 space-y-4">
+            <div>
+              <h4 className="font-sans font-semibold text-sm md:text-base underline underline-offset-4">
+                The problem:
+              </h4>
+              <p className="mt-2 font-sans text-sm md:text-base leading-relaxed">
+                {project.problem}
+              </p>
+            </div>
+
+            <Image
+              src="/images/obel-mark.svg"
+              alt=""
+              width={100}
+              height={46}
+              aria-hidden="true"
+              className="w-10 h-auto -scale-x-100"
+            />
+
+            <div>
+              <h4 className="font-sans font-semibold text-sm md:text-base underline underline-offset-4">
+                The Solution:
+              </h4>
+              <p className="mt-2 font-sans text-sm md:text-base leading-relaxed">
+                {project.solution}
+              </p>
+            </div>
           </div>
         </div>
       </div>

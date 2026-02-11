@@ -46,6 +46,25 @@ body {
   font-family: var(--font-sans);
 }
 
+/* Thin scrollbar for Chrome (matches Arc/macOS overlay style) */
+html::-webkit-scrollbar {
+  width: 6px;
+  background: transparent;
+}
+
+html::-webkit-scrollbar-thumb {
+  background: rgba(9, 14, 25, 0.15);
+  border-radius: 3px;
+}
+
+html::-webkit-scrollbar-thumb:hover {
+  background: rgba(9, 14, 25, 0.3);
+}
+
+html::-webkit-scrollbar-track {
+  background: transparent;
+}
+
 /* Smooth scrolling */
 html {
   scroll-behavior: smooth;

@@ -56,20 +56,34 @@ export function Header() {
   const pathname = usePathname();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isOverDark, setIsOverDark] = useState(false);
+  const [isOverTransparent, setIsOverTransparent] = useState(false);
   const scale = useHeaderScale();
 
-  // Check if header overlaps any dark section
-  const checkOverlap = () => {
-    const darkSections = document.querySelectorAll("[data-header-dark]");
+  // Check if header overlaps any dark or transparent section
+  const checkOverlap = (): { dark: boolean; transparent: boolean } => {
     const headerH = getHeaderHeight();
+    let dark = false;
+    let transparent = false;
 
+    const darkSections = document.querySelectorAll("[data-header-dark]");
     for (const section of darkSections) {
       const rect = section.getBoundingClientRect();
       if (rect.top < headerH && rect.bottom > 0) {
-        return true;
+        dark = true;
+        break;
       }
     }
-    return false;
+
+    const transparentSections = document.querySelectorAll("[data-header-transparent]");
+    for (const section of transparentSections) {
+      const rect = section.getBoundingClientRect();
+      if (rect.top < headerH && rect.bottom > 0) {
+        transparent = true;
+        break;
+      }
+    }
+
+    return { dark, transparent };
   };
 
   // Scroll detection
@@ -91,7 +105,9 @@ export function Header() {
     let rafId: number | null = null;
 
     const update = () => {
-      setIsOverDark(checkOverlap());
+      const result = checkOverlap();
+      setIsOverDark(result.dark);
+      setIsOverTransparent(result.transparent);
       rafId = null;
     };
 
@@ -103,7 +119,9 @@ export function Header() {
 
     // Initial check (delayed to handle scroll restoration and page transition)
     const initialCheck = () => {
-      setIsOverDark(checkOverlap());
+      const result = checkOverlap();
+      setIsOverDark(result.dark);
+      setIsOverTransparent(result.transparent);
     };
 
     // Run immediately and after delays for scroll restoration / page transitions
@@ -134,10 +152,13 @@ export function Header() {
           fixed top-0 left-0 right-0 z-50
           transition-all duration-300 ease-out
           ${isScrolled ? "py-3" : "py-6"}
-          ${isOverDark ? "text-background" : "text-foreground"}
-          ${isScrolled ? (isOverDark ? "bg-primary" : "bg-background/80 backdrop-blur-md") : "bg-transparent"}
+          ${isOverDark || isOverTransparent ? "text-background" : "text-foreground"}
+          ${isOverTransparent ? "" : isScrolled ? (isOverDark ? "bg-primary" : "bg-background/80 backdrop-blur-md") : ""}
         `}
-        style={{ padding: `${(isScrolled ? 12 : 24) * scale}px 0` }}
+        style={{
+          padding: `${(isScrolled ? 12 : 24) * scale}px 0`,
+          ...(isOverTransparent ? { backgroundColor: 'transparent', backdropFilter: 'none' } : {}),
+        }}
       >
         <div
           className="px-4 md:px-8 lg:px-16"
@@ -147,7 +168,7 @@ export function Header() {
             className="flex items-center justify-between"
             style={{ gap: `${40 * scale}px`, fontSize: `${18 * scale}px` }}
           >
-            <Logo3D inverted={isOverDark} />
+            <Logo3D inverted={isOverDark || isOverTransparent} />
 
             <div
               className="hidden lg:flex items-center"

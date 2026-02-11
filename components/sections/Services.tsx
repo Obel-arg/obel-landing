@@ -1,10 +1,10 @@
 "use client";
 
 import { useRef, useLayoutEffect, useEffect } from "react";
+import Image from "next/image";
 import { gsap, ScrollTrigger } from "@/lib/gsap";
-import { Reveal } from "@/components/motion/Reveal";
 import { useReducedMotion } from "@/components/motion/useReducedMotion";
-import { getComputedHeaderHeight } from "@/lib/constants";
+import Atropos from "atropos/react";
 
 // Use useLayoutEffect on client, useEffect on server (SSR safety)
 const useIsomorphicLayoutEffect =
@@ -17,7 +17,7 @@ const SERVICE_CARDS = [
     title: "Brand Strategy & Design",
     headline: "Sharp identities that stand out.",
     description:
-      "We craft brands that resonate with your audience and drive business growth. Strategy, visual identity, and design systems that scale.",
+      "We craft brands that resonate with your audiencie and drive business growth. Strategy, visual identity, and design sistems that scale.",
   },
   {
     id: 2,
@@ -44,29 +44,45 @@ const SERVICE_CARDS = [
 
 function ServiceCard({
   service,
-  index,
 }: {
   service: (typeof SERVICE_CARDS)[0];
-  index: number;
 }) {
   return (
-    <div className="service-card min-w-[85vw] md:min-w-[80vw] lg:min-w-[75vw] h-full flex items-center justify-start px-4 md:px-8 lg:px-16 flex-shrink-0">
-      <div className="bg-foreground/5 rounded-lg p-8 md:p-12 lg:p-16 w-full max-w-5xl h-[70%] flex flex-col justify-between border border-foreground/10">
-        <div>
-          <span className="font-sans text-sm font-medium opacity-50 mb-4 block">
-            {String(index + 1).padStart(2, "0")}
-          </span>
-          <h3 className="font-sans font-semibold text-2xl md:text-3xl lg:text-4xl tracking-tight mb-4">
-            {service.title}
-          </h3>
-          <p className="font-sans text-xl md:text-2xl lg:text-3xl tracking-tight opacity-90 leading-tight">
-            {service.headline}
+    <div className="service-card min-w-[85vw] md:min-w-[80vw] lg:min-w-[75vw] h-full flex items-center justify-center px-4 md:px-8 lg:px-16 flex-shrink-0">
+      <Atropos
+        className="w-full max-w-4xl h-[75%]"
+        rotateXMax={10}
+        rotateYMax={10}
+        shadow={false}
+        highlight={false}
+      >
+        <div
+          className="rounded-[27px] p-8 md:p-12 lg:p-16 h-full flex flex-col justify-between bg-[rgba(212,212,219,0.25)] backdrop-blur-[8px] border border-white/[0.12] supports-[not(backdrop-filter)]:bg-[#090E19]/60"
+        >
+          {/* Top: icon + title + headline */}
+          <div>
+            <Image
+              src="/images/obel-mark.svg"
+              alt=""
+              width={60}
+              height={28}
+              className="w-10 md:w-12 lg:w-14 h-auto mb-8 brightness-0 invert"
+              aria-hidden="true"
+            />
+            <h3 className="font-sans font-semibold text-[#FFFAF8] text-2xl md:text-3xl lg:text-4xl tracking-tight mb-4">
+              {service.title}
+            </h3>
+            <p className="font-sans text-[#FFFAF8] text-xl md:text-2xl lg:text-3xl tracking-tight leading-tight">
+              {service.headline}
+            </p>
+          </div>
+
+          {/* Bottom: description */}
+          <p className="font-sans text-[#FFFAF8] text-base md:text-lg max-w-xl leading-relaxed mt-8">
+            {service.description}
           </p>
         </div>
-        <p className="font-sans text-base md:text-lg opacity-70 max-w-xl leading-relaxed mt-8">
-          {service.description}
-        </p>
-      </div>
+      </Atropos>
     </div>
   );
 }
@@ -75,8 +91,6 @@ export function Services() {
   const sectionRef = useRef<HTMLElement>(null);
   const cardsContainerRef = useRef<HTMLDivElement>(null);
   const carouselRef = useRef<HTMLDivElement>(null);
-  const titleRef = useRef<HTMLHeadingElement>(null);
-  const subtitleRef = useRef<HTMLParagraphElement>(null);
   const snapCooldownRef = useRef(false);
   const prefersReducedMotion = useReducedMotion();
 
@@ -85,62 +99,27 @@ export function Services() {
     if (prefersReducedMotion) return;
 
     const ctx = gsap.context(() => {
-      // Title — scroll-linked reveal
-      if (titleRef.current) {
-        gsap.fromTo(
-          titleRef.current,
-          { yPercent: 100, opacity: 0, filter: "blur(20px)" },
-          {
-            yPercent: 0,
-            opacity: 1,
-            filter: "blur(0px)",
-            ease: "none",
-            scrollTrigger: {
-              trigger: titleRef.current.parentElement,
-              start: "top 130%",
-              end: "top 50%",
-              scrub: 0.5,
-            },
-          }
-        );
-      }
-
-      // Subtitle — scroll-linked reveal (earlier range so it's visible alongside the title)
-      if (subtitleRef.current) {
-        gsap.fromTo(
-          subtitleRef.current,
-          { yPercent: 100, opacity: 0, filter: "blur(20px)" },
-          {
-            yPercent: 0,
-            opacity: 1,
-            filter: "blur(0px)",
-            ease: "none",
-            scrollTrigger: {
-              trigger: subtitleRef.current.parentElement,
-              start: "top 160%",
-              end: "top 70%",
-              scrub: 0.5,
-            },
-          }
-        );
-      }
-
       // Horizontal scroll for cards
       if (cardsContainerRef.current && carouselRef.current) {
-        const finalPosition = 215; // Percentage to scroll to
-        const xRange = 100 + finalPosition; // Total xPercent range (315)
+        // xPercent is relative to offsetWidth (= viewport width), NOT total content width.
+        // 4 cards × 75vw = 300vw total content. Need xPercent -300 to clear all cards left.
+        // xPercent 200 = cards start 2× viewport widths right (generous bg intro ~40vh)
+        // xPercent -300 = last card right edge at x=0 (exact exit)
+        // Range 500 over 200vh effective scroll → ~30vh between card centers (matches original)
+        const xStart = 105;
+        const xEnd = -300;
+        const xRange = xStart - xEnd;
 
-        // Use gsap.fromTo with ScrollTrigger for cleaner animation
         gsap.fromTo(
           carouselRef.current,
-          { xPercent: 100 },
+          { xPercent: xStart },
           {
-            xPercent: -finalPosition,
+            xPercent: xEnd,
+            immediateRender: true,
             ease: "none",
             scrollTrigger: {
               trigger: cardsContainerRef.current,
-              start: `top ${getComputedHeaderHeight()}px`,
-              // End exactly when sticky releases - scrub smoothing prevents diagonal movement
+              start: "top top",
               end: "bottom bottom",
               scrub: 0.3,
               snap: {
@@ -161,7 +140,7 @@ export function Services() {
                   const viewportCenter = vw / 2;
 
                   // Current xPercent at this progress
-                  const currentXPercent = 100 - xRange * progress;
+                  const currentXPercent = xStart - xRange * progress;
                   const translatePx = (currentXPercent / 100) * elWidth;
 
                   let bestProgress = progress;
@@ -192,7 +171,7 @@ export function Services() {
                         100;
                       bestProgress = Math.max(
                         0,
-                        Math.min(1, (100 - targetXPercent) / xRange)
+                        Math.min(1, (xStart - targetXPercent) / xRange)
                       );
                     }
                   }
@@ -218,92 +197,97 @@ export function Services() {
     return () => ctx.revert();
   }, [prefersReducedMotion]);
 
-  // Reduced motion fallback - vertical stack
+  // Reduced motion fallback - vertical stack with dark theme
   if (prefersReducedMotion) {
     return (
-      <section id="services" className="below-fold py-24 md:py-32">
-        <div className="px-4">
-          <Reveal>
-            <h2 className="font-sans font-semibold text-4xl md:text-5xl lg:text-6xl xl:text-7xl tracking-tight mb-16">
-              What we do
-            </h2>
-          </Reveal>
+      <section id="services" data-header-transparent className="below-fold relative py-24 md:py-32 overflow-hidden bg-[#090E19]">
+        {/* Background image - static for reduced motion */}
+        <div className="absolute inset-0 z-0" aria-hidden="true">
+          <Image
+            src="/images/back.jpeg"
+            alt=""
+            fill
+            className="object-cover object-center"
+            sizes="100vw"
+            quality={85}
+          />
+          <div className="absolute inset-0 bg-[#090E19]/30" />
+        </div>
 
-          <Reveal delay={0.1}>
-            <p className="font-sans text-xl md:text-2xl lg:text-3xl tracking-tight opacity-80 max-w-2xl mb-24 leading-tight">
-              We deliver end-to-end solutions built for scale and performance.
-            </p>
-          </Reveal>
-
-          <div className="space-y-16">
-            {SERVICE_CARDS.map((service, index) => (
-              <Reveal key={service.id}>
-                <div className="bg-foreground/5 rounded-lg p-8 md:p-12 border border-foreground/10">
-                  <span className="font-sans text-sm font-medium opacity-50 mb-4 block">
-                    {String(index + 1).padStart(2, "0")}
-                  </span>
-                  <h3 className="font-sans font-semibold text-2xl md:text-3xl tracking-tight mb-4">
-                    {service.title}
-                  </h3>
-                  <p className="font-sans text-xl md:text-2xl tracking-tight opacity-90 mb-6 leading-tight">
-                    {service.headline}
-                  </p>
-                  <p className="font-sans text-lg opacity-70 max-w-2xl leading-relaxed">
-                    {service.description}
-                  </p>
-                </div>
-              </Reveal>
-            ))}
-          </div>
+        {/* Cards in vertical stack */}
+        <div className="relative z-10 px-4 md:px-8 lg:px-16 space-y-8">
+          {SERVICE_CARDS.map((service) => (
+            <div
+              key={service.id}
+              className="rounded-[27px] p-8 md:p-12 bg-[rgba(212,212,219,0.25)] backdrop-blur-[8px] border border-white/[0.12] supports-[not(backdrop-filter)]:bg-[#090E19]/60"
+            >
+              <Image
+                src="/images/obel-mark.svg"
+                alt=""
+                width={60}
+                height={28}
+                className="w-10 md:w-12 h-auto mb-6 brightness-0 invert"
+                aria-hidden="true"
+              />
+              <h3 className="font-sans font-semibold text-[#FFFAF8] text-2xl md:text-3xl tracking-tight mb-4">
+                {service.title}
+              </h3>
+              <p className="font-sans text-[#FFFAF8] text-xl md:text-2xl tracking-tight mb-6 leading-tight">
+                {service.headline}
+              </p>
+              <p className="font-sans text-[#FFFAF8] text-lg max-w-2xl leading-relaxed">
+                {service.description}
+              </p>
+            </div>
+          ))}
         </div>
       </section>
     );
   }
 
   return (
-    <section id="services" ref={sectionRef} className="below-fold">
-      {/* Part 1: Intro */}
-      <div className="flex flex-col px-4 pt-24 md:pt-32 lg:pt-40 pb-0">
-        {/* Title - Y-translate reveal */}
-        <div>
-          <h2
-            ref={titleRef}
-            className="font-serif text-7xl md:text-8xl lg:text-[140px] tracking-tight leading-[1.1]"
-          >
-            What we do
-          </h2>
-        </div>
-
-        {/* Subtitle - Y-translate reveal, right aligned */}
-        <div className="mt-16 md:mt-20 lg:mt-24">
-          <p
-            ref={subtitleRef}
-            className="ml-auto max-w-xl font-serif text-2xl md:text-3xl lg:text-[42px] leading-tight tracking-tight"
-          >
-            We deliver end-to-end solutions built for scale and performance.
-          </p>
-        </div>
-      </div>
-
-      {/* Part 2: Cards - Horizontal carousel */}
-      {/* Height creates the scroll distance + buffer at end to prevent diagonal movement */}
+    <section id="services" ref={sectionRef} data-header-transparent className="below-fold relative bg-[#090E19]">
+      {/* Scroll trigger container — 500vh = 400vh effective scroll for slower pace */}
       <div
         ref={cardsContainerRef}
+        className="relative z-10"
         style={{
-          height: `${SERVICE_CARDS.length * 100}vh`,
+          height: '500vh',
         }}
       >
+        {/* Sticky viewport — pins at top: 0 so background covers full screen including behind header */}
         <div
           className="sticky overflow-hidden"
           style={{
-            top: 'var(--header-height)',
-            height: 'calc(100vh - var(--header-height))',
+            top: 0,
+            height: '100vh',
           }}
         >
-          {/* Horizontal carousel - cards side by side */}
-          <div ref={carouselRef} className="flex h-full" style={{ willChange: "transform" }}>
-            {SERVICE_CARDS.map((service, index) => (
-              <ServiceCard key={service.id} service={service} index={index} />
+          {/* Background image - inside sticky so it stays fixed while scrolling */}
+          <div className="absolute inset-0 z-0" aria-hidden="true">
+            <Image
+              src="/images/back.jpeg"
+              alt=""
+              fill
+              className="object-cover object-center"
+              sizes="100vw"
+              quality={85}
+            />
+            {/* Dark overlay for glassmorphism contrast */}
+            <div className="absolute inset-0 bg-[#090E19]/30" />
+          </div>
+
+          {/* Horizontal carousel - padded below header */}
+          <div
+            ref={carouselRef}
+            className="relative z-10 flex h-full"
+            style={{
+              willChange: "transform",
+              paddingTop: 'var(--header-height)',
+            }}
+          >
+            {SERVICE_CARDS.map((service) => (
+              <ServiceCard key={service.id} service={service} />
             ))}
           </div>
         </div>
