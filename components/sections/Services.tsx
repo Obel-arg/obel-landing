@@ -48,16 +48,17 @@ function ServiceCard({
   service: (typeof SERVICE_CARDS)[0];
 }) {
   return (
-    <div className="service-card min-w-[85vw] md:min-w-[80vw] lg:min-w-[75vw] h-full flex items-center justify-center px-4 md:px-8 lg:px-16 flex-shrink-0">
+    <div className="service-card min-w-[85vw] md:min-w-[80vw] lg:min-w-[75vw] h-full flex items-center justify-center px-2 sm:px-4 md:px-8 lg:px-12 xl:px-16 flex-shrink-0">
       <Atropos
-        className="w-full max-w-4xl h-[75%]"
+        className="w-full max-w-4xl xl:max-w-5xl 2xl:max-w-6xl h-[clamp(260px,80%,700px)]"
         rotateXMax={10}
         rotateYMax={10}
+        rotateTouch={false}
         shadow={false}
         highlight={false}
       >
         <div
-          className="rounded-[27px] p-8 md:p-12 lg:p-16 h-full flex flex-col justify-between bg-[rgba(212,212,219,0.25)] backdrop-blur-[8px] border border-white/[0.12] supports-[not(backdrop-filter)]:bg-[#090E19]/60"
+          className="rounded-[27px] p-5 sm:p-6 md:p-10 lg:p-14 xl:p-16 h-full flex flex-col justify-between bg-[rgba(212,212,219,0.25)] backdrop-blur-[8px] border border-white/[0.12] supports-[not(backdrop-filter)]:bg-[#090E19]/60"
         >
           {/* Top: icon + title + headline */}
           <div>
@@ -66,19 +67,19 @@ function ServiceCard({
               alt=""
               width={60}
               height={28}
-              className="w-10 md:w-12 lg:w-14 h-auto mb-8 brightness-0 invert"
+              className="w-10 md:w-12 lg:w-14 h-auto mb-4 sm:mb-6 md:mb-8 brightness-0 invert"
               aria-hidden="true"
             />
-            <h3 className="font-sans font-semibold text-[#FFFAF8] text-2xl md:text-3xl lg:text-4xl tracking-tight mb-4">
+            <h3 className="font-sans font-semibold text-[#FFFAF8] text-2xl md:text-3xl lg:text-4xl tracking-tight mb-2 sm:mb-3 md:mb-4 line-clamp-2">
               {service.title}
             </h3>
-            <p className="font-sans text-[#FFFAF8] text-xl md:text-2xl lg:text-3xl tracking-tight leading-tight">
+            <p className="font-sans text-[#FFFAF8] text-lg sm:text-xl md:text-2xl lg:text-3xl tracking-tight leading-tight line-clamp-3">
               {service.headline}
             </p>
           </div>
 
           {/* Bottom: description */}
-          <p className="font-sans text-[#FFFAF8] text-base md:text-lg max-w-xl leading-relaxed mt-8">
+          <p className="font-sans text-[#FFFAF8] text-base md:text-lg max-w-full md:max-w-xl leading-relaxed mt-4 sm:mt-6 md:mt-8">
             {service.description}
           </p>
         </div>
@@ -94,6 +95,11 @@ export function Services() {
   const snapCooldownRef = useRef(false);
   const prefersReducedMotion = useReducedMotion();
 
+  // Refs for dynamic xPercent values — snap closure reads the latest values
+  const xStartRef = useRef(125);
+  const xEndRef = useRef(-340);
+  const xRangeRef = useRef(465);
+
   // GSAP animations
   useIsomorphicLayoutEffect(() => {
     if (prefersReducedMotion) return;
@@ -101,14 +107,26 @@ export function Services() {
     const ctx = gsap.context(() => {
       // Horizontal scroll for cards
       if (cardsContainerRef.current && carouselRef.current) {
-        // xPercent is relative to offsetWidth (= viewport width), NOT total content width.
-        // 4 cards × 75vw = 300vw total content. Need xPercent -300 to clear all cards left.
-        // xPercent 200 = cards start 2× viewport widths right (generous bg intro ~40vh)
-        // xPercent -300 = last card right edge at x=0 (exact exit)
-        // Range 500 over 200vh effective scroll → ~30vh between card centers (matches original)
-        const xStart = 105;
-        const xEnd = -300;
-        const xRange = xStart - xEnd;
+        // Compute xEnd dynamically based on actual card widths.
+        // xPercent is relative to carousel.offsetWidth (= viewport width).
+        // Push the last card fully off the left edge (extra 5% buffer so not even
+        // a 1px sliver remains).
+        const computeXEnd = () => {
+          const cards = Array.from(carouselRef.current!.children) as HTMLElement[];
+          const totalContentWidth = cards.reduce((sum, card) => sum + card.offsetWidth, 0);
+          const viewportWidth = window.innerWidth;
+          return -(totalContentWidth / viewportWidth) * 100 - 5;
+        };
+
+        // On mobile, cards are wider (85vw vs 75vw) and the viewport is narrower,
+        // so xStart 105 only gives a 5% gap (~19px on 375px phone) before the first
+        // card appears. Bump to 125 on smaller screens for a visible "background only"
+        // intro phase (~25% gap = 94px on 375px). Desktop stays at 105 (unchanged).
+        const xStart = window.innerWidth < 1024 ? 125 : 105;
+        const xEnd = computeXEnd();
+        xStartRef.current = xStart;
+        xEndRef.current = xEnd;
+        xRangeRef.current = xStart - xEnd;
 
         gsap.fromTo(
           carouselRef.current,
@@ -122,6 +140,15 @@ export function Services() {
               start: "top top",
               end: "bottom bottom",
               scrub: 0.3,
+              invalidateOnRefresh: true,
+              onRefresh: () => {
+                // Recalculate on resize so xPercent range stays accurate
+                const newStart = window.innerWidth < 1024 ? 125 : 105;
+                const newEnd = computeXEnd();
+                xStartRef.current = newStart;
+                xEndRef.current = newEnd;
+                xRangeRef.current = newStart - newEnd;
+              },
               snap: {
                 snapTo: (progress: number) => {
                   // Desktop only (>= lg breakpoint)
@@ -133,6 +160,10 @@ export function Services() {
                   const carousel = carouselRef.current;
                   if (!carousel) return progress;
 
+                  // Read latest dynamic values from refs
+                  const currentXStart = xStartRef.current;
+                  const currentXRange = xRangeRef.current;
+
                   // Fresh measurements on every call (handles resize)
                   const cards = Array.from(carousel.children) as HTMLElement[];
                   const elWidth = carousel.offsetWidth;
@@ -140,7 +171,7 @@ export function Services() {
                   const viewportCenter = vw / 2;
 
                   // Current xPercent at this progress
-                  const currentXPercent = xStart - xRange * progress;
+                  const currentXPercent = currentXStart - currentXRange * progress;
                   const translatePx = (currentXPercent / 100) * elWidth;
 
                   let bestProgress = progress;
@@ -171,7 +202,7 @@ export function Services() {
                         100;
                       bestProgress = Math.max(
                         0,
-                        Math.min(1, (xStart - targetXPercent) / xRange)
+                        Math.min(1, (currentXStart - targetXPercent) / currentXRange)
                       );
                     }
                   }
@@ -215,27 +246,27 @@ export function Services() {
         </div>
 
         {/* Cards in vertical stack */}
-        <div className="relative z-10 px-4 md:px-8 lg:px-16 space-y-8">
+        <div className="relative z-10 px-2 sm:px-4 md:px-8 lg:px-16 space-y-6 sm:space-y-8">
           {SERVICE_CARDS.map((service) => (
             <div
               key={service.id}
-              className="rounded-[27px] p-8 md:p-12 bg-[rgba(212,212,219,0.25)] backdrop-blur-[8px] border border-white/[0.12] supports-[not(backdrop-filter)]:bg-[#090E19]/60"
+              className="rounded-[27px] p-5 sm:p-6 md:p-10 lg:p-14 xl:p-16 bg-[rgba(212,212,219,0.25)] backdrop-blur-[8px] border border-white/[0.12] supports-[not(backdrop-filter)]:bg-[#090E19]/60"
             >
               <Image
                 src="/images/obel-mark.svg"
                 alt=""
                 width={60}
                 height={28}
-                className="w-10 md:w-12 h-auto mb-6 brightness-0 invert"
+                className="w-10 md:w-12 lg:w-14 h-auto mb-4 sm:mb-6 md:mb-8 brightness-0 invert"
                 aria-hidden="true"
               />
-              <h3 className="font-sans font-semibold text-[#FFFAF8] text-2xl md:text-3xl tracking-tight mb-4">
+              <h3 className="font-sans font-semibold text-[#FFFAF8] text-2xl md:text-3xl lg:text-4xl tracking-tight mb-2 sm:mb-3 md:mb-4 line-clamp-2">
                 {service.title}
               </h3>
-              <p className="font-sans text-[#FFFAF8] text-xl md:text-2xl tracking-tight mb-6 leading-tight">
+              <p className="font-sans text-[#FFFAF8] text-lg sm:text-xl md:text-2xl lg:text-3xl tracking-tight leading-tight line-clamp-3">
                 {service.headline}
               </p>
-              <p className="font-sans text-[#FFFAF8] text-lg max-w-2xl leading-relaxed">
+              <p className="font-sans text-[#FFFAF8] text-base md:text-lg max-w-full md:max-w-xl leading-relaxed mt-4 sm:mt-6 md:mt-8">
                 {service.description}
               </p>
             </div>

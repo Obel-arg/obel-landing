@@ -6,9 +6,6 @@ import { Reveal } from "@/components/motion/Reveal";
 import { TransitionLink } from "@/components/ui/TransitionLink";
 import { getAllProjects, type Project } from "@/lib/projects";
 
-// Title area height (title + padding)
-const TITLE_AREA_HEIGHT = 110;
-
 const PROJECTS = getAllProjects();
 
 function ProjectCard({
@@ -100,13 +97,13 @@ export function FeaturedProjects() {
             key={project.id}
             className={cn(
               "col-span-full bg-background",
-              "lg:sticky"
+              "sticky"
             )}
             style={{
               zIndex: index + 1,
               top: isFirst
                 ? 'var(--header-height)'
-                : `calc(var(--header-height) + ${TITLE_AREA_HEIGHT}px)`,
+                : 'calc(var(--header-height) + clamp(76px, 10vw, 110px))',
             }}
           >
             {/* Title only in first card */}

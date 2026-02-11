@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useCallback } from "react";
+import { useEffect, useRef, useCallback, useState } from "react";
 import Link from "next/link";
 import { Reveal } from "@/components/motion/Reveal";
 import {
@@ -34,13 +34,23 @@ export function Footer() {
   const rafRef = useRef<number | null>(null);
   const targetPos = useRef({ x: 0, y: 0 });
   const currentPos = useRef({ x: 0, y: 0 });
+  const [isDesktop, setIsDesktop] = useState(false);
 
-
-  // Preload pattern image so it's ready before first hover
+  // Track desktop breakpoint for conditional Reveal animation
   useEffect(() => {
+    const check = () => setIsDesktop(window.innerWidth >= 1024);
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  }, []);
+
+
+  // Preload pattern image so it's ready before first hover (desktop only)
+  useEffect(() => {
+    if (!isDesktop) return;
     const img = new Image();
     img.src = "/images/pattern-obel.png";
-  }, []);
+  }, [isDesktop]);
 
 
   // Cursor spotlight — rAF loop with lerp (same pattern as SpotlightPattern)
@@ -90,8 +100,10 @@ export function Footer() {
     }
   }, []);
 
-  // Attach mouse listeners to the h2
+  // Attach mouse listeners to the h2 (desktop only — no cursor on touch devices)
   useEffect(() => {
+    if (!isDesktop) return;
+
     const el = textRef.current;
     if (!el) return;
 
@@ -107,7 +119,7 @@ export function Footer() {
         cancelAnimationFrame(rafRef.current);
       }
     };
-  }, [handleMouseMove, handleMouseEnter, handleMouseLeave]);
+  }, [isDesktop, handleMouseMove, handleMouseEnter, handleMouseLeave]);
 
   return (
     <footer>
@@ -246,27 +258,29 @@ export function Footer() {
             className="relative font-sans text-[53vw] leading-[0.85] tracking-tighter whitespace-nowrap select-none w-fit text-background"
           >
             <span>obel</span>
-            {/* Pattern overlay — revealed in a radial spotlight around cursor */}
-            <span
-              ref={patternRef}
-              aria-hidden
-              className="absolute inset-0"
-              style={{
-                backgroundImage: "url('/images/pattern-obel.png')",
-                backgroundSize: "800px auto",
-                backgroundRepeat: "repeat",
-                WebkitBackgroundClip: "text",
-                backgroundClip: "text",
-                WebkitTextFillColor: "transparent",
-                filter: "grayscale(1) brightness(1.5)",
-                maskImage:
-                  "radial-gradient(circle 150px at var(--x, -200px) var(--y, -200px), black 0%, transparent 100%)",
-                WebkitMaskImage:
-                  "radial-gradient(circle 150px at var(--x, -200px) var(--y, -200px), black 0%, transparent 100%)",
-              }}
-            >
-              obel
-            </span>
+            {/* Pattern overlay — cursor spotlight, desktop only */}
+            {isDesktop && (
+              <span
+                ref={patternRef}
+                aria-hidden
+                className="absolute inset-0"
+                style={{
+                  backgroundImage: "url('/images/pattern-obel.png')",
+                  backgroundSize: "800px auto",
+                  backgroundRepeat: "repeat",
+                  WebkitBackgroundClip: "text",
+                  backgroundClip: "text",
+                  WebkitTextFillColor: "transparent",
+                  filter: "grayscale(1) brightness(1.5)",
+                  maskImage:
+                    "radial-gradient(circle 150px at var(--x, -200px) var(--y, -200px), black 0%, transparent 100%)",
+                  WebkitMaskImage:
+                    "radial-gradient(circle 150px at var(--x, -200px) var(--y, -200px), black 0%, transparent 100%)",
+                }}
+              >
+                obel
+              </span>
+            )}
           </h2>
         </Reveal>
         <p className="font-sans text-sm text-background/50 px-6 md:px-10 lg:px-16 pt-6 pb-8">
