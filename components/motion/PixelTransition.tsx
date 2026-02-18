@@ -13,10 +13,10 @@ const NOISE_OFFSET = 0.15; // Adds variation to timing
 const FADE_ZONE = 0.15; // 15% transition zone for smooth per-pixel fade
 const GLOW_INTENSITY = 0.3; // 30% brighten before disappearing
 
-// Primary color RGB values
-const PRIMARY_R = 9;
-const PRIMARY_G = 14;
-const PRIMARY_B = 25;
+// Hero background color RGB values (#FFFAF8)
+const PRIMARY_R = 255;
+const PRIMARY_G = 250;
+const PRIMARY_B = 248;
 
 /**
  * Pixel dissolve transition on page load.
