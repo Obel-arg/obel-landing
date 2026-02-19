@@ -1,12 +1,16 @@
 "use client";
 
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useLayoutEffect } from "react";
 import { gsap } from "@/lib/gsap";
 
 export default function Template({ children }: { children: React.ReactNode }) {
   const ref = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
+  // useLayoutEffect runs synchronously before paint — prevents flash of content
+  // before animation applies opacity: 0
+  const isomorphicLayoutEffect = typeof window !== "undefined" ? useLayoutEffect : useEffect;
+
+  isomorphicLayoutEffect(() => {
     const el = ref.current;
     if (!el) return;
 

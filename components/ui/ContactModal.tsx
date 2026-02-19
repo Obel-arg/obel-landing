@@ -338,7 +338,7 @@ export function ContactModal() {
       {/* Backdrop with blur effect */}
       <div
         ref={backdropRef}
-        className="absolute inset-0 bg-[#090E19]/90 backdrop-blur-xl"
+        className="absolute inset-0 bg-[#090E19]/95 backdrop-blur-md"
         onClick={handleBackdropClick}
       />
 
@@ -354,7 +354,7 @@ export function ContactModal() {
           className="absolute top-6 right-6 md:top-8 md:right-8 lg:top-10 lg:right-12 z-10 text-[#FFFAF8]/70 transition-colors duration-200 flex items-center gap-2 font-sans text-sm tracking-wide cursor-pointer"
           aria-label="Close contact form"
         >
-          <span>Close</span>
+          <span className="hidden md:inline">Close</span>
           <svg
             width="16"
             height="16"

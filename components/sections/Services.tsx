@@ -1,14 +1,10 @@
 "use client";
 
-import { useRef, useLayoutEffect, useEffect } from "react";
+import { useRef } from "react";
 import Image from "next/image";
-import { gsap, ScrollTrigger } from "@/lib/gsap";
+import { gsap, ScrollTrigger, useGSAP } from "@/lib/gsap";
 import { useReducedMotion } from "@/components/motion/useReducedMotion";
 import Atropos from "atropos/react";
-
-// Use useLayoutEffect on client, useEffect on server (SSR safety)
-const useIsomorphicLayoutEffect =
-  typeof window !== "undefined" ? useLayoutEffect : useEffect;
 
 // Service cards data - 4 cards
 const SERVICE_CARDS = [
@@ -131,30 +127,32 @@ export function Services() {
   const xRangeRef = useRef(465);
 
   // Equalize card heights — all cards match the tallest one
-  useIsomorphicLayoutEffect(() => {
-    const carousel = carouselRef.current;
-    if (!carousel) return;
+  useGSAP(
+    () => {
+      const carousel = carouselRef.current;
+      if (!carousel) return;
 
-    const equalize = () => {
-      const cards = carousel.querySelectorAll<HTMLElement>('.service-card-inner');
-      // Reset so we measure natural heights
-      cards.forEach(c => { c.style.minHeight = ''; });
-      let max = 0;
-      cards.forEach(c => { max = Math.max(max, c.scrollHeight); });
-      cards.forEach(c => { c.style.minHeight = `${max}px`; });
-    };
+      const equalize = () => {
+        const cards = carousel.querySelectorAll<HTMLElement>('.service-card-inner');
+        cards.forEach(c => { c.style.minHeight = ''; });
+        let max = 0;
+        cards.forEach(c => { max = Math.max(max, c.scrollHeight); });
+        cards.forEach(c => { c.style.minHeight = `${max}px`; });
+      };
 
-    equalize();
-    window.addEventListener('resize', equalize);
-    return () => window.removeEventListener('resize', equalize);
-  }, []);
+      equalize();
+      window.addEventListener('resize', equalize);
+      return () => window.removeEventListener('resize', equalize);
+    },
+    { scope: carouselRef }
+  );
 
-  // GSAP animations
-  useIsomorphicLayoutEffect(() => {
-    if (prefersReducedMotion) return;
+  // GSAP animations with responsive breakpoints
+  useGSAP(
+    () => {
+      if (prefersReducedMotion) return;
 
-    const ctx = gsap.context(() => {
-      // Fade out "Our Services" title as cards scroll in
+      // Fade out "Our Services" title — same across all breakpoints
       if (titleRef.current && cardsContainerRef.current) {
         gsap.fromTo(
           titleRef.current,
@@ -172,12 +170,9 @@ export function Services() {
         );
       }
 
-      // Horizontal scroll for cards
+      // Horizontal scroll — responsive via matchMedia
+      // Animations auto-revert and re-create on breakpoint change (e.g. phone rotation)
       if (cardsContainerRef.current && carouselRef.current) {
-        // Compute xEnd dynamically based on actual card widths.
-        // xPercent is relative to carousel.offsetWidth (= viewport width).
-        // Push the last card fully off the left edge (extra 5% buffer so not even
-        // a 1px sliver remains).
         const computeXEnd = () => {
           const cards = Array.from(carouselRef.current!.children) as HTMLElement[];
           const totalContentWidth = cards.reduce((sum, card) => sum + card.offsetWidth, 0);
@@ -185,129 +180,124 @@ export function Services() {
           return -(totalContentWidth / viewportWidth) * 100 - 5;
         };
 
-        // On mobile, cards are wider (85vw vs 75vw) and the viewport is narrower,
-        // so xStart 105 only gives a 5% gap (~19px on 375px phone) before the first
-        // card appears. Bump to 125 on smaller screens for a visible "background only"
-        // intro phase (~25% gap = 94px on 375px). Desktop stays at 105 (unchanged).
-        const xStart = window.innerWidth < 1024 ? 150 : 105;
-        const xEnd = computeXEnd();
-        xStartRef.current = xStart;
-        xEndRef.current = xEnd;
-        xRangeRef.current = xStart - xEnd;
+        const createCarousel = (xStart: number) => {
+          const xEnd = computeXEnd();
+          xStartRef.current = xStart;
+          xEndRef.current = xEnd;
+          xRangeRef.current = xStart - xEnd;
 
-        gsap.fromTo(
-          carouselRef.current,
-          { xPercent: xStart },
-          {
-            xPercent: xEnd,
-            immediateRender: true,
-            ease: "none",
-            scrollTrigger: {
-              trigger: cardsContainerRef.current,
-              start: "top top",
-              end: "bottom bottom",
-              scrub: 0.3,
-              invalidateOnRefresh: true,
-              onRefresh: () => {
-                // Recalculate on resize so xPercent range stays accurate
-                const newStart = window.innerWidth < 1024 ? 150 : 105;
-                const newEnd = computeXEnd();
-                xStartRef.current = newStart;
-                xEndRef.current = newEnd;
-                xRangeRef.current = newStart - newEnd;
-              },
-              snap: {
-                snapTo: (progress: number) => {
-                  const carousel = carouselRef.current;
-                  if (!carousel) return progress;
+          gsap.fromTo(
+            carouselRef.current!,
+            { xPercent: xStart },
+            {
+              xPercent: xEnd,
+              immediateRender: true,
+              ease: "none",
+              scrollTrigger: {
+                trigger: cardsContainerRef.current!,
+                start: "top top",
+                end: "bottom bottom",
+                scrub: 0.3,
+                invalidateOnRefresh: true,
+                onRefresh: () => {
+                  const newEnd = computeXEnd();
+                  xStartRef.current = xStart;
+                  xEndRef.current = newEnd;
+                  xRangeRef.current = xStart - newEnd;
+                },
+                snap: {
+                  snapTo: (progress: number) => {
+                    const carousel = carouselRef.current;
+                    if (!carousel) return progress;
 
-                  // Read latest dynamic values from refs
-                  const currentXStart = xStartRef.current;
-                  const currentXRange = xRangeRef.current;
+                    const currentXStart = xStartRef.current;
+                    const currentXRange = xRangeRef.current;
 
-                  // Fresh measurements on every call (handles resize)
-                  const cards = Array.from(carousel.children) as HTMLElement[];
-                  const elWidth = carousel.offsetWidth;
-                  const vw = window.innerWidth;
-                  const viewportCenter = vw / 2;
+                    const cards = Array.from(carousel.children) as HTMLElement[];
+                    const elWidth = carousel.offsetWidth;
+                    const vw = window.innerWidth;
+                    const viewportCenter = vw / 2;
 
-                  // Current xPercent at this progress
-                  const currentXPercent = currentXStart - currentXRange * progress;
-                  const translatePx = (currentXPercent / 100) * elWidth;
+                    const currentXPercent = currentXStart - currentXRange * progress;
+                    const translatePx = (currentXPercent / 100) * elWidth;
 
-                  // Boundary checks — ALWAYS run (ignore cooldown)
-                  // so the user can always exit/enter the section
-                  const firstCard = cards[0];
-                  const lastCard = cards[cards.length - 1];
-                  const firstVisualCenter = firstCard.offsetLeft + firstCard.offsetWidth / 2 + translatePx;
-                  const lastVisualCenter = lastCard.offsetLeft + lastCard.offsetWidth / 2 + translatePx;
+                    const firstCard = cards[0];
+                    const lastCard = cards[cards.length - 1];
+                    const firstVisualCenter = firstCard.offsetLeft + firstCard.offsetWidth / 2 + translatePx;
+                    const lastVisualCenter = lastCard.offsetLeft + lastCard.offsetWidth / 2 + translatePx;
 
-                  // If the last card's center has moved left of viewport center, snap to exit
-                  if (lastVisualCenter < viewportCenter - lastCard.offsetWidth * 0.15) {
-                    return 1;
-                  }
-
-                  // If the first card's center is still right of viewport center, snap to entry
-                  if (firstVisualCenter > viewportCenter + firstCard.offsetWidth * 0.15) {
-                    return 0;
-                  }
-
-                  // Cooldown: skip card-centering snap if recently completed one
-                  if (snapCooldownRef.current) return progress;
-
-                  let bestProgress = progress;
-                  let bestDist = Infinity;
-
-                  for (let i = 0; i < cards.length; i++) {
-                    const card = cards[i];
-                    const cardLeft = card.offsetLeft + translatePx;
-                    const cardRight = cardLeft + card.offsetWidth;
-
-                    // 20% visibility threshold — skip cards barely in view
-                    const visibleWidth = Math.max(
-                      0,
-                      Math.min(cardRight, vw) - Math.max(cardLeft, 0)
-                    );
-                    if (visibleWidth / card.offsetWidth < 0.2) continue;
-
-                    // Distance from card center to viewport center
-                    const cardCenter = cardLeft + card.offsetWidth / 2;
-                    const dist = Math.abs(cardCenter - viewportCenter);
-
-                    if (dist < bestDist) {
-                      bestDist = dist;
-                      // Compute the progress that centers this card
-                      const targetXPercent =
-                        ((viewportCenter - card.offsetLeft - card.offsetWidth / 2) /
-                          elWidth) *
-                        100;
-                      bestProgress = Math.max(
-                        0,
-                        Math.min(1, (currentXStart - targetXPercent) / currentXRange)
-                      );
+                    if (lastVisualCenter < viewportCenter - lastCard.offsetWidth * 0.15) {
+                      return 1;
                     }
-                  }
 
-                  return bestProgress;
-                },
-                duration: { min: 0.8, max: 1.4 },
-                delay: 0.15,
-                ease: "power1.inOut",
-                onComplete: () => {
-                  snapCooldownRef.current = true;
-                  setTimeout(() => {
-                    snapCooldownRef.current = false;
-                  }, 700);
+                    if (firstVisualCenter > viewportCenter + firstCard.offsetWidth * 0.15) {
+                      return 0;
+                    }
+
+                    if (snapCooldownRef.current) return progress;
+
+                    let bestProgress = progress;
+                    let bestDist = Infinity;
+
+                    for (let i = 0; i < cards.length; i++) {
+                      const card = cards[i];
+                      const cardLeft = card.offsetLeft + translatePx;
+                      const cardRight = cardLeft + card.offsetWidth;
+
+                      const visibleWidth = Math.max(
+                        0,
+                        Math.min(cardRight, vw) - Math.max(cardLeft, 0)
+                      );
+                      if (visibleWidth / card.offsetWidth < 0.2) continue;
+
+                      const cardCenter = cardLeft + card.offsetWidth / 2;
+                      const dist = Math.abs(cardCenter - viewportCenter);
+
+                      if (dist < bestDist) {
+                        bestDist = dist;
+                        const targetXPercent =
+                          ((viewportCenter - card.offsetLeft - card.offsetWidth / 2) /
+                            elWidth) *
+                          100;
+                        bestProgress = Math.max(
+                          0,
+                          Math.min(1, (currentXStart - targetXPercent) / currentXRange)
+                        );
+                      }
+                    }
+
+                    return bestProgress;
+                  },
+                  duration: { min: 0.8, max: 1.4 },
+                  delay: 0.15,
+                  ease: "power1.inOut",
+                  onComplete: () => {
+                    snapCooldownRef.current = true;
+                    setTimeout(() => {
+                      snapCooldownRef.current = false;
+                    }, 700);
+                  },
                 },
               },
-            },
-          }
-        );
-      }
-    }, sectionRef);
+            }
+          );
+        };
 
-    return () => ctx.revert();
-  }, [prefersReducedMotion]);
+        const mm = gsap.matchMedia();
+
+        // Mobile: larger xStart for more intro space before first card
+        mm.add("(max-width: 1023px)", () => {
+          createCarousel(150);
+        });
+
+        // Desktop: tighter xStart
+        mm.add("(min-width: 1024px)", () => {
+          createCarousel(105);
+        });
+      }
+    },
+    { scope: sectionRef, dependencies: [prefersReducedMotion] }
+  );
 
   // Reduced motion fallback - vertical stack with dark theme
   if (prefersReducedMotion) {
@@ -376,7 +366,7 @@ export function Services() {
   }
 
   return (
-    <section id="services" ref={sectionRef} data-header-transparent className="below-fold relative bg-[#090E19]">
+    <section id="services" ref={sectionRef} data-header-transparent className="contain-animated relative bg-[#090E19]">
       {/* Scroll trigger container — responsive height: 400vh mobile, 500vh desktop */}
       <div
         ref={cardsContainerRef}

@@ -1,12 +1,8 @@
 "use client";
 
-import { ReactNode, Children, isValidElement, useRef, useLayoutEffect, useEffect } from "react";
-import { gsap, ScrollTrigger } from "@/lib/gsap";
+import { ReactNode, Children, isValidElement, useRef } from "react";
+import { gsap, ScrollTrigger, useGSAP } from "@/lib/gsap";
 import { useReducedMotion } from "@/components/motion/useReducedMotion";
-
-// Use useLayoutEffect on client, useEffect on server (SSR safety)
-const useIsomorphicLayoutEffect =
-  typeof window !== "undefined" ? useLayoutEffect : useEffect;
 
 interface StaggerProps {
   children: ReactNode;
@@ -26,60 +22,59 @@ export function Stagger({
   const containerRef = useRef<HTMLDivElement>(null);
   const prefersReducedMotion = useReducedMotion();
 
-  useIsomorphicLayoutEffect(() => {
-    const container = containerRef.current;
-    if (!container || prefersReducedMotion) return;
+  useGSAP(
+    () => {
+      const container = containerRef.current;
+      if (!container || prefersReducedMotion) return;
 
-    const items = container.querySelectorAll(".stagger-item");
-    if (items.length === 0) return;
+      const items = container.querySelectorAll(".stagger-item");
+      if (items.length === 0) return;
 
-    // Check if container is already in viewport (handles dynamic imports + restored scroll)
-    const rect = container.getBoundingClientRect();
-    const isInViewport = rect.top < window.innerHeight * 0.85;
+      // Check if container is already in viewport (handles dynamic imports + restored scroll)
+      const rect = container.getBoundingClientRect();
+      const isInViewport = rect.top < window.innerHeight * 0.85;
 
-    if (isInViewport) {
-      // Already visible — don't hide, skip animation
-      return;
-    }
+      if (isInViewport) {
+        // Already visible — don't hide, skip animation
+        return;
+      }
 
-    // Set initial state (hidden — ScrollTrigger will reveal)
-    gsap.set(items, {
-      opacity: 0,
-      y: 20,
-    });
+      // Set initial state (hidden — ScrollTrigger will reveal)
+      gsap.set(items, {
+        opacity: 0,
+        y: 20,
+      });
 
-    // Create scroll trigger for staggered animation
-    const trigger = ScrollTrigger.create({
-      trigger: container,
-      start: "top 85%",
-      onEnter: () => {
-        gsap.to(items, {
-          opacity: 1,
-          y: 0,
-          duration: 0.6,
-          stagger: staggerDelay,
-          delay: containerDelay,
-          ease: "power3.out",
-        });
-      },
-      onLeaveBack: once
-        ? undefined
-        : () => {
-            gsap.to(items, {
-              opacity: 0,
-              y: 20,
-              duration: 0.3,
-              stagger: staggerDelay * 0.5,
-              ease: "power3.in",
-            });
-          },
-      once,
-    });
-
-    return () => {
-      trigger.kill();
-    };
-  }, [staggerDelay, containerDelay, once, prefersReducedMotion]);
+      // Create scroll trigger — auto-cleaned by useGSAP on unmount
+      ScrollTrigger.create({
+        trigger: container,
+        start: "top 85%",
+        onEnter: () => {
+          gsap.to(items, {
+            opacity: 1,
+            y: 0,
+            duration: 0.6,
+            stagger: staggerDelay,
+            delay: containerDelay,
+            ease: "power3.out",
+          });
+        },
+        onLeaveBack: once
+          ? undefined
+          : () => {
+              gsap.to(items, {
+                opacity: 0,
+                y: 20,
+                duration: 0.3,
+                stagger: staggerDelay * 0.5,
+                ease: "power3.in",
+              });
+            },
+        once,
+      });
+    },
+    { scope: containerRef, dependencies: [staggerDelay, containerDelay, once, prefersReducedMotion] }
+  );
 
   // If user prefers reduced motion, render without animation
   if (prefersReducedMotion) {

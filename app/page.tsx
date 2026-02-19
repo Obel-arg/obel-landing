@@ -2,20 +2,27 @@ import dynamic from "next/dynamic";
 import { Hero } from "@/components/sections/Hero";
 import { Footer } from "@/components/layout/Footer";
 
+// Placeholder to reserve space during dynamic import loading (prevents CLS)
+const SectionPlaceholder = () => (
+  <div style={{ minHeight: "50vh" }} aria-hidden />
+);
+
 // Below-fold sections — dynamic imports for bundle splitting (Rule: bundle-dynamic-imports)
-const About = dynamic(() =>
-  import("@/components/sections/About").then((m) => m.About)
+const About = dynamic(
+  () => import("@/components/sections/About").then((m) => m.About),
+  { loading: SectionPlaceholder }
 );
-const FeaturedProjects = dynamic(() =>
-  import("@/components/sections/FeaturedProjects").then(
-    (m) => m.FeaturedProjects
-  )
+const FeaturedProjects = dynamic(
+  () => import("@/components/sections/FeaturedProjects").then((m) => m.FeaturedProjects),
+  { loading: SectionPlaceholder }
 );
-const Services = dynamic(() =>
-  import("@/components/sections/Services").then((m) => m.Services)
+const Services = dynamic(
+  () => import("@/components/sections/Services").then((m) => m.Services),
+  { loading: SectionPlaceholder }
 );
-const ObelHub = dynamic(() =>
-  import("@/components/sections/ObelHub").then((m) => m.ObelHub)
+const ObelHub = dynamic(
+  () => import("@/components/sections/ObelHub").then((m) => m.ObelHub),
+  { loading: SectionPlaceholder }
 );
 export default function Home() {
   return (

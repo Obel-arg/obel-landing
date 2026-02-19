@@ -1,13 +1,9 @@
 "use client";
 
-import { ReactNode, useRef, useLayoutEffect, useEffect } from "react";
-import { gsap, ScrollTrigger } from "@/lib/gsap";
+import { ReactNode, useRef } from "react";
+import { gsap, ScrollTrigger, useGSAP } from "@/lib/gsap";
 import { useReducedMotion } from "@/components/motion/useReducedMotion";
 import { ANIMATION_DURATION } from "@/lib/constants";
-
-// Use useLayoutEffect on client, useEffect on server (SSR safety)
-const useIsomorphicLayoutEffect =
-  typeof window !== "undefined" ? useLayoutEffect : useEffect;
 
 interface RevealProps {
   children: ReactNode;
@@ -40,59 +36,57 @@ export function Reveal({
   const ref = useRef<HTMLDivElement>(null);
   const prefersReducedMotion = useReducedMotion();
 
-  useIsomorphicLayoutEffect(() => {
-    const el = ref.current;
-    if (!el || prefersReducedMotion) return;
+  useGSAP(
+    () => {
+      const el = ref.current;
+      if (!el || prefersReducedMotion) return;
 
-    const offsets = getOffsets(direction);
+      const offsets = getOffsets(direction);
 
-    // Check if element is already in viewport (handles race conditions with dynamic imports)
-    const rect = el.getBoundingClientRect();
-    const isInViewport = rect.top < window.innerHeight * 0.85;
+      // Check if element is already in viewport (handles race conditions with dynamic imports)
+      const rect = el.getBoundingClientRect();
+      const isInViewport = rect.top < window.innerHeight * 0.85;
 
-    if (isInViewport) {
-      // Element already visible - show immediately without animation
-      gsap.set(el, { opacity: 1, x: 0, y: 0 });
-      return;
-    }
+      if (isInViewport) {
+        gsap.set(el, { opacity: 1, x: 0, y: 0 });
+        return;
+      }
 
-    // Set initial state (hidden)
-    gsap.set(el, {
-      opacity: 0,
-      ...offsets,
-    });
+      // Set initial state (hidden)
+      gsap.set(el, {
+        opacity: 0,
+        ...offsets,
+      });
 
-    // Create scroll trigger
-    const trigger = ScrollTrigger.create({
-      trigger: el,
-      start: "top 85%",
-      onEnter: () => {
-        gsap.to(el, {
-          opacity: 1,
-          x: 0,
-          y: 0,
-          duration,
-          delay,
-          ease: "power3.out",
-        });
-      },
-      onLeaveBack: once
-        ? undefined
-        : () => {
-            gsap.to(el, {
-              opacity: 0,
-              ...offsets,
-              duration: duration * 0.5,
-              ease: "power3.in",
-            });
-          },
-      once,
-    });
-
-    return () => {
-      trigger.kill();
-    };
-  }, [direction, delay, duration, once, prefersReducedMotion]);
+      // Create scroll trigger — auto-cleaned by useGSAP on unmount
+      ScrollTrigger.create({
+        trigger: el,
+        start: "top 85%",
+        onEnter: () => {
+          gsap.to(el, {
+            opacity: 1,
+            x: 0,
+            y: 0,
+            duration,
+            delay,
+            ease: "power3.out",
+          });
+        },
+        onLeaveBack: once
+          ? undefined
+          : () => {
+              gsap.to(el, {
+                opacity: 0,
+                ...offsets,
+                duration: duration * 0.5,
+                ease: "power3.in",
+              });
+            },
+        once,
+      });
+    },
+    { scope: ref, dependencies: [direction, delay, duration, once, prefersReducedMotion] }
+  );
 
   // If user prefers reduced motion, render without animation
   if (prefersReducedMotion) {

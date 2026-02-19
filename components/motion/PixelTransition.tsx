@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import { simplex2DNormalized } from "@/lib/noise";
+import { getGpuConfig } from "@/lib/gpu";
 
 // Grid configuration
 const COLS = 60;
@@ -11,12 +12,12 @@ const DELAY = 100; // ms before animation starts
 const NOISE_SCALE = 0.08; // Controls pattern size (smaller = larger blobs)
 const NOISE_OFFSET = 0.15; // Adds variation to timing
 const FADE_ZONE = 0.15; // 15% transition zone for smooth per-pixel fade
-const GLOW_INTENSITY = 0.3; // 30% brighten before disappearing
+const GLOW_INTENSITY = 2.5; // Brighten before disappearing (higher for dark colors)
 
-// Hero background color RGB values (#FFFAF8)
-const PRIMARY_R = 255;
-const PRIMARY_G = 250;
-const PRIMARY_B = 248;
+// Dark blue background color RGB values (#090E19)
+const PRIMARY_R = 9;
+const PRIMARY_G = 14;
+const PRIMARY_B = 25;
 
 /**
  * Pixel dissolve transition on page load.
@@ -33,8 +34,7 @@ export function PixelTransition() {
       "(prefers-reduced-motion: reduce)"
     ).matches;
 
-    if (prefersReducedMotion) {
-      // Skip animation entirely
+    if (prefersReducedMotion || getGpuConfig().tier <= 1) {
       if (containerRef.current) {
         containerRef.current.style.display = "none";
       }

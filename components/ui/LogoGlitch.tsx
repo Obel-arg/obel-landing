@@ -5,6 +5,7 @@ import { Canvas, useLoader, useThree } from "@react-three/fiber";
 import { EffectComposer, Glitch } from "@react-three/postprocessing";
 import { GlitchMode } from "postprocessing";
 import { Vector2, TextureLoader, CanvasTexture, SRGBColorSpace } from "three";
+import { getGpuConfig } from "@/lib/gpu";
 
 // SVG content to render as texture
 const SVG_CONTENT = `<svg width="150" height="57" viewBox="0 0 150 57" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -113,16 +114,25 @@ const glitchDuration = new Vector2(0.1, 0.3); // Slightly longer duration
 const glitchStrength = new Vector2(0.05, 0.15);
 
 // Separate component for effects to ensure GL context is ready
+// Uses frameloop="demand" — invalidate() triggers renders at GPU-adaptive rate
 function GlitchEffects() {
-  const { gl } = useThree();
+  const { gl, invalidate } = useThree();
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
-    // Wait for GL context to be fully initialized
     if (gl) {
       setReady(true);
+      invalidate();
     }
-  }, [gl]);
+  }, [gl, invalidate]);
+
+  // Invalidate at tier-based fps: high=60fps (16ms), mid=30fps (33ms)
+  useEffect(() => {
+    if (!ready) return;
+    const { tier } = getGpuConfig();
+    const interval = setInterval(() => invalidate(), tier >= 3 ? 16 : 33);
+    return () => clearInterval(interval);
+  }, [ready, invalidate]);
 
   if (!ready) return null;
 
@@ -152,9 +162,15 @@ export function LogoGlitch({
   height = 30,
 }: LogoGlitchProps) {
   const [mounted, setMounted] = useState(false);
+  const [isLowEnd, setIsLowEnd] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    // Skip WebGL entirely on low-end devices
+    if (getGpuConfig().tier <= 1) {
+      setIsLowEnd(true);
+      return;
+    }
     // Defer Canvas mount to next frame so the container is sized
     const raf = requestAnimationFrame(() => setMounted(true));
     return () => cancelAnimationFrame(raf);
@@ -170,19 +186,23 @@ export function LogoGlitch({
     return () => window.removeEventListener("error", handleError);
   }, [handleError]);
 
+  // Low-end: render static SVG instead of WebGL
+  if (isLowEnd) {
+    return (
+      <div className={className} style={{ width, height }}>
+        <img src="/images/logo-wordmark.svg" alt="OBEL" width={width} height={height} style={{ objectFit: "contain" }} />
+      </div>
+    );
+  }
+
   return (
     <div ref={containerRef} className={className} style={{ width, height }}>
       {mounted && (
         <Canvas
-          gl={{ alpha: true, antialias: true, preserveDrawingBuffer: true }}
+          gl={{ alpha: true, antialias: true }}
           camera={{ position: [0, 0, 2], fov: 30 }}
+          frameloop="demand"
           style={{ width: "100%", height: "100%" }}
-          onCreated={({ gl }) => {
-            // Ensure context is valid
-            if (!gl.getContext()) {
-              console.warn("LogoGlitch: WebGL context unavailable");
-            }
-          }}
         >
           <LogoPlane />
           <GlitchEffects />

@@ -26,7 +26,7 @@
   /* Fonts */
   --font-serif: var(--font-instrument-serif), serif;
   --font-sans: var(--font-inter), sans-serif;
-  --font-pixel: var(--font-pixel), monospace;
+  --font-pixel: var(--font-press-start), monospace;
   --font-neuebit: 'PPNeueBit', sans-serif;
   --font-geist-mono: var(--font-geist-mono), monospace;
 
@@ -65,10 +65,7 @@ html::-webkit-scrollbar-track {
   background: transparent;
 }
 
-/* Smooth scrolling */
-html {
-  scroll-behavior: smooth;
-}
+/* Smooth scrolling handled by Lenis — CSS scroll-behavior conflicts with it */
 
 /* Reduced motion preference */
 @media (prefers-reduced-motion: reduce) {
@@ -121,9 +118,17 @@ html {
 }
 
 /* Defer off-screen rendering for below-fold sections (Rule: rendering-content-visibility) */
+/* Note: Sections with ScrollTrigger animations should NOT use this class */
 .below-fold {
   content-visibility: auto;
-  contain-intrinsic-size: auto 100vh;
+  contain-intrinsic-size: auto 500px;
+}
+
+/* Layout containment for animated sections — prevents internal transforms
+   from triggering layout recalculations in sibling sections.
+   Uses layout+style (NOT paint — paint clips overflow which breaks 3D effects like Atropos). */
+.contain-animated {
+  contain: layout style;
 }
 
 /* Atropos Logo - 3D hover effect */

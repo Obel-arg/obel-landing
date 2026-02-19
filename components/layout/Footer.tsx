@@ -97,7 +97,15 @@ export function Footer() {
     currentPos.current.y += (targetPos.current.y - currentPos.current.y) * ease;
     patternRef.current.style.setProperty("--x", `${currentPos.current.x}px`);
     patternRef.current.style.setProperty("--y", `${currentPos.current.y}px`);
-    rafRef.current = requestAnimationFrame(updateSpotlight);
+
+    // Stop the loop once position has converged (within 0.5px)
+    const dx = Math.abs(targetPos.current.x - currentPos.current.x);
+    const dy = Math.abs(targetPos.current.y - currentPos.current.y);
+    if (dx > 0.5 || dy > 0.5) {
+      rafRef.current = requestAnimationFrame(updateSpotlight);
+    } else {
+      rafRef.current = null;
+    }
   }, []);
 
   const handleMouseMove = useCallback((e: MouseEvent) => {
@@ -106,7 +114,11 @@ export function Footer() {
     const rect = el.getBoundingClientRect();
     targetPos.current.x = e.clientX - rect.left;
     targetPos.current.y = e.clientY - rect.top;
-  }, []);
+    // Restart rAF loop if it stopped after convergence
+    if (rafRef.current === null) {
+      rafRef.current = requestAnimationFrame(updateSpotlight);
+    }
+  }, [updateSpotlight]);
 
   const handleMouseEnter = useCallback((e: MouseEvent) => {
     const el = textRef.current;

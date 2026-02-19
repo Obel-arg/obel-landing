@@ -66,8 +66,9 @@ export function Hero() {
 
         {/* Subtitle */}
         <p className="font-sans font-medium text-sm md:text-[23px] tracking-[-0.02em] text-primary mt-3 md:mt-5 leading-[1.4]">
-          From complex operations to digital products<br />
-          that support how your business really runs.
+          From complex operations to digital products
+          <br className="hidden md:block" />
+          {" "}that support how your business really runs.
         </p>
 
         {/* ── CTA + Hands Composition (locked alignment) ── */}

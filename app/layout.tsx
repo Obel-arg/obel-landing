@@ -13,7 +13,7 @@ const instrumentSerif = Instrument_Serif({
   variable: "--font-instrument-serif",
   subsets: ["latin"],
   weight: "400",
-  display: "swap",
+  display: "block",
 });
 
 const inter = Inter({
@@ -23,10 +23,10 @@ const inter = Inter({
 });
 
 const pressStart2P = Press_Start_2P({
-  variable: "--font-pixel",
+  variable: "--font-press-start",
   subsets: ["latin"],
   weight: "400",
-  display: "swap",
+  display: "block",
 });
 
 
@@ -64,7 +64,7 @@ export default function RootLayout({
           rel="preload"
           href="/fonts/ppneuebit-bold.otf"
           as="font"
-          type="font/otf"
+          type="font/opentype"
           crossOrigin="anonymous"
         />
       </head>

@@ -49,8 +49,8 @@ const hamburgerIcon = (
   </svg>
 );
 
-const getHeaderHeight = () =>
-  parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--header-height')) || 72;
+// Cached header height — only recalculated on resize
+let cachedHeaderHeight = 72;
 
 export function Header() {
   const sentinelRef = useRef<HTMLDivElement>(null);
@@ -61,14 +61,17 @@ export function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
   const scale = useHeaderScale();
 
+  // Cached section refs — refreshed on route change, not on every scroll frame
+  const darkSectionsRef = useRef<Element[]>([]);
+  const transparentSectionsRef = useRef<Element[]>([]);
+
   // Check if header overlaps any dark or transparent section
   const checkOverlap = (): { dark: boolean; transparent: boolean } => {
-    const headerH = getHeaderHeight();
+    const headerH = cachedHeaderHeight;
     let dark = false;
     let transparent = false;
 
-    const darkSections = document.querySelectorAll("[data-header-dark]");
-    for (const section of darkSections) {
+    for (const section of darkSectionsRef.current) {
       const rect = section.getBoundingClientRect();
       if (rect.top < headerH && rect.bottom > 0) {
         dark = true;
@@ -76,8 +79,7 @@ export function Header() {
       }
     }
 
-    const transparentSections = document.querySelectorAll("[data-header-transparent]");
-    for (const section of transparentSections) {
+    for (const section of transparentSectionsRef.current) {
       const rect = section.getBoundingClientRect();
       if (rect.top < headerH && rect.bottom > 0) {
         transparent = true;
@@ -101,10 +103,28 @@ export function Header() {
     return () => observer.disconnect();
   }, []);
 
+  // Cache header height on resize
+  useEffect(() => {
+    const updateHeight = () => {
+      cachedHeaderHeight = parseFloat(
+        getComputedStyle(document.documentElement).getPropertyValue('--header-height')
+      ) || 72;
+    };
+    updateHeight();
+    window.addEventListener("resize", updateHeight, { passive: true });
+    return () => window.removeEventListener("resize", updateHeight);
+  }, []);
+
   // Dark section detection - using scroll event with rAF throttle
   // Re-runs when pathname changes to handle route navigation
   useEffect(() => {
     let rafId: number | null = null;
+
+    // Cache section references (refreshed on route change, not every frame)
+    const refreshSections = () => {
+      darkSectionsRef.current = Array.from(document.querySelectorAll("[data-header-dark]"));
+      transparentSectionsRef.current = Array.from(document.querySelectorAll("[data-header-transparent]"));
+    };
 
     const update = () => {
       const result = checkOverlap();
@@ -121,6 +141,7 @@ export function Header() {
 
     // Initial check (delayed to handle scroll restoration and page transition)
     const initialCheck = () => {
+      refreshSections();
       const result = checkOverlap();
       setIsOverDark(result.dark);
       setIsOverTransparent(result.transparent);
