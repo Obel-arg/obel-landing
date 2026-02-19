@@ -76,9 +76,9 @@ function ServiceCard({
   service: (typeof SERVICE_CARDS)[0];
 }) {
   return (
-    <div className="service-card w-[65vw] sm:w-[70vw] md:w-[80vw] lg:w-[75vw] min-w-[65vw] sm:min-w-[70vw] md:min-w-[80vw] lg:min-w-[75vw] h-full flex items-center justify-center px-2 md:px-8 lg:px-12 xl:px-16 flex-shrink-0">
+    <div className="service-card w-[60vw] sm:w-[60vw] md:w-[65vw] lg:w-[60vw] min-w-[60vw] sm:min-w-[60vw] md:min-w-[65vw] lg:min-w-[60vw] h-full flex items-center justify-center px-2 md:px-8 lg:px-12 xl:px-16 flex-shrink-0">
       <Atropos
-        className="w-full max-w-4xl xl:max-w-5xl 2xl:max-w-6xl h-[clamp(220px,50%,380px)] md:h-[clamp(300px,70%,550px)] lg:h-[clamp(340px,80%,700px)]"
+        className="w-full max-w-3xl xl:max-w-4xl 2xl:max-w-5xl"
         rotateXMax={10}
         rotateYMax={10}
         rotateTouch={false}
@@ -86,45 +86,31 @@ function ServiceCard({
         highlight={false}
       >
         <div
-          className="rounded-2xl md:rounded-[27px] p-4 sm:p-5 md:p-8 lg:p-12 xl:p-16 h-full flex flex-col justify-between bg-[rgba(212,212,219,0.25)] backdrop-blur-[8px] border border-white/[0.12] supports-[not(backdrop-filter)]:bg-[#090E19]/60"
+          className="rounded-2xl md:rounded-[27px] p-5 sm:p-7 md:p-10 lg:p-14 xl:p-18 flex flex-col gap-6 md:gap-8 lg:gap-10 bg-[rgba(9,14,25,0.74)] border-[0.5px] border-white/20 overflow-clip"
         >
-          {/* Top: icon + title + headline */}
+          {/* Title + headline */}
           <div>
-            <Image
-              src="/images/obel-mark.svg"
-              alt=""
-              width={60}
-              height={28}
-              className="w-8 sm:w-10 md:w-12 lg:w-14 h-auto mb-2 sm:mb-4 md:mb-8 brightness-0 invert"
-              aria-hidden="true"
-            />
-            <h3 className="font-sans font-semibold text-[#FFFAF8] text-lg sm:text-xl md:text-3xl lg:text-4xl tracking-tight mb-1 sm:mb-2 md:mb-4 line-clamp-2">
+            <h3 className="font-sans font-semibold text-[#FFFAF8] text-lg sm:text-xl md:text-3xl lg:text-4xl tracking-tight mb-1 sm:mb-2 md:mb-3">
               {service.title}
             </h3>
-            <p className="font-sans text-[#FFFAF8] text-base sm:text-lg md:text-2xl lg:text-3xl tracking-tight leading-tight line-clamp-3">
+            <p className="font-sans text-[#FFFAF8] text-base sm:text-lg md:text-2xl lg:text-3xl tracking-tight leading-tight">
               {service.headline}
             </p>
-
-            {/* Includes list — desktop only */}
-            {service.includes && (
-              <div className="hidden lg:block mt-4 xl:mt-6">
-                <p className="font-sans text-[#FFFAF8]/60 text-sm xl:text-base font-semibold mb-2">Includes:</p>
-                <ul className="space-y-1">
-                  {service.includes.map((item, i) => (
-                    <li key={i} className="font-sans text-[#FFFAF8]/70 text-sm xl:text-base flex items-baseline gap-2">
-                      <span className="shrink-0">&#8226;</span>
-                      {item}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
           </div>
 
-          {/* Bottom: description */}
-          <p className="font-sans text-[#FFFAF8] text-sm sm:text-base md:text-lg max-w-full md:max-w-xl leading-relaxed mt-3 sm:mt-4 md:mt-8">
-            {service.description}
-          </p>
+          {/* Arrow list */}
+          <ul className="space-y-2 sm:space-y-3 md:space-y-4">
+            {service.includes.map((item, i) => (
+              <li key={i} className="flex items-center gap-3 md:gap-5">
+                <span className="font-neuebit text-white text-xl sm:text-2xl md:text-3xl lg:text-4xl leading-none shrink-0" aria-hidden="true">
+                  →
+                </span>
+                <span className="font-sans text-[#FFFAF8] text-sm sm:text-base md:text-lg lg:text-xl tracking-tight">
+                  {item}
+                </span>
+              </li>
+            ))}
+          </ul>
         </div>
       </Atropos>
     </div>
@@ -341,25 +327,28 @@ export function Services() {
           {SERVICE_CARDS.map((service) => (
             <div
               key={service.id}
-              className="rounded-2xl md:rounded-[27px] p-4 sm:p-5 md:p-8 lg:p-12 xl:p-16 bg-[rgba(212,212,219,0.25)] backdrop-blur-[8px] border border-white/[0.12] supports-[not(backdrop-filter)]:bg-[#090E19]/60"
+              className="rounded-2xl md:rounded-[27px] p-5 sm:p-7 md:p-10 lg:p-14 xl:p-18 flex flex-col gap-6 md:gap-8 lg:gap-10 bg-[rgba(9,14,25,0.74)] border-[0.5px] border-white/20 overflow-clip"
             >
-              <Image
-                src="/images/obel-mark.svg"
-                alt=""
-                width={60}
-                height={28}
-                className="w-10 md:w-12 lg:w-14 h-auto mb-4 sm:mb-6 md:mb-8 brightness-0 invert"
-                aria-hidden="true"
-              />
-              <h3 className="font-sans font-semibold text-[#FFFAF8] text-2xl md:text-3xl lg:text-4xl tracking-tight mb-2 sm:mb-3 md:mb-4 line-clamp-2">
-                {service.title}
-              </h3>
-              <p className="font-sans text-[#FFFAF8] text-lg sm:text-xl md:text-2xl lg:text-3xl tracking-tight leading-tight line-clamp-3">
-                {service.headline}
-              </p>
-              <p className="font-sans text-[#FFFAF8] text-base md:text-lg max-w-full md:max-w-xl leading-relaxed mt-4 sm:mt-6 md:mt-8">
-                {service.description}
-              </p>
+              <div>
+                <h3 className="font-sans font-semibold text-[#FFFAF8] text-2xl md:text-3xl lg:text-4xl tracking-tight mb-2 sm:mb-3 md:mb-4">
+                  {service.title}
+                </h3>
+                <p className="font-sans text-[#FFFAF8] text-lg sm:text-xl md:text-2xl lg:text-3xl tracking-tight leading-tight">
+                  {service.headline}
+                </p>
+              </div>
+              <ul className="space-y-2 sm:space-y-3 md:space-y-4">
+                {service.includes.map((item, i) => (
+                  <li key={i} className="flex items-center gap-3 md:gap-5">
+                    <span className="font-neuebit text-white text-xl sm:text-2xl md:text-3xl lg:text-4xl leading-none shrink-0" aria-hidden="true">
+                      →
+                    </span>
+                    <span className="font-sans text-[#FFFAF8] text-sm sm:text-base md:text-lg lg:text-xl tracking-tight">
+                      {item}
+                    </span>
+                  </li>
+                ))}
+              </ul>
             </div>
           ))}
         </div>

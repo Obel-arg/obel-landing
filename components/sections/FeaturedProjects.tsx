@@ -38,7 +38,14 @@ function ProjectCard({
         </div>
 
         {/* Project Info */}
-        <div className="lg:w-1/2 xl:w-[45%] flex flex-col py-2">
+        <div className="lg:w-1/2 xl:w-[45%] flex flex-col py-2 relative">
+          {/* Clickable indicator */}
+          <span
+            aria-hidden="true"
+            className="absolute top-2 right-0 w-8 h-8 md:w-10 md:h-10 flex items-center justify-center rounded-full border border-foreground/15 text-foreground/40 font-sans font-light text-xl md:text-2xl leading-none pb-[1px] transition-all duration-300 group-hover:bg-foreground group-hover:border-foreground group-hover:text-background group-hover:scale-110"
+          >
+            +
+          </span>
           <div>
             <span className="font-sans text-xs font-medium opacity-50 uppercase tracking-wider">
               {project.company}
