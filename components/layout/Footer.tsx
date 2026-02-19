@@ -163,13 +163,11 @@ export function Footer() {
             />
 
             {/* CTA content */}
-            <div className="relative z-10">
-              {/* Fix #6: Force 2 lines with whitespace-nowrap per line */}
+            <div className="relative z-10 text-center sm:text-left">
               <h3 className="font-sans font-medium text-white text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-[50px] tracking-tight leading-tight">
-                <span className="block whitespace-nowrap">Bring us your problem.</span>
-                <span className="block whitespace-nowrap">We&rsquo;ll help you build the solution.</span>
+                <span className="block sm:whitespace-nowrap">Bring us your problem.</span>
+                <span className="block sm:whitespace-nowrap">We&rsquo;ll help you build the solution.</span>
               </h3>
-              {/* Fix #7: Hover animation on button */}
               <button
                 onClick={() => window.contactModal?.open()}
                 className="group/cta cursor-pointer mt-6 md:mt-8 inline-flex items-center gap-2 bg-white text-foreground font-sans font-medium text-sm sm:text-base md:text-lg tracking-tight px-4 py-2.5 sm:px-5 sm:py-3 rounded-xl transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-white/20"
@@ -186,20 +184,21 @@ export function Footer() {
 
       {/* Middle section: tagline + nav columns */}
       <div className="px-4 sm:px-6 md:px-10 lg:px-16 pt-10 md:pt-14 lg:pt-16 pb-8 md:pb-12">
-        <div className="flex flex-col lg:flex-row lg:items-start gap-10 lg:gap-16">
-          {/* Left: Tagline + Back to top */}
+        <div className="flex flex-col items-center text-center lg:items-start lg:text-left lg:flex-row gap-10 lg:gap-16">
+          {/* Left: Tagline + Back to top (desktop) */}
           <div className="lg:flex-1">
             <Reveal>
-              {/* Fix #4: Force 2 lines */}
               <p className="font-sans text-foreground text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-[42px] tracking-tight leading-snug">
-                <span className="block whitespace-nowrap font-semibold">From Argentina to your daily operations.</span>
-                <span className="block whitespace-nowrap">Real solutions. Real adoption.</span>
+                <span className="block font-semibold">From Argentina to your</span>
+                <span className="block font-semibold">daily operations.</span>
+                <span className="block sm:whitespace-nowrap">Real solutions. Real adoption.</span>
               </p>
             </Reveal>
+            {/* Back to top — desktop only (inline with tagline) */}
             <Reveal delay={0.1}>
               <button
                 onClick={scrollToTop}
-                className="cursor-pointer mt-6 md:mt-8 inline-flex items-center gap-3 border border-foreground/20 text-foreground font-sans font-medium text-sm sm:text-base tracking-tight px-4 py-2.5 sm:px-5 sm:py-3 rounded-xl hover:border-foreground/40 transition-colors"
+                className="hidden lg:inline-flex cursor-pointer mt-6 md:mt-8 items-center gap-3 border border-foreground/20 text-foreground font-sans font-medium text-sm sm:text-base tracking-tight px-4 py-2.5 sm:px-5 sm:py-3 rounded-xl hover:border-foreground/40 transition-colors"
               >
                 Back to top
                 <span className="font-neuebit text-foreground text-lg sm:text-xl leading-none -rotate-90">→</span>
@@ -211,7 +210,7 @@ export function Footer() {
           <div className="flex gap-12 sm:gap-16 md:gap-20 lg:gap-16 lg:shrink-0 lg:ml-auto lg:mr-[8vw] xl:mr-[12vw] 2xl:mr-[16vw]">
             {/* Navigation */}
             <Reveal>
-              <div>
+              <div className="text-center lg:text-left">
                 <h4 className="font-sans font-medium text-foreground/80 text-lg md:text-xl lg:text-2xl tracking-tight mb-4">
                   Navigation
                 </h4>
@@ -233,7 +232,7 @@ export function Footer() {
 
             {/* Channels */}
             <Reveal delay={0.1}>
-              <div>
+              <div className="text-center lg:text-left">
                 <h4 className="font-sans font-medium text-foreground/80 text-lg md:text-xl lg:text-2xl tracking-tight mb-4">
                   Channels
                 </h4>
@@ -254,6 +253,17 @@ export function Footer() {
               </div>
             </Reveal>
           </div>
+
+          {/* Back to top — mobile only (below links) */}
+          <Reveal delay={0.15}>
+            <button
+              onClick={scrollToTop}
+              className="lg:hidden cursor-pointer inline-flex items-center gap-3 border border-foreground/20 text-foreground font-sans font-medium text-sm sm:text-base tracking-tight px-4 py-2.5 sm:px-5 sm:py-3 rounded-xl hover:border-foreground/40 transition-colors"
+            >
+              Back to top
+              <span className="font-neuebit text-foreground text-lg sm:text-xl leading-none -rotate-90">→</span>
+            </button>
+          </Reveal>
         </div>
       </div>
 

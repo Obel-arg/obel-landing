@@ -55,9 +55,9 @@ export function Hero() {
       style={{ height: "100dvh" }}
     >
       {/* ── Text content + CTA ── */}
-      <div className="relative z-10 flex flex-col items-center text-center pt-[calc(var(--header-height)+16px)] md:absolute md:inset-0 md:justify-start md:pt-[calc(var(--header-height)+10vh)]">
+      <div className="relative z-10 flex flex-col items-center text-center justify-center h-full pb-[20vh] md:pb-0 md:justify-start md:h-auto md:absolute md:inset-0 md:pt-[calc(var(--header-height)+10vh)] px-6 md:px-0">
         {/* Heading — mobile: "Digital products...", desktop: "Products..." */}
-        <h1 className="font-neuebit text-[min(16vw,27vh)] md:text-[min(10vw,17vh)] leading-[0.72] tracking-[-0.05em] text-primary max-w-[85vw] md:max-w-[74vw]">
+        <h1 className="font-neuebit text-[min(16vw,27vh)] md:text-[min(10vw,17vh)] leading-[0.64] md:leading-[0.72] tracking-[-0.05em] text-primary max-w-[85vw] md:max-w-[74vw]">
           <span className="md:hidden">Digital products</span>
           <span className="hidden md:inline">Products</span>
           {" "}shaped by people,{" "}
@@ -71,7 +71,7 @@ export function Hero() {
         </p>
 
         {/* ── CTA + Hands Composition (locked alignment) ── */}
-        <div className="relative mt-24 md:mt-40">
+        <div className="relative mt-14 md:mt-40">
           {/* CTA Button */}
           <button
             onClick={openContact}
@@ -96,15 +96,15 @@ export function Hero() {
         </div>
       </div>
 
-      {/* ── Mobile hands (original bottom-anchored position) ── */}
-      <div className="md:hidden absolute bottom-20 left-1/2 -translate-x-1/2 z-[5] w-[140%] max-w-none pointer-events-none">
+      {/* ── Mobile hands ── */}
+      <div className="md:hidden absolute bottom-16 left-1/2 -translate-x-1/2 z-[5] w-[170%] max-w-none pointer-events-none">
         <Image
           src="/images/hero-image.png"
           alt=""
           width={1675}
           height={442}
           priority
-          sizes="(max-width: 767px) 140vw, 1px"
+          sizes="(max-width: 767px) 170vw, 1px"
           className="w-full h-auto"
           aria-hidden="true"
         />

@@ -13,11 +13,11 @@ export function ObelHub() {
     <section className="below-fold bg-background px-4 sm:px-6 md:px-10 lg:px-16 pt-32 md:pt-40 lg:pt-48 pb-20 md:pb-24 lg:pb-32">
       <Reveal>
         <div className="bg-[rgba(8,13,26,0.07)] rounded-2xl md:rounded-[32px] lg:rounded-[44px] px-6 sm:px-10 md:px-14 lg:px-20 py-10 sm:py-14 md:py-16 lg:py-20">
-          <div className="flex flex-col lg:flex-row gap-8 lg:gap-12 xl:gap-20">
+          <div className="flex flex-col xl:flex-row gap-8 xl:gap-20">
             {/* Left: Badge + Headline + Description */}
-            <div className="lg:w-[55%]">
+            <div className="xl:w-[55%]">
               {/* Headline area with overlapping badge */}
-              <div className="relative pt-4 sm:pt-5 md:pt-6 lg:pt-7">
+              <div className="relative pt-9 sm:pt-10 md:pt-11 lg:pt-12">
                 {/* Obel HUB badge — absolutely positioned to overlap headline */}
                 <div
                   className="absolute left-0 z-10 -rotate-[4deg]"
@@ -38,20 +38,20 @@ export function ObelHub() {
                 </div>
 
                 {/* Headline */}
-                <h2 className="font-neuebit text-primary text-[2.8rem] sm:text-[3.5rem] md:text-[4.5rem] lg:text-[5.5rem] xl:text-[6.3rem] tracking-[-0.04em] leading-[1.2] whitespace-nowrap">
+                <h2 className="font-neuebit text-primary text-[2.8rem] sm:text-[3.5rem] md:text-[4.5rem] lg:text-[5.5rem] xl:text-[6.3rem] tracking-[-0.04em] leading-[0.75] sm:leading-[0.85]">
                   Where pixels{" "}
-                  <span className="relative inline-block align-baseline" style={{ transform: "rotate(-1.5deg)" }}>
+                  <span className="relative inline-block align-baseline sm:mt-1.5 md:mt-2" style={{ transform: "rotate(-1.5deg)" }}>
                     <span
                       className="absolute bg-[#72052f] -z-10 shadow-[0px_4px_4px_rgba(0,0,0,0.25)]"
                       style={{
-                        top: "24%",
-                        bottom: "20%",
+                        top: "12%",
+                        bottom: "8%",
                         left: "0%",
                         right: "0%",
                       }}
                       aria-hidden="true"
                     />
-                    <span className="relative font-sans font-medium text-[#FFFBFA] text-[1.5rem] sm:text-[1.9rem] md:text-[2.5rem] lg:text-[3rem] xl:text-[3.5rem] tracking-[-0.04em] leading-none px-1">
+                    <span className="relative font-sans font-medium text-[#FFFBFA] text-[1.5rem] sm:text-[1.9rem] md:text-[2.5rem] lg:text-[3rem] xl:text-[3.5rem] tracking-[-0.04em] leading-none px-1 py-0.5 sm:py-1">
                       meet people
                     </span>
                   </span>
@@ -60,12 +60,12 @@ export function ObelHub() {
 
               {/* Description */}
               <p className="mt-3 md:mt-4 font-sans text-primary text-base sm:text-lg md:text-xl lg:text-2xl xl:text-[27px] tracking-[-0.04em] leading-[1.2]">
-                Obel Hub helps organizations turn AI and digital<br className="hidden md:inline" /> products into real ways of working.
+                Obel Hub helps organizations turn AI and digital products into real ways of working.
               </p>
             </div>
 
             {/* Right: Key Areas */}
-            <div className="lg:w-[45%]">
+            <div className="xl:w-[45%]">
               <p className="font-sans font-medium text-primary text-base sm:text-lg md:text-xl lg:text-2xl xl:text-[27px] tracking-[-0.04em] leading-[1.2] mb-5 md:mb-7 lg:mb-8">
                 We focus on three key areas:
               </p>

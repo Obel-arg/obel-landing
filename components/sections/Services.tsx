@@ -86,7 +86,7 @@ function ServiceCard({
         highlight={false}
       >
         <div
-          className="rounded-2xl md:rounded-[27px] p-5 sm:p-7 md:p-10 lg:p-14 xl:p-18 flex flex-col gap-6 md:gap-8 lg:gap-10 bg-[rgba(9,14,25,0.74)] border-[0.5px] border-white/20 overflow-clip"
+          className="service-card-inner rounded-2xl md:rounded-[27px] p-5 sm:p-7 md:p-10 lg:p-14 xl:p-18 flex flex-col gap-6 md:gap-8 lg:gap-10 bg-[rgba(9,14,25,0.74)] border-[0.5px] border-white/20 overflow-clip"
         >
           {/* Title + headline */}
           <div>
@@ -129,6 +129,25 @@ export function Services() {
   const xStartRef = useRef(125);
   const xEndRef = useRef(-340);
   const xRangeRef = useRef(465);
+
+  // Equalize card heights — all cards match the tallest one
+  useIsomorphicLayoutEffect(() => {
+    const carousel = carouselRef.current;
+    if (!carousel) return;
+
+    const equalize = () => {
+      const cards = carousel.querySelectorAll<HTMLElement>('.service-card-inner');
+      // Reset so we measure natural heights
+      cards.forEach(c => { c.style.minHeight = ''; });
+      let max = 0;
+      cards.forEach(c => { max = Math.max(max, c.scrollHeight); });
+      cards.forEach(c => { c.style.minHeight = `${max}px`; });
+    };
+
+    equalize();
+    window.addEventListener('resize', equalize);
+    return () => window.removeEventListener('resize', equalize);
+  }, []);
 
   // GSAP animations
   useIsomorphicLayoutEffect(() => {
@@ -371,14 +390,14 @@ export function Services() {
             height: '100dvh',
           }}
         >
-          {/* Background image - inside sticky so it stays fixed while scrolling */}
-          <div className="absolute inset-0 z-0" aria-hidden="true">
+          {/* Background image - hidden on mobile (solid bg-[#090E19] shows instead) */}
+          <div className="absolute inset-0 z-0 hidden md:block" aria-hidden="true">
             <Image
               src="/images/back.jpeg"
               alt=""
               fill
               className="object-cover object-center"
-              sizes="100vw"
+              sizes="(max-width: 767px) 0px, 100vw"
               quality={85}
             />
             {/* Dark overlay for glassmorphism contrast */}
