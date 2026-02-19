@@ -70,24 +70,41 @@ export function Hero() {
           that support how your business really runs.
         </p>
 
-        {/* CTA Button */}
-        <button
-          onClick={openContact}
-          className="mt-24 md:mt-40 bg-primary text-background font-sans font-medium text-[16px] md:text-[20px] rounded-[10px] md:rounded-[13px] px-5 md:px-6 py-3 md:py-[14px] hover:opacity-90 transition-opacity cursor-pointer border border-white/10"
-        >
-          Get in Touch
-        </button>
+        {/* ── CTA + Hands Composition (locked alignment) ── */}
+        <div className="relative mt-24 md:mt-40">
+          {/* CTA Button */}
+          <button
+            onClick={openContact}
+            className="relative z-10 bg-primary text-background font-sans font-medium text-[16px] md:text-[20px] rounded-[10px] md:rounded-[13px] px-5 md:px-6 py-3 md:py-[14px] hover:opacity-90 transition-opacity cursor-pointer border border-white/10"
+          >
+            Get in Touch
+          </button>
+
+          {/* Desktop hands — anchored to CTA center */}
+          <div className="hidden md:block absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[clamp(1000px,105vw,2100px)] max-w-none pointer-events-none">
+            <Image
+              src="/images/hero-image.png"
+              alt=""
+              width={1675}
+              height={442}
+              priority
+              sizes="(max-width: 767px) 1px, clamp(1000px, 105vw, 2100px)"
+              className="w-full h-auto"
+              aria-hidden="true"
+            />
+          </div>
+        </div>
       </div>
 
-      {/* ── Hero hands image ── */}
-      <div className="absolute bottom-20 md:bottom-28 left-1/2 -translate-x-1/2 z-[5] w-[140%] md:w-[105%] max-w-none pointer-events-none">
+      {/* ── Mobile hands (original bottom-anchored position) ── */}
+      <div className="md:hidden absolute bottom-20 left-1/2 -translate-x-1/2 z-[5] w-[140%] max-w-none pointer-events-none">
         <Image
           src="/images/hero-image.png"
           alt=""
           width={1675}
           height={442}
           priority
-          sizes="(max-width: 768px) 140vw, 105vw"
+          sizes="(max-width: 767px) 140vw, 1px"
           className="w-full h-auto"
           aria-hidden="true"
         />

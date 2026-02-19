@@ -15,7 +15,7 @@ const NAV_LINKS = [
 
 const CHANNEL_LINKS = [
   { label: "Instagram", href: "https://instagram.com/obel" },
-  { label: "LinkedIn", href: "https://linkedin.com/company/obel" },
+  { label: "LinkedIn", href: "https://www.linkedin.com/company/obel-ar/" },
   { label: "X", href: "https://twitter.com/obel" },
 ];
 
@@ -147,7 +147,7 @@ export function Footer() {
   return (
     <footer className="bg-background">
       {/* CTA Banner */}
-      <div className="px-4 sm:px-6 md:px-10 lg:px-16 pt-8 md:pt-12">
+      <div className="px-4 sm:px-6 md:px-10 lg:px-16 pt-20 md:pt-24 lg:pt-32">
         <Reveal>
           <div className="relative bg-[#080d1a] rounded-2xl md:rounded-[27px] lg:rounded-[43px] overflow-hidden px-6 sm:px-8 md:px-12 lg:px-16 xl:px-24 py-10 sm:py-12 md:py-16 lg:py-20">
             {/* Pattern background — invert to white logos on dark bg */}
@@ -191,7 +191,7 @@ export function Footer() {
           <div className="lg:flex-1">
             <Reveal>
               {/* Fix #4: Force 2 lines */}
-              <p className="font-sans text-foreground text-lg sm:text-xl md:text-2xl lg:text-[30px] tracking-tight leading-snug">
+              <p className="font-sans text-foreground text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-[42px] tracking-tight leading-snug">
                 <span className="block whitespace-nowrap font-semibold">From Argentina to your daily operations.</span>
                 <span className="block whitespace-nowrap">Real solutions. Real adoption.</span>
               </p>
@@ -208,7 +208,7 @@ export function Footer() {
           </div>
 
           {/* Right: Navigation + Channels */}
-          <div className="flex gap-12 sm:gap-16 md:gap-20 lg:gap-16 lg:shrink-0 lg:mr-0">
+          <div className="flex gap-12 sm:gap-16 md:gap-20 lg:gap-16 lg:shrink-0 lg:ml-auto lg:mr-[8vw] xl:mr-[12vw] 2xl:mr-[16vw]">
             {/* Navigation */}
             <Reveal>
               <div>
@@ -242,6 +242,8 @@ export function Footer() {
                     <li key={link.label}>
                       <Link
                         href={link.href}
+                        target="_blank"
+                        rel="noopener noreferrer"
                         className="font-sans text-foreground/80 text-sm sm:text-base tracking-tight hover:text-foreground transition-colors"
                       >
                         {link.label}

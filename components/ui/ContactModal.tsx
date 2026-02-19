@@ -351,7 +351,7 @@ export function ContactModal() {
         <button
           ref={closeButtonRef}
           onClick={close}
-          className="absolute top-6 right-6 md:top-8 md:right-8 lg:top-10 lg:right-12 z-10 text-[#FFFAF8]/70 hover:text-[#C6DDFF] transition-colors duration-200 flex items-center gap-2 font-sans text-sm tracking-wide cursor-pointer"
+          className="absolute top-6 right-6 md:top-8 md:right-8 lg:top-10 lg:right-12 z-10 text-[#FFFAF8]/70 transition-colors duration-200 flex items-center gap-2 font-sans text-sm tracking-wide cursor-pointer"
           aria-label="Close contact form"
         >
           <span>Close</span>
@@ -373,27 +373,23 @@ export function ContactModal() {
           </svg>
         </button>
 
-        {/* Two-column layout */}
+        {/* Centered layout */}
         <div
-          className="grid lg:grid-cols-2 min-h-full"
-          onClick={(e) => e.stopPropagation()}
+          className="flex items-center justify-center min-h-full p-6 md:p-10 lg:p-12 xl:p-16"
+          onClick={close}
         >
-          {/* Left: Decorative space (hidden on mobile) */}
-          <div className="hidden lg:block" aria-hidden />
-
-          {/* Right: Form */}
           <div
             ref={formContainerRef}
-            className="flex flex-col justify-center p-6 md:p-10 lg:p-12 xl:p-16"
+            className="w-full max-w-lg"
+            onClick={(e) => e.stopPropagation()}
           >
-            <div ref={formElementsRef} className="max-w-lg">
+            <div ref={formElementsRef}>
               {/* Title */}
               <h2
                 id="contact-modal-title"
-                className="font-serif text-4xl md:text-5xl lg:text-6xl text-[#FFFAF8] mb-8 tracking-tight"
+                className="font-neuebit text-5xl md:text-6xl lg:text-7xl text-[#FFFAF8] mb-8 tracking-tight"
               >
-                Let&apos;s be partners{" "}
-                <span className="text-[#FFFAF8]/40">—</span>
+                Let&apos;s be partners
               </h2>
 
               {/* Form */}
@@ -458,13 +454,13 @@ export function ContactModal() {
                 {/* Message - Required */}
                 <div>
                   <label htmlFor="message" className="sr-only">
-                    Tell us a little bit more
+                    Message
                   </label>
                   <input
                     type="text"
                     id="message"
                     name="message"
-                    placeholder="Tell us a little bit more:"
+                    placeholder="Message"
                     required
                     value={formValues.message}
                     onChange={handleInputChange}
@@ -523,21 +519,23 @@ export function ContactModal() {
                   <button
                     type="submit"
                     disabled={isSubmitting}
-                    className={`group relative inline-flex items-center gap-3 md:gap-4 font-serif text-2xl md:text-3xl lg:text-4xl transition-colors duration-300 ${
+                    className={`group relative inline-flex items-center justify-center w-12 h-12 md:w-14 md:h-14 rounded-full border border-[#FFFAF8]/30 transition-all duration-300 ${
                       isSubmitting
-                        ? "text-[#FFFAF8]/50 cursor-not-allowed"
-                        : "text-[#FFFAF8] hover:text-[#C6DDFF] cursor-pointer"
+                        ? "opacity-50 cursor-not-allowed"
+                        : "hover:bg-[#FFFAF8] hover:border-[#FFFAF8] cursor-pointer"
                     }`}
+                    aria-label={isSubmitting ? "Sending..." : "Send message"}
                   >
-                    <span>{isSubmitting ? "Sending..." : "Let's talk."}</span>
-                    {!isSubmitting && (
+                    {isSubmitting ? (
+                      <div className="w-5 h-5 border-2 border-[#FFFAF8]/30 border-t-[#FFFAF8] rounded-full animate-spin" />
+                    ) : (
                       <svg
-                        width="28"
-                        height="28"
+                        width="20"
+                        height="20"
                         viewBox="0 0 24 24"
                         fill="none"
                         xmlns="http://www.w3.org/2000/svg"
-                        className="w-7 h-7 md:w-8 md:h-8 lg:w-9 lg:h-9 transform group-hover:translate-x-2 transition-transform duration-300"
+                        className="text-[#FFFAF8] group-hover:text-[#090E19] transition-colors duration-300"
                       >
                         <path
                           d="M5 12H19M19 12L12 5M19 12L12 19"
@@ -561,47 +559,58 @@ export function ContactModal() {
                   {submitStatus === "error" && (
                     <p className="text-[#FF4141] font-sans text-sm mt-3 animate-fade-in">
                       Failed to send message. Please try again or email us at{" "}
-                      <a href="mailto:hello@obel.la" className="underline hover:text-[#C6DDFF]">
+                      <a href="mailto:hello@obel.la" className="underline hover:text-[#FFFAF8]">
                         hello@obel.la
                       </a>
                     </p>
                   )}
                 </div>
-
-                {/* Privacy policy */}
-                <div className="pt-2">
-                  <p className="text-[#FFFAF8]/40 text-sm font-sans">
-                    By submitting, you agree to our{" "}
-                    <a
-                      href="/privacy"
-                      className="underline hover:text-[#C6DDFF] transition-colors duration-200"
-                    >
-                      Privacy Policy
-                    </a>
-                  </p>
-                </div>
               </form>
             </div>
 
-            {/* Footer contact links */}
+            {/* Footer social links */}
             <div ref={footerRef} className="mt-8 md:mt-10 lg:mt-12 pt-6 border-t border-[#FFFAF8]/10">
               <h3 className="text-[#FFFAF8]/40 font-sans text-xs md:text-sm uppercase tracking-widest mb-4 md:mb-6">
-                How else can we help?
+                Join us
               </h3>
-              <div>
-                {/* Join us - Instagram (entire block is clickable) */}
+              <div className="flex items-center gap-4">
+                {/* Instagram */}
                 <a
                   href="https://instagram.com/obel.lab"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="block group cursor-pointer"
+                  className="flex items-center justify-center w-10 h-10 md:w-11 md:h-11 rounded-full border border-[#FFFAF8]/20 text-[#FFFAF8]/70 hover:text-[#FFFAF8] hover:border-[#FFFAF8]/50 transition-all duration-200"
+                  aria-label="Instagram"
                 >
-                  <p className="text-[#FFFAF8] font-serif text-xl md:text-2xl lg:text-3xl mb-1 group-hover:text-[#C6DDFF] transition-colors duration-200">
-                    Join us.
-                  </p>
-                  <span className="text-[#FFFAF8]/70 font-sans text-base md:text-lg group-hover:text-[#C6DDFF] transition-colors duration-200">
-                    obel.lab
-                  </span>
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                    <rect x="2" y="2" width="20" height="20" rx="5" />
+                    <circle cx="12" cy="12" r="5" />
+                    <circle cx="17.5" cy="6.5" r="1.5" fill="currentColor" stroke="none" />
+                  </svg>
+                </a>
+                {/* LinkedIn */}
+                <a
+                  href="https://www.linkedin.com/company/obel-ar/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-center w-10 h-10 md:w-11 md:h-11 rounded-full border border-[#FFFAF8]/20 text-[#FFFAF8]/70 hover:text-[#FFFAF8] hover:border-[#FFFAF8]/50 transition-all duration-200"
+                  aria-label="LinkedIn"
+                >
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
+                  </svg>
+                </a>
+                {/* X (Twitter) */}
+                <a
+                  href="https://twitter.com/obel"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-center w-10 h-10 md:w-11 md:h-11 rounded-full border border-[#FFFAF8]/20 text-[#FFFAF8]/70 hover:text-[#FFFAF8] hover:border-[#FFFAF8]/50 transition-all duration-200"
+                  aria-label="X"
+                >
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+                  </svg>
                 </a>
               </div>
             </div>

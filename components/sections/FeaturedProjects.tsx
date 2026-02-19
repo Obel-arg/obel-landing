@@ -86,7 +86,7 @@ function ProjectCard({
 
 export function FeaturedProjects() {
   return (
-    <section id="works" className="below-fold grid-layout !gap-y-0">
+    <section id="works" className="below-fold grid-layout !gap-y-0 py-20 md:py-24 lg:py-32">
       {PROJECTS.map((project, index) => {
         const isFirst = index === 0;
 

@@ -36,7 +36,7 @@ export const NAV_LINKS = [
 export const SOCIAL_LINKS = [
   { label: "X (Twitter)", href: "https://twitter.com/obel" },
   { label: "Instagram", href: "https://instagram.com/obel" },
-  { label: "LinkedIn", href: "https://linkedin.com/company/obel" },
+  { label: "LinkedIn", href: "https://www.linkedin.com/company/obel-ar/" },
 ] as const;
 
 // Footer links
@@ -53,7 +53,7 @@ export const FOOTER_COLUMNS = [
   {
     title: "Channels",
     links: [
-      { label: "LinkedIn", href: "https://linkedin.com/company/obel" },
+      { label: "LinkedIn", href: "https://www.linkedin.com/company/obel-ar/" },
       { label: "Instagram", href: "https://instagram.com/obel" },
       { label: "X", href: "https://twitter.com/obel" },
     ],

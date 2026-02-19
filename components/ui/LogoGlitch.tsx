@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useMemo, useState, useEffect } from "react";
+import { useRef, useMemo, useState, useEffect, useCallback } from "react";
 import { Canvas, useLoader, useThree } from "@react-three/fiber";
 import { EffectComposer, Glitch } from "@react-three/postprocessing";
 import { GlitchMode } from "postprocessing";
@@ -151,16 +151,43 @@ export function LogoGlitch({
   width = 80,
   height = 30,
 }: LogoGlitchProps) {
+  const [mounted, setMounted] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    // Defer Canvas mount to next frame so the container is sized
+    const raf = requestAnimationFrame(() => setMounted(true));
+    return () => cancelAnimationFrame(raf);
+  }, []);
+
+  const handleError = useCallback((e: ErrorEvent) => {
+    // Suppress WebGL context errors — fallback is the static logo in Logo3D
+    e.preventDefault?.();
+  }, []);
+
+  useEffect(() => {
+    window.addEventListener("error", handleError);
+    return () => window.removeEventListener("error", handleError);
+  }, [handleError]);
+
   return (
-    <div className={className} style={{ width, height }}>
-      <Canvas
-        gl={{ alpha: true, antialias: true, preserveDrawingBuffer: true }}
-        camera={{ position: [0, 0, 2], fov: 30 }}
-        style={{ width: "100%", height: "100%" }}
-      >
-        <LogoPlane />
-        <GlitchEffects />
-      </Canvas>
+    <div ref={containerRef} className={className} style={{ width, height }}>
+      {mounted && (
+        <Canvas
+          gl={{ alpha: true, antialias: true, preserveDrawingBuffer: true }}
+          camera={{ position: [0, 0, 2], fov: 30 }}
+          style={{ width: "100%", height: "100%" }}
+          onCreated={({ gl }) => {
+            // Ensure context is valid
+            if (!gl.getContext()) {
+              console.warn("LogoGlitch: WebGL context unavailable");
+            }
+          }}
+        >
+          <LogoPlane />
+          <GlitchEffects />
+        </Canvas>
+      )}
     </div>
   );
 }

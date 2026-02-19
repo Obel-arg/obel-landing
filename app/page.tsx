@@ -14,18 +14,17 @@ const FeaturedProjects = dynamic(() =>
 const Services = dynamic(() =>
   import("@/components/sections/Services").then((m) => m.Services)
 );
-const Contact = dynamic(() =>
-  import("@/components/sections/Contact").then((m) => m.Contact)
+const ObelHub = dynamic(() =>
+  import("@/components/sections/ObelHub").then((m) => m.ObelHub)
 );
-
 export default function Home() {
   return (
     <main>
       <Hero />
       <About />
-      <FeaturedProjects />
       <Services />
-      <Contact />
+      <ObelHub />
+      <FeaturedProjects />
       <Footer />
     </main>
   );
