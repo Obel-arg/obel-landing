@@ -372,11 +372,14 @@ export function Services() {
         ref={cardsContainerRef}
         className="relative z-10 h-[350vh] md:h-[400vh] lg:h-[500vh]"
       >
-        {/* Sticky viewport — pins at top: 0 so background covers full screen including behind header */}
+        {/* Sticky viewport — pins at top: 0 so background covers full screen including behind header.
+             suppressHydrationWarning: GSAP (PerspectiveTransition) applies inline transform
+             properties (translate, rotate, scale) via immediateRender before React hydrates. */}
         <div
           className="sticky overflow-hidden"
+          suppressHydrationWarning
           style={{
-            top: 0,
+            top: '0px',
             height: '100dvh',
           }}
         >

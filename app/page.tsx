@@ -1,6 +1,7 @@
 import dynamic from "next/dynamic";
 import { Hero } from "@/components/sections/Hero";
 import { Footer } from "@/components/layout/Footer";
+import { PerspectiveTransition } from "@/components/motion/PerspectiveTransition";
 
 // Placeholder to reserve space during dynamic import loading (prevents CLS)
 const SectionPlaceholder = () => (
@@ -28,8 +29,10 @@ export default function Home() {
   return (
     <main>
       <Hero />
-      <About />
-      <Services />
+      <PerspectiveTransition
+        section1={<About />}
+        section2={<Services />}
+      />
       <ObelHub />
       <FeaturedProjects />
       <Footer />
