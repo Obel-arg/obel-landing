@@ -3,6 +3,10 @@
 import { useRef, useEffect, useLayoutEffect } from "react";
 import { gsap } from "@/lib/gsap";
 
+// Track whether this is the initial page load (reload / first visit)
+// vs a subsequent SPA navigation
+let isInitialLoad = true;
+
 export default function Template({ children }: { children: React.ReactNode }) {
   const ref = useRef<HTMLDivElement>(null);
 
@@ -14,8 +18,14 @@ export default function Template({ children }: { children: React.ReactNode }) {
     const el = ref.current;
     if (!el) return;
 
-    // If RouteTransition just handled the navigation, skip the fade-in
-    // The pixel overlay already provides the reveal effect
+    // On initial page load, PixelTransition handles the reveal — skip fade-in
+    if (isInitialLoad) {
+      isInitialLoad = false;
+      gsap.set(el, { opacity: 1, y: 0 });
+      return;
+    }
+
+    // If RouteTransition just handled the SPA navigation, skip the fade-in
     if (window.routeTransition) {
       gsap.set(el, { opacity: 1, y: 0 });
       return;

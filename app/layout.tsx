@@ -60,6 +60,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
+        {/* Block first paint — prevents flash of wrong scroll position on reload.
+            Timeout fallback reveals page after 4s if React fails to hydrate. */}
+        <script dangerouslySetInnerHTML={{ __html: `history.scrollRestoration='manual';setTimeout(function(){document.documentElement.style.opacity='1'},4000)` }} />
+        <style dangerouslySetInnerHTML={{ __html: `html{opacity:0}` }} />
+        <noscript><style dangerouslySetInnerHTML={{ __html: `html{opacity:1!important}` }} /></noscript>
         <link
           rel="preload"
           href="/fonts/ppneuebit-bold.otf"

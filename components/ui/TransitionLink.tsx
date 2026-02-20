@@ -29,7 +29,11 @@ export function TransitionLink({
 
         // Save current scroll position before leaving this page
         const scrollY = lenis ? Math.round(lenis.scroll) : window.scrollY;
-        sessionStorage.setItem(`scroll-${window.location.pathname}`, String(scrollY));
+        try {
+          sessionStorage.setItem(`scroll-${window.location.pathname}`, String(scrollY));
+        } catch {
+          // sessionStorage blocked (private browsing, restricted env)
+        }
 
         // For links without hash, scroll to top before navigation
         if (!hasHash) {

@@ -38,6 +38,9 @@ export function PixelTransition() {
       if (containerRef.current) {
         containerRef.current.style.display = "none";
       }
+      // Reveal the page (hidden by inline <style> in <head>)
+      document.documentElement.style.transition = "opacity 0.15s ease";
+      document.documentElement.style.opacity = "1";
       return;
     }
 
@@ -83,6 +86,11 @@ export function PixelTransition() {
     // Fill initial state (all cells visible)
     ctx.fillStyle = `rgb(${PRIMARY_R}, ${PRIMARY_G}, ${PRIMARY_B})`;
     ctx.fillRect(0, 0, width, height);
+
+    // Reveal html NOW — canvas covers full viewport at z-100,
+    // so page content is hidden behind it. This undoes the
+    // inline <style>html{opacity:0}</style> from <head>.
+    document.documentElement.style.opacity = "1";
 
     let startTime: number | null = null;
     let animationId: number;
