@@ -306,7 +306,7 @@ export function Services() {
         {/* Background image - static for reduced motion */}
         <div className="absolute inset-0 z-0" aria-hidden="true">
           <Image
-            src="/images/back.jpeg"
+            src="/images/back.webp"
             alt=""
             fill
             className="object-cover object-center"
@@ -366,7 +366,7 @@ export function Services() {
   }
 
   return (
-    <section id="services" ref={sectionRef} data-header-transparent className="contain-animated relative bg-[#090E19]">
+    <section id="services" ref={sectionRef} data-header-transparent data-scroll-offset="8vh" className="contain-animated relative bg-[#090E19]">
       {/* Scroll trigger container — responsive height: 400vh mobile, 500vh desktop */}
       <div
         ref={cardsContainerRef}
@@ -386,7 +386,7 @@ export function Services() {
           {/* Background image - hidden on mobile (solid bg-[#090E19] shows instead) */}
           <div className="absolute inset-0 z-0 hidden md:block" aria-hidden="true">
             <Image
-              src="/images/back.jpeg"
+              src="/images/back.webp"
               alt=""
               fill
               className="object-cover object-center"

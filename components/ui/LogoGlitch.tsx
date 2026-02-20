@@ -130,7 +130,7 @@ function GlitchEffects() {
   useEffect(() => {
     if (!ready) return;
     const { tier } = getGpuConfig();
-    const interval = setInterval(() => invalidate(), tier >= 3 ? 16 : 33);
+    const interval = setInterval(() => invalidate(), 33);
     return () => clearInterval(interval);
   }, [ready, invalidate]);
 

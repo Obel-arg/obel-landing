@@ -98,7 +98,7 @@ export function SpotlightPattern({ className = "", children }: SpotlightPatternP
       <div
         className="absolute inset-0"
         style={{
-          backgroundImage: isVisible ? `url("/images/pattern-obel.png")` : "none",
+          backgroundImage: isVisible ? `url("/images/pattern-obel.webp")` : "none",
           backgroundSize: "800px auto",
           backgroundRepeat: "repeat",
           opacity: 0.04,
@@ -110,7 +110,7 @@ export function SpotlightPattern({ className = "", children }: SpotlightPatternP
         ref={spotlightRef}
         className="absolute inset-0 transition-opacity duration-300"
         style={{
-          backgroundImage: isVisible ? `url("/images/pattern-obel.png")` : "none",
+          backgroundImage: isVisible ? `url("/images/pattern-obel.webp")` : "none",
           backgroundSize: "800px auto",
           backgroundRepeat: "repeat",
           opacity: isHovered ? 0.15 : 0,

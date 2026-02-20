@@ -10,7 +10,7 @@ const KEY_AREAS = [
 
 export function ObelHub() {
   return (
-    <section className="below-fold bg-background px-4 sm:px-6 md:px-10 lg:px-16 pt-32 md:pt-40 lg:pt-48 pb-20 md:pb-24 lg:pb-32">
+    <section id="hub" className="below-fold bg-background px-4 sm:px-6 md:px-10 lg:px-16 pt-32 md:pt-40 lg:pt-48 pb-20 md:pb-24 lg:pb-32">
       <Reveal>
         <div className="bg-[rgba(8,13,26,0.07)] rounded-2xl md:rounded-[32px] lg:rounded-[44px] px-6 sm:px-10 md:px-14 lg:px-20 pt-10 sm:pt-14 md:pt-16 lg:pt-20 pb-6 sm:pb-8 md:pb-10 lg:pb-12">
           <div className="flex flex-col xl:flex-row gap-8 xl:gap-20">

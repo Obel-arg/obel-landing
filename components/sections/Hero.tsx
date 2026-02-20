@@ -84,7 +84,7 @@ export function Hero() {
           {/* Desktop hands — anchored to CTA center */}
           <div className="hidden md:block absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[clamp(1000px,105vw,2100px)] max-w-none pointer-events-none">
             <Image
-              src="/images/hero-image.png"
+              src="/images/hero-image.webp"
               alt=""
               width={1675}
               height={442}
@@ -100,7 +100,7 @@ export function Hero() {
       {/* ── Mobile hands ── */}
       <div className="md:hidden absolute bottom-16 left-1/2 -translate-x-1/2 z-[5] w-[170%] max-w-none pointer-events-none">
         <Image
-          src="/images/hero-image.png"
+          src="/images/hero-image.webp"
           alt=""
           width={1675}
           height={442}

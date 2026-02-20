@@ -7,10 +7,10 @@ import { getComputedHeaderHeight } from "@/lib/constants";
 
 const NAV_LINKS = [
   { label: "Home", href: "#" },
-  { label: "About Us", href: "#about" },
-  { label: "Projects", href: "#works" },
+  { label: "About", href: "#about" },
   { label: "Services", href: "#services" },
-  { label: "Obel Hub", href: "https://www.obel.la/hub" },
+  { label: "Hub", href: "#hub" },
+  { label: "Projects", href: "#works" },
 ];
 
 const CHANNEL_LINKS = [
@@ -39,6 +39,13 @@ function scrollToTop() {
   }
 }
 
+/** Parse "8vh", "100px", or plain number from data-scroll-offset */
+function parseScrollOffset(value: string | undefined): number {
+  if (!value) return 0;
+  if (value.endsWith("vh")) return (parseFloat(value) / 100) * window.innerHeight;
+  return parseFloat(value) || 0;
+}
+
 function handleSmoothScroll(
   e: React.MouseEvent<HTMLAnchorElement>,
   href: string
@@ -55,17 +62,25 @@ function handleSmoothScroll(
       };
     }
   ).lenis;
+  const target =
+    href === "#" ? null : document.querySelector(href);
+  const extraOffset = target instanceof HTMLElement
+    ? parseScrollOffset(target.dataset.scrollOffset)
+    : 0;
   if (lenis) {
-    const target =
-      href === "#" ? null : document.querySelector(href);
     const dist = target
       ? Math.abs(target.getBoundingClientRect().top)
       : window.scrollY;
     const dur = Math.min(4.5, Math.max(2, dist / 1200));
     lenis.scrollTo(href === "#" ? 0 : href, {
-      offset: href === "#" ? 0 : -getComputedHeaderHeight(),
+      offset: href === "#" ? 0 : -getComputedHeaderHeight() + extraOffset,
       duration: dur,
     });
+  } else if (href === "#") {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  } else if (target) {
+    const top = target.getBoundingClientRect().top + window.scrollY - getComputedHeaderHeight() + extraOffset;
+    window.scrollTo({ top, behavior: "smooth" });
   }
 }
 
@@ -87,7 +102,7 @@ export function Footer() {
   useEffect(() => {
     if (!isDesktop) return;
     const img = new window.Image();
-    img.src = "/images/pattern-obel.png";
+    img.src = "/images/pattern-obel.webp";
   }, [isDesktop]);
 
   const updateSpotlight = useCallback(() => {
@@ -167,7 +182,7 @@ export function Footer() {
               className="absolute inset-0 z-0 pointer-events-none"
               aria-hidden="true"
               style={{
-                backgroundImage: 'url(/images/footer-pattern2.png)',
+                backgroundImage: 'url(/images/footer-pattern2.webp)',
                 backgroundSize: 'cover',
                 backgroundRepeat: 'no-repeat',
                 backgroundPosition: 'center',
@@ -309,7 +324,7 @@ export function Footer() {
               >
                 <defs>
                   <pattern id="obel-pattern" patternUnits="objectBoundingBox" width="1" height="1">
-                    <image href="/images/pattern-obel.png" x="0" y="0" width="1592.32" height="642" preserveAspectRatio="xMidYMid slice" />
+                    <image href="/images/pattern-obel.webp" x="0" y="0" width="1592.32" height="642" preserveAspectRatio="xMidYMid slice" />
                   </pattern>
                 </defs>
                 <path d="M1590.37 0V634.195H1513.29V0H1590.37Z" fill="url(#obel-pattern)"/>

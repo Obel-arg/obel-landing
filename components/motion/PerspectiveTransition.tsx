@@ -33,7 +33,7 @@ export function PerspectiveTransition({
     if (!container) return;
 
     const check = () => {
-      const hasAbout = container.querySelector("#about");
+      const hasAbout = container.querySelector('[data-section="about"]');
       const hasServicesSticky = container.querySelector("#services .sticky");
       if (hasAbout && hasServicesSticky) {
         setReady(true);

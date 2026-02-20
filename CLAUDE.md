@@ -23,7 +23,6 @@ npm run remotion:render # Render logo animation to WebM
 - **Animations:** GSAP + ScrollTrigger (NOT Framer Motion)
 - **Smooth Scroll:** Lenis (integrated with GSAP ticker)
 - **3D:** three.js + @react-three/fiber
-- **Scroll Effects:** @bsmnt/scrollytelling
 - **Video:** Remotion (for logo animations)
 
 ## Architecture

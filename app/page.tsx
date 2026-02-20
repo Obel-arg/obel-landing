@@ -29,6 +29,9 @@ export default function Home() {
   return (
     <main>
       <Hero />
+      {/* Scroll anchor for #about — must be OUTSIDE PerspectiveTransition's sticky
+          context, otherwise Lenis miscalculates position when sticky is active */}
+      <div id="about" />
       <PerspectiveTransition
         section1={<About />}
         section2={<Services />}

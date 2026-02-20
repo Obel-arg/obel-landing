@@ -30,11 +30,11 @@ const PROJECTS: Project[] = [
     solution:
       "HANG is a structured marketplace with intelligent matching, centralized campaign management and clear workflows — reducing friction and turning collaborations into a scalable, measurable system for brands and creators.",
     services: ["Brand Strategy", "Visual Identity", "Web Development"],
-    image: "/images/projects/hang-cover.png",
+    image: "/images/projects/hang-cover.webp",
     images: [
-      "/images/projects/hang-wordmark.png",
-      "/images/projects/hang1.png",
-      "/images/projects/hang2.png",
+      "/images/projects/hang-wordmark.webp",
+      "/images/projects/hang1.webp",
+      "/images/projects/hang2.webp",
     ],
   },
   {
@@ -52,11 +52,11 @@ const PROJECTS: Project[] = [
     solution:
       "iuSports automates recording, highlights, analytics and management in one platform — bringing professional tools and visibility to the amateur ecosystem.",
     services: ["UX Design", "App Development", "Brand Identity"],
-    image: "/images/projects/iusports-cover.png",
+    image: "/images/projects/iusports-cover.webp",
     images: [
-      "/images/projects/iusports-logos.png",
-      "/images/projects/iusports1.png",
-      "/images/projects/iusports2.png",
+      "/images/projects/iusports-logos.webp",
+      "/images/projects/iusports1.webp",
+      "/images/projects/iusports2.webp",
     ],
   },
 ];
