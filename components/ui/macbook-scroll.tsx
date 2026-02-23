@@ -134,40 +134,42 @@ export const Lid = ({
 }) => {
   return (
     <div className="relative [perspective:800px]">
+      {/* Lid back (closed laptop) — no preserve-3d so it stays flat behind screen */}
       <div
         style={{
           transform: "perspective(800px) rotateX(-25deg) translateZ(0px)",
           transformOrigin: "bottom",
-          transformStyle: "preserve-3d",
         }}
-        className="relative h-[12rem] w-[32rem] rounded-2xl bg-[#010101] p-2"
+        className="relative h-[12rem] w-[32rem] overflow-hidden rounded-2xl bg-[#010101] p-2"
       >
         <div
           style={{
             boxShadow: "0px 2px 0px 2px #171717 inset",
           }}
-          className="absolute inset-0 flex items-center justify-center rounded-lg bg-[#010101]"
+          className="absolute inset-2 overflow-hidden rounded-lg bg-[#010101]"
         >
-          <img src="/images/logo-icon.svg" alt="OBEL" className="h-8 w-8 brightness-0 invert" />
+          <img src="/images/projects/bizarrap-lid.png" alt="Project cover" className="h-full w-full object-contain object-center rounded-lg" />
         </div>
       </div>
+      {/* Screen (opens on scroll) — translateZ pushes it in front of lid */}
       <motion.div
         style={{
           scaleX: scaleX,
           scaleY: scaleY,
           rotateX: rotate,
           translateY: translate,
-          transformStyle: "preserve-3d",
+          translateZ: 10,
           transformOrigin: "top",
         }}
         className="absolute inset-0 h-96 w-[32rem] rounded-2xl bg-[#010101] p-2"
       >
-        <div className="absolute inset-0 rounded-lg bg-[#010101]" />
-        <img
-          src={src as string}
-          alt="Project screenshot"
-          className="absolute inset-0 h-full w-full rounded-lg object-cover object-center"
-        />
+        <div className="absolute inset-0 overflow-hidden rounded-lg bg-[#010101]">
+          <img
+            src={src as string}
+            alt="Project screenshot"
+            className="h-full w-full scale-125 object-contain object-center"
+          />
+        </div>
       </motion.div>
     </div>
   );
