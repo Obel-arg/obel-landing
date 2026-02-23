@@ -4,7 +4,7 @@ import Image from "next/image";
 import { MacbookScroll } from "@/components/ui/macbook-scroll";
 export function BizarapShowcase() {
   return (
-    <section className="hidden md:block relative z-0 bg-background md:pt-24 lg:pt-32">
+    <section className="hidden md:block relative z-0 bg-background md:pt-8 lg:pt-12">
       <MacbookScroll
         src="/images/projects/bizarrap-screen.png"
         showGradient={false}
