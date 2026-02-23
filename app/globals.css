@@ -131,6 +131,15 @@ html::-webkit-scrollbar-track {
   contain: layout style;
 }
 
+/* Hide scrollbar but keep scrollable */
+.scrollbar-none {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+
 /* Atropos Logo - 3D hover effect */
 .atropos-logo {
   display: inline-flex;

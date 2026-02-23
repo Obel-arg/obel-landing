@@ -22,8 +22,14 @@ export default function Template({ children }: { children: React.ReactNode }) {
     if (isInitialLoad) {
       isInitialLoad = false;
       gsap.set(el, { opacity: 1, y: 0 });
+      // Still signal ready in case RouteTransition is waiting
+      window.dispatchEvent(new CustomEvent("routePageReady"));
       return;
     }
+
+    // Signal that the new page has mounted and is ready to be revealed.
+    // RouteTransition listens for this to start the exit dissolve.
+    window.dispatchEvent(new CustomEvent("routePageReady"));
 
     // If RouteTransition is handling this SPA navigation, stay invisible
     // until the exit dissolve starts (prevents flash of content beneath canvas)
@@ -33,8 +39,8 @@ export default function Template({ children }: { children: React.ReactNode }) {
       };
       window.addEventListener("routeTransitionExit", reveal, { once: true });
 
-      // Safety: reveal after max possible transition time to prevent stuck invisible page
-      const safety = setTimeout(reveal, 2000);
+      // Safety: reveal if routeTransitionExit never fires
+      const safety = setTimeout(reveal, 1500);
 
       return () => {
         window.removeEventListener("routeTransitionExit", reveal);

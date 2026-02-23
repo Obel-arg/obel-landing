@@ -1,14 +1,21 @@
+export interface ProjectTool {
+  name: string;
+  icon: string;
+}
+
 export interface Project {
   id: number;
   slug: string;
   company: string;
   title: string;
   year: string;
+  country: string;
   description: string;
   longDescription: string;
   problem: string;
   solution: string;
   services: string[];
+  tools: ProjectTool[];
   link?: string;
   image: string;
   images: string[];
@@ -22,6 +29,7 @@ const PROJECTS: Project[] = [
     company: "Bizarrap",
     title: "Visual Identity & Digital Experience",
     year: "2026",
+    country: "Argentina",
     // TODO(human): Replace these placeholders with real Bizarrap project content
     description:
       "Placeholder description for the Bizarrap project.",
@@ -32,8 +40,20 @@ const PROJECTS: Project[] = [
     solution:
       "Placeholder solution statement for the Bizarrap project.",
     services: ["Visual Identity", "Web Development", "Digital Experience"],
+    tools: [
+      { name: "Illustrator", icon: "/images/tools/illustrator.svg" },
+      { name: "Figma", icon: "/images/tools/figma.svg" },
+      { name: "Slack", icon: "/images/tools/slack.svg" },
+      { name: "Gemini", icon: "/images/tools/gemini.png" },
+    ],
     image: "/images/projects/bizarrap-screen.png",
-    images: [],
+    images: [
+      "/images/projects/biza.png",
+      "/images/projects/biza1.png",
+      "/images/projects/biza2.png",
+      "/images/projects/biza3.png",
+      "/images/projects/biza4.png",
+    ],
     showcase: true,
   },
   {
@@ -42,6 +62,7 @@ const PROJECTS: Project[] = [
     company: "Hang",
     title: "Brand Identity & Web Platform",
     year: "2025",
+    country: "Argentina",
     description:
       "Complete brand overhaul and digital platform for a leading tech company.",
     longDescription:
@@ -50,7 +71,12 @@ const PROJECTS: Project[] = [
       "Influencer marketing is fragmented, inefficient and hard to scale. Brands struggle to find the right creators and manage campaigns, while creators waste time applying to opportunities that aren't a real fit.",
     solution:
       "HANG is a structured marketplace with intelligent matching, centralized campaign management and clear workflows — reducing friction and turning collaborations into a scalable, measurable system for brands and creators.",
-    services: ["Brand Strategy", "Visual Identity", "Web Development"],
+    services: ["Visual Identity", "Web Development"],
+    tools: [
+      { name: "Figma", icon: "/images/tools/figma.svg" },
+      { name: "Illustrator", icon: "/images/tools/illustrator.svg" },
+      { name: "Slack", icon: "/images/tools/slack.svg" },
+    ],
     image: "/images/projects/hang-cover.webp",
     images: [
       "/images/projects/hang-wordmark.webp",
@@ -64,6 +90,7 @@ const PROJECTS: Project[] = [
     company: "iuSports",
     title: "App Design & Development",
     year: "2026",
+    country: "Argentina",
     description:
       "Full-cycle mobile app design and development for a sports technology platform.",
     longDescription:
@@ -73,6 +100,10 @@ const PROJECTS: Project[] = [
     solution:
       "iuSports automates recording, highlights, analytics and management in one platform — bringing professional tools and visibility to the amateur ecosystem.",
     services: ["UX Design", "App Development", "Brand Identity"],
+    tools: [
+      { name: "Figma", icon: "/images/tools/figma.svg" },
+      { name: "Slack", icon: "/images/tools/slack.svg" },
+    ],
     image: "/images/projects/iusports-cover.webp",
     images: [
       "/images/projects/iusports-logos.webp",

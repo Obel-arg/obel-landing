@@ -173,9 +173,18 @@ export function RouteTransition() {
             onCoveredRef.current();
             onCoveredRef.current = null;
           }
+          const onPageReady = () => {
+            scheduleTimeout(() => {
+              startExitAnimationRef.current(ctx, width, height, cellWidth, cellHeight);
+            }, 50);
+          };
+          window.addEventListener("routePageReady", onPageReady, { once: true });
           scheduleTimeout(() => {
-            startExitAnimationRef.current(ctx, width, height, cellWidth, cellHeight);
-          }, 100);
+            window.removeEventListener("routePageReady", onPageReady);
+            if (stateRef.current === "covered") {
+              startExitAnimationRef.current(ctx, width, height, cellWidth, cellHeight);
+            }
+          }, 1200);
         }
       }, ENTER_DURATION + 500);
 
@@ -217,10 +226,25 @@ export function RouteTransition() {
             onCoveredRef.current = null;
           }
 
-          // Small delay before exit animation
+          // Wait for the new page to mount before starting exit dissolve.
+          // Template dispatches 'routePageReady' when it mounts.
+          const onPageReady = () => {
+            // Homepage is heavy (images, GSAP, Lenis) — needs more buffer
+            // Project pages are lighter — reveal quickly
+            const isHomepage = window.location.pathname === "/";
+            const delay = isHomepage ? 380 : 50;
+            scheduleTimeout(() => {
+              startExitAnimationRef.current(ctx, width, height, cellWidth, cellHeight);
+            }, delay);
+          };
+          window.addEventListener("routePageReady", onPageReady, { once: true });
+          // Safety: start exit anyway if page never signals ready
           scheduleTimeout(() => {
-            startExitAnimationRef.current(ctx, width, height, cellWidth, cellHeight);
-          }, 100);
+            window.removeEventListener("routePageReady", onPageReady);
+            if (stateRef.current === "covered") {
+              startExitAnimationRef.current(ctx, width, height, cellWidth, cellHeight);
+            }
+          }, 1200);
         }
       };
 
