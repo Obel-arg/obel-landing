@@ -5,16 +5,16 @@ import { MacbookScroll } from "@/components/ui/macbook-scroll";
 
 export function BizarapShowcase() {
   return (
-    <section id="works" className="relative overflow-hidden bg-background pt-20 md:pt-24 lg:pt-32">
+    <section className="hidden md:block relative overflow-hidden bg-background md:pt-24 lg:pt-32">
       <MacbookScroll
         src="/images/projects/bizarrap-screen.png"
         showGradient={false}
         title={
           <div className="flex flex-col items-center text-center">
-            <span className="font-neuebit text-foreground text-5xl sm:text-7xl md:text-8xl lg:text-9xl xl:text-[10rem] leading-[0.8]">
+            <span className="font-neuebit text-foreground text-6xl sm:text-8xl md:text-8xl lg:text-9xl xl:text-[10rem] leading-[0.8]">
               Featured Projects:
             </span>
-            <span className="font-sans text-foreground font-semibold text-2xl sm:text-3xl md:text-4xl lg:text-5xl tracking-tight leading-tight mt-3 md:mt-4">
+            <span className="font-sans text-foreground font-semibold text-3xl sm:text-4xl md:text-4xl lg:text-5xl tracking-tight leading-tight mt-3 md:mt-4">
               Landing page Bizarrap
             </span>
           </div>

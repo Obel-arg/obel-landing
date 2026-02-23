@@ -147,6 +147,9 @@ export function SmoothScroll({ children }: { children: React.ReactNode }) {
       }
       if (saved) {
         const pos = parseInt(saved, 10);
+        // Set native scroll immediately so position is correct before
+        // RouteTransition exit dissolve reveals the page (~100ms after nav)
+        window.scrollTo(0, pos);
         // Wait for page DOM to fully render + ScrollTrigger to recalculate
         // before restoring position. Multiple attempts ensure it sticks
         // even if layout shifts happen during hydration.

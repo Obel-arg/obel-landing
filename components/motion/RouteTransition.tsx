@@ -249,6 +249,9 @@ export function RouteTransition() {
 
       dbg("startExitAnimation starting");
 
+      // Signal template to reveal page content (it starts at opacity:0 to prevent flash)
+      window.dispatchEvent(new CustomEvent("routeTransitionExit"));
+
       // Regenerate noise for different exit pattern
       noiseGridRef.current = generateNoiseGrid();
       const noiseGrid = noiseGridRef.current;

@@ -25,10 +25,21 @@ export default function Template({ children }: { children: React.ReactNode }) {
       return;
     }
 
-    // If RouteTransition just handled the SPA navigation, skip the fade-in
+    // If RouteTransition is handling this SPA navigation, stay invisible
+    // until the exit dissolve starts (prevents flash of content beneath canvas)
     if (window.routeTransition) {
-      gsap.set(el, { opacity: 1, y: 0 });
-      return;
+      const reveal = () => {
+        gsap.set(el, { opacity: 1, y: 0 });
+      };
+      window.addEventListener("routeTransitionExit", reveal, { once: true });
+
+      // Safety: reveal after max possible transition time to prevent stuck invisible page
+      const safety = setTimeout(reveal, 2000);
+
+      return () => {
+        window.removeEventListener("routeTransitionExit", reveal);
+        clearTimeout(safety);
+      };
     }
 
     gsap.fromTo(
@@ -38,5 +49,6 @@ export default function Template({ children }: { children: React.ReactNode }) {
     );
   }, []);
 
-  return <div ref={ref}>{children}</div>;
+  // Start at opacity:0 to prevent flash — revealed by animation/event above
+  return <div ref={ref} style={{ opacity: 0 }}>{children}</div>;
 }

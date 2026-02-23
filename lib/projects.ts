@@ -17,6 +17,26 @@ export interface Project {
 
 const PROJECTS: Project[] = [
   {
+    id: 3,
+    slug: "bizarrap",
+    company: "Bizarrap",
+    title: "Visual Identity & Digital Experience",
+    year: "2026",
+    // TODO(human): Replace these placeholders with real Bizarrap project content
+    description:
+      "Placeholder description for the Bizarrap project.",
+    longDescription:
+      "Placeholder long description for the Bizarrap project.",
+    problem:
+      "Placeholder problem statement for the Bizarrap project.",
+    solution:
+      "Placeholder solution statement for the Bizarrap project.",
+    services: ["Visual Identity", "Web Development", "Digital Experience"],
+    image: "/images/projects/bizarrap-screen.png",
+    images: [],
+    showcase: true,
+  },
+  {
     id: 1,
     slug: "hang",
     company: "Hang",
@@ -59,26 +79,6 @@ const PROJECTS: Project[] = [
       "/images/projects/iusports1.webp",
       "/images/projects/iusports2.webp",
     ],
-  },
-  {
-    id: 3,
-    slug: "bizarrap",
-    company: "Bizarrap",
-    title: "Visual Identity & Digital Experience",
-    year: "2026",
-    // TODO(human): Replace these placeholders with real Bizarrap project content
-    description:
-      "Placeholder description for the Bizarrap project.",
-    longDescription:
-      "Placeholder long description for the Bizarrap project.",
-    problem:
-      "Placeholder problem statement for the Bizarrap project.",
-    solution:
-      "Placeholder solution statement for the Bizarrap project.",
-    services: ["Visual Identity", "Web Development", "Digital Experience"],
-    image: "/images/projects/bizarrap-screen.png",
-    images: [],
-    showcase: true,
   },
 ];
 
