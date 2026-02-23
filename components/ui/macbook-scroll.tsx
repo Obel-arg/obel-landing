@@ -46,11 +46,18 @@ export const MacbookScroll = ({
   });
 
   const [isMobile, setIsMobile] = useState(false);
+  const [viewportHeight, setViewportHeight] = useState(1000);
 
   useEffect(() => {
-    if (window && window.innerWidth < 768) {
+    if (!window) return;
+    if (window.innerWidth < 768) {
       setIsMobile(true);
     }
+    setViewportHeight(window.innerHeight);
+
+    const onResize = () => setViewportHeight(window.innerHeight);
+    window.addEventListener("resize", onResize);
+    return () => window.removeEventListener("resize", onResize);
   }, []);
 
   const scaleX = useTransform(
@@ -63,22 +70,22 @@ export const MacbookScroll = ({
     [0, 0.3],
     [0.6, isMobile ? 1 : 1.8],
   );
-  const translate = useTransform(scrollYProgress, [0, 1], [0, 1500]);
+  const translate = useTransform(scrollYProgress, [0, 1], [0, viewportHeight * 1.5]);
   const rotate = useTransform(scrollYProgress, [0.1, 0.12, 0.3], [-28, -28, 0]);
-  const textTransform = useTransform(scrollYProgress, [0, 0.3], [0, 100]);
+  const textTransform = useTransform(scrollYProgress, [0, 0.3], [0, viewportHeight * 0.1]);
   const textOpacity = useTransform(scrollYProgress, [0, 0.2], [1, 0]);
 
   return (
     <div
       ref={ref}
-      className="flex min-h-[60vh] shrink-0 scale-[0.5] transform flex-col items-center justify-start py-0 [perspective:800px] sm:min-h-[100vh] sm:scale-[0.7] md:min-h-[200vh] md:scale-100 md:pt-56 md:pb-40"
+      className="flex min-h-[60vh] shrink-0 scale-[0.5] transform flex-col items-center justify-start py-0 [perspective:800px] sm:min-h-[100vh] sm:scale-[0.7] md:min-h-[200vh] md:scale-100 md:pt-[15vh] md:pb-[10vh]"
     >
       <motion.h2
         style={{
           translateY: textTransform,
           opacity: textOpacity,
         }}
-        className="mb-32 text-center text-3xl font-bold text-neutral-800 dark:text-white"
+        className="mb-20 text-center text-3xl font-bold text-neutral-800 dark:text-white"
       >
         {title || (
           <span>
