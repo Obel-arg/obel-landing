@@ -25,6 +25,10 @@ const ObelHub = dynamic(
   () => import("@/components/sections/ObelHub").then((m) => m.ObelHub),
   { loading: SectionPlaceholder }
 );
+const BizarapShowcase = dynamic(
+  () => import("@/components/sections/BizarapShowcase").then((m) => m.BizarapShowcase),
+  { loading: SectionPlaceholder }
+);
 export default function Home() {
   return (
     <main>
@@ -37,6 +41,7 @@ export default function Home() {
         section2={<Services />}
       />
       <ObelHub />
+      <BizarapShowcase />
       <FeaturedProjects />
       <Footer />
     </main>

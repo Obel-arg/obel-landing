@@ -2,11 +2,11 @@
 
 import Image from "next/image";
 import { cn } from "@/lib/cn";
-import { Reveal } from "@/components/motion/Reveal";
+
 import { TransitionLink } from "@/components/ui/TransitionLink";
 import { getAllProjects, type Project } from "@/lib/projects";
 
-const PROJECTS = getAllProjects();
+const PROJECTS = getAllProjects().filter((p) => !p.showcase);
 
 function ProjectCard({
   project,
@@ -86,7 +86,7 @@ function ProjectCard({
 
 export function FeaturedProjects() {
   return (
-    <section id="works" className="below-fold grid-layout !gap-y-0 py-20 md:py-24 lg:py-32">
+    <section className="relative z-10 below-fold grid-layout !gap-y-0 py-20 md:py-24 lg:py-32">
       {PROJECTS.map((project, index) => {
         const isFirst = index === 0;
 
@@ -104,16 +104,6 @@ export function FeaturedProjects() {
                 : 'calc(var(--header-height) + clamp(76px, 10vw, 110px))',
             }}
           >
-            {/* Title only in first card */}
-            {isFirst && (
-              <div className="pt-6 border-b border-foreground/10">
-                <Reveal>
-                  <h2 className="font-neuebit text-[2.5rem] md:text-[4rem] lg:text-[5.5rem] xl:text-[clamp(5.5rem,5.21vw,90px)] leading-[0.67] tracking-[-0.023em] pb-6">
-                    Featured Projects
-                  </h2>
-                </Reveal>
-              </div>
-            )}
             <ProjectCard project={project} isFirst={isFirst} />
           </div>
         );
