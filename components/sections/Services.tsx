@@ -322,12 +322,7 @@ export function Services() {
             <h2 className="font-neuebit text-[#FFFAF8] text-6xl sm:text-7xl md:text-8xl lg:text-9xl xl:text-[140px] tracking-tight leading-none">
               Our Services
             </h2>
-            <img
-              src="/images/pixel-arrow.svg"
-              alt=""
-              aria-hidden="true"
-              className="w-16 sm:w-20 md:w-28 lg:w-36 xl:w-44 h-auto md:translate-y-[0.1em] pointer-events-none select-none"
-            />
+            <span className="font-neuebit text-[#FFFAF8] text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl leading-none select-none" aria-hidden="true">→</span>
           </div>
         </div>
 
@@ -407,12 +402,7 @@ export function Services() {
               <h2 className="font-neuebit text-[#FFFAF8] text-6xl sm:text-7xl md:text-8xl lg:text-9xl xl:text-[140px] tracking-tight leading-none">
                 Our Services
               </h2>
-              <img
-                src="/images/pixel-arrow.svg"
-                alt=""
-                aria-hidden="true"
-                className="w-16 sm:w-20 md:w-28 lg:w-36 xl:w-44 h-auto md:translate-y-[0.1em] pointer-events-none select-none"
-              />
+              <span className="font-neuebit text-[#FFFAF8] text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl leading-none select-none" aria-hidden="true">→</span>
             </div>
           </div>
 
