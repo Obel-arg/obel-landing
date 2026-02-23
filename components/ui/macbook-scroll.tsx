@@ -224,7 +224,7 @@ export const Lid = ({
           translateZ: 10,
           transformOrigin: "top",
         }}
-        className="absolute inset-0 h-96 w-[32rem] rounded-2xl bg-[#010101] p-2"
+        className="absolute inset-0 h-96 w-[32rem] rounded-2xl bg-[#010101] p-2 shadow-[0_25px_60px_-10px_rgba(0,0,0,0.5)]"
       >
         <div className="absolute inset-0 overflow-hidden rounded-lg bg-[#010101]">
           <img
