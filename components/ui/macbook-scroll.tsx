@@ -174,7 +174,7 @@ export const Lid = ({
   src?: string;
 }) => {
   return (
-    <div className="relative [transform-style:preserve-3d]">
+    <div className="relative [perspective:800px]">
       {/* Lid back (closed laptop) — no preserve-3d so it stays flat behind screen */}
       <div
         style={{
@@ -202,13 +202,13 @@ export const Lid = ({
           translateZ: 10,
           transformOrigin: "top",
         }}
-        className="absolute inset-0 w-[32rem] aspect-[16/10] rounded-2xl bg-[#010101] p-2"
+        className="absolute inset-0 h-96 w-[32rem] rounded-2xl bg-[#010101] p-2"
       >
         <div className="absolute inset-0 overflow-hidden rounded-lg bg-[#010101]">
           <img
             src={src as string}
             alt="Project screenshot"
-            className="h-full w-full object-cover object-top"
+            className="h-full w-full scale-125 object-contain object-center"
           />
         </div>
       </motion.div>
