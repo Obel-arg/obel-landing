@@ -43,22 +43,27 @@ export function Reveal({
 
       const offsets = getOffsets(direction);
 
-      // Check if element is already in viewport (handles race conditions with dynamic imports)
+      // Set initial state (hidden)
+      gsap.set(el, { opacity: 0, ...offsets });
+
+      // Check if element is already in viewport (e.g. dynamic imports, route transitions)
       const rect = el.getBoundingClientRect();
       const isInViewport = rect.top < window.innerHeight * 0.85;
 
       if (isInViewport) {
-        gsap.set(el, { opacity: 1, x: 0, y: 0 });
+        // Already visible — animate in immediately instead of skipping
+        gsap.to(el, {
+          opacity: 1,
+          x: 0,
+          y: 0,
+          duration,
+          delay: delay + 0.05,
+          ease: "power3.out",
+        });
         return;
       }
 
-      // Set initial state (hidden)
-      gsap.set(el, {
-        opacity: 0,
-        ...offsets,
-      });
-
-      // Create scroll trigger — auto-cleaned by useGSAP on unmount
+      // Create scroll trigger for below-fold elements — auto-cleaned by useGSAP on unmount
       ScrollTrigger.create({
         trigger: el,
         start: "top 85%",

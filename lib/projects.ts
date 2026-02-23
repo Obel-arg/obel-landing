@@ -39,6 +39,7 @@ const PROJECTS: Project[] = [
       "Placeholder problem statement for the Bizarrap project.",
     solution:
       "Placeholder solution statement for the Bizarrap project.",
+    link: "https://bizarrap.com",
     services: ["Visual Identity", "Web Development", "Digital Experience"],
     tools: [
       { name: "Illustrator", icon: "/images/tools/illustrator.svg" },

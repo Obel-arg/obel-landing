@@ -97,7 +97,7 @@ export default async function ProjectPage({
                     rel="noopener noreferrer"
                     className="font-sans text-sm sm:text-base text-foreground/55 tracking-[-0.03em] text-right ml-4 underline hover:text-foreground/80 transition-colors duration-300"
                   >
-                    Visit site
+                    {new URL(row.value).hostname.replace(/^www\./, "")}
                   </a>
                 ) : (
                   <span className="font-sans text-sm sm:text-base text-foreground/55 tracking-[-0.03em] text-right ml-4">
