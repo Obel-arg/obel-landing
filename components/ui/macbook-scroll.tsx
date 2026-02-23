@@ -60,25 +60,40 @@ export const MacbookScroll = ({
     return () => window.removeEventListener("resize", onResize);
   }, []);
 
+  // Scale adapts to viewport: screen (384px base) stays under 55% of viewport height
+  const maxScale = isMobile ? 1 : Math.min(1.5, (viewportHeight * 0.55) / 384);
+
   const scaleX = useTransform(
     scrollYProgress,
     [0, 0.3],
-    [1.2, isMobile ? 1 : 1.8],
+    [1.2, maxScale],
   );
   const scaleY = useTransform(
     scrollYProgress,
     [0, 0.3],
-    [0.6, isMobile ? 1 : 1.8],
+    [0.6, maxScale],
   );
   const translate = useTransform(scrollYProgress, [0, 1], [0, viewportHeight * 1.5]);
   const rotate = useTransform(scrollYProgress, [0.1, 0.12, 0.3], [-28, -28, 0]);
   const textTransform = useTransform(scrollYProgress, [0, 0.3], [0, viewportHeight * 0.1]);
   const textOpacity = useTransform(scrollYProgress, [0, 0.2], [1, 0]);
 
+  // Compute ideal top padding so screen center aligns with viewport center at progress 0.3
+  // At progress 0.3: scrollAmount = 0.6*vh, translateY = 0.3*totalTranslate
+  // screenCenter = startY - scrollAmount + translateY + scaledHeight/2
+  // Want screenCenter = vh/2, so:
+  // startY = vh/2 + 0.6*vh - 0.3*totalTranslate - scaledHeight/2
+  const scaledScreenHeight = 384 * maxScale;
+  const totalTranslate = viewportHeight * 1.5;
+  const titleHeight = 180; // title + mb-20 approximate
+  const idealStartY = viewportHeight * 0.5 + viewportHeight * 0.6 - 0.3 * totalTranslate - scaledScreenHeight / 2;
+  const idealPaddingTop = isMobile ? 0 : Math.max(40, idealStartY - titleHeight);
+
   return (
     <div
       ref={ref}
-      className="flex min-h-[60vh] shrink-0 scale-[0.5] transform flex-col items-center justify-start py-0 [perspective:800px] sm:min-h-[100vh] sm:scale-[0.7] md:min-h-[200vh] md:scale-100 md:pt-[15vh] md:pb-[10vh]"
+      className="flex min-h-[60vh] shrink-0 scale-[0.5] transform flex-col items-center justify-start py-0 [perspective:800px] sm:min-h-[100vh] sm:scale-[0.7] md:min-h-[200vh] md:scale-100"
+      style={{ paddingTop: isMobile ? undefined : idealPaddingTop }}
     >
       <motion.h2
         style={{
