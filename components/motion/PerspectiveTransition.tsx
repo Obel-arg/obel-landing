@@ -115,7 +115,7 @@ export function PerspectiveTransition({
     <div
       ref={containerRef}
       className="relative"
-      style={{ backgroundColor: "#090E19" }}
+      style={{ backgroundColor: "#FFFAF8" }}
     >
       {/* Section 1: sticky, scales down + rotates backward on scroll */}
       <div

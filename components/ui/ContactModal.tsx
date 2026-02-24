@@ -118,8 +118,11 @@ export function ContactModal() {
       window.lenis.start();
     }
     document.body.style.overflow = "";
-    // Recalculate all trigger positions after scroll context change
-    ScrollTrigger.refresh();
+    // Wait one frame so Lenis syncs its scroll position via GSAP ticker
+    // before recalculating trigger positions (fixes dev mode timing race)
+    requestAnimationFrame(() => {
+      ScrollTrigger.refresh();
+    });
   }, []);
 
   // Open modal

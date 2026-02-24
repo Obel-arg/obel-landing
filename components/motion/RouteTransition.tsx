@@ -232,7 +232,7 @@ export function RouteTransition() {
             // Homepage is heavy (images, GSAP, Lenis) — needs more buffer
             // Project pages are lighter — reveal quickly
             const isHomepage = window.location.pathname === "/";
-            const delay = isHomepage ? 380 : 50;
+            const delay = isHomepage ? 415 : 50;
             scheduleTimeout(() => {
               startExitAnimationRef.current(ctx, width, height, cellWidth, cellHeight);
             }, delay);

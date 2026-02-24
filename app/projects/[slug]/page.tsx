@@ -114,24 +114,24 @@ export default async function ProjectPage({
               {project.images.slice(0, 2).map((img, i) => (
                 <div
                   key={i}
-                  className="overflow-hidden rounded-lg border border-foreground/10"
+                  className="overflow-hidden rounded-lg border border-foreground/10 aspect-[2/1]"
                 >
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={img}
                     alt={`${project.company} — image ${i + 1}`}
-                    className="w-full h-auto"
+                    className="w-full h-full object-cover"
                   />
                 </div>
               ))}
             </div>
             {project.images[2] && (
-              <div className="overflow-hidden rounded-lg border border-foreground/10">
+              <div className="overflow-hidden rounded-lg border border-foreground/10 aspect-[2/1]">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={project.images[2]}
                   alt={`${project.company} — image 3`}
-                  className="w-full h-auto"
+                  className="w-full h-full object-cover"
                 />
               </div>
             )}
@@ -140,13 +140,13 @@ export default async function ProjectPage({
                 {project.images.slice(3, 5).map((img, i) => (
                   <div
                     key={i}
-                    className="overflow-hidden rounded-lg border border-foreground/10"
+                    className="overflow-hidden rounded-lg border border-foreground/10 aspect-[2/1]"
                   >
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
                       src={img}
                       alt={`${project.company} — image ${i + 4}`}
-                      className="w-full h-auto"
+                      className="w-full h-full object-cover"
                     />
                   </div>
                 ))}
@@ -201,25 +201,25 @@ export default async function ProjectPage({
             {project.images.slice(0, 2).map((img, i) => (
               <div
                 key={i}
-                className="overflow-hidden rounded-lg border border-foreground/10"
+                className="overflow-hidden rounded-lg border border-foreground/10 aspect-[2/1]"
               >
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={img}
                   alt={`${project.company} — image ${i + 1}`}
-                  className="w-full h-auto"
+                  className="w-full h-full object-cover"
                 />
               </div>
             ))}
           </div>
 
           {project.images[2] && (
-            <div className="overflow-hidden rounded-lg border border-foreground/10">
+            <div className="overflow-hidden rounded-lg border border-foreground/10 aspect-[2/1]">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={project.images[2]}
                 alt={`${project.company} — image 3`}
-                className="w-full h-auto"
+                className="w-full h-full object-cover"
               />
             </div>
           )}
@@ -229,13 +229,13 @@ export default async function ProjectPage({
               {project.images.slice(3, 5).map((img, i) => (
                 <div
                   key={i}
-                  className="overflow-hidden rounded-lg"
+                  className="overflow-hidden rounded-lg aspect-[2/1]"
                 >
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={img}
                     alt={`${project.company} — image ${i + 4}`}
-                    className="w-full h-auto"
+                    className="w-full h-full object-cover"
                   />
                 </div>
               ))}

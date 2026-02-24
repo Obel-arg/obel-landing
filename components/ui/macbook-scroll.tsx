@@ -211,7 +211,7 @@ const Lid = ({
           }}
           className="absolute inset-2 overflow-hidden rounded-lg bg-[#010101]"
         >
-          <img src="/images/projects/bizarrap-lid.png" alt="Project cover" className="h-full w-full object-contain object-center rounded-lg" />
+          <img src="/images/projects/bizarrap-lid.webp" alt="Project cover" className="h-full w-full object-contain object-center rounded-lg" />
         </div>
       </div>
       {/* Screen (opens on scroll) — translateZ pushes it in front of lid */}

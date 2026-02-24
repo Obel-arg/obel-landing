@@ -6,7 +6,7 @@ export function BizarapShowcase() {
   return (
     <section className="hidden md:block relative z-0 bg-background">
       <MacbookScroll
-        src="/images/projects/bizarrap-screen.png"
+        src="/images/projects/bizarrap-screen.webp"
         showGradient={false}
         href="/projects/bizarrap"
         title={

@@ -1,7 +1,6 @@
 "use client";
 
 import { useRef } from "react";
-import Image from "next/image";
 import { gsap, ScrollTrigger, useGSAP } from "@/lib/gsap";
 import { useReducedMotion } from "@/components/motion/useReducedMotion";
 import Atropos from "atropos/react";
@@ -82,14 +81,14 @@ function ServiceCard({
         highlight={false}
       >
         <div
-          className="service-card-inner rounded-2xl md:rounded-[27px] p-5 sm:p-7 md:p-10 lg:p-14 xl:p-18 flex flex-col gap-6 md:gap-8 lg:gap-10 bg-[rgba(9,14,25,0.74)] border-[0.5px] border-white/20 overflow-clip"
+          className="service-card-inner rounded-2xl md:rounded-[27px] p-5 sm:p-7 md:p-10 lg:p-14 xl:p-18 flex flex-col gap-6 md:gap-8 lg:gap-10 bg-[rgba(9,14,25,0.06)] border-[0.5px] border-foreground/10 overflow-clip"
         >
           {/* Title + headline */}
           <div>
-            <h3 className="font-sans font-semibold text-[#FFFAF8] text-lg sm:text-xl md:text-3xl lg:text-4xl tracking-tight mb-1 sm:mb-2 md:mb-3">
+            <h3 className="font-sans font-semibold text-primary text-lg sm:text-xl md:text-3xl lg:text-4xl tracking-tight mb-1 sm:mb-2 md:mb-3">
               {service.title}
             </h3>
-            <p className="font-sans text-[#FFFAF8] text-base sm:text-lg md:text-2xl lg:text-3xl tracking-tight leading-tight">
+            <p className="font-sans text-primary text-base sm:text-lg md:text-2xl lg:text-3xl tracking-tight leading-tight">
               {service.headline}
             </p>
           </div>
@@ -98,10 +97,10 @@ function ServiceCard({
           <ul className="space-y-2 sm:space-y-3 md:space-y-4">
             {service.includes.map((item, i) => (
               <li key={i} className="flex items-center gap-3 md:gap-5">
-                <span className="font-neuebit text-white text-xl sm:text-2xl md:text-3xl lg:text-4xl leading-none shrink-0" aria-hidden="true">
+                <span className="font-neuebit text-primary text-xl sm:text-2xl md:text-3xl lg:text-4xl leading-none shrink-0" aria-hidden="true">
                   →
                 </span>
-                <span className="font-sans text-[#FFFAF8] text-sm sm:text-base md:text-lg lg:text-xl tracking-tight">
+                <span className="font-sans text-primary text-sm sm:text-base md:text-lg lg:text-xl tracking-tight">
                   {item}
                 </span>
               </li>
@@ -302,27 +301,14 @@ export function Services() {
   // Reduced motion fallback - vertical stack with dark theme
   if (prefersReducedMotion) {
     return (
-      <section id="services" data-header-transparent className="below-fold relative py-24 md:py-32 overflow-hidden bg-[#090E19]">
-        {/* Background image - static for reduced motion */}
-        <div className="absolute inset-0 z-0" aria-hidden="true">
-          <Image
-            src="/images/back.webp"
-            alt=""
-            fill
-            className="object-cover object-center"
-            sizes="100vw"
-            quality={85}
-          />
-          <div className="absolute inset-0 bg-[#090E19]/30" />
-        </div>
-
+      <section id="services" className="below-fold relative py-24 md:py-32 overflow-hidden bg-background">
         {/* Title */}
         <div className="relative z-10 flex items-center justify-center py-16 md:py-24">
           <div className="flex flex-col md:flex-row items-center gap-4 md:gap-8">
-            <h2 className="font-neuebit text-[#FFFAF8] text-6xl sm:text-7xl md:text-8xl lg:text-9xl xl:text-[140px] tracking-tight leading-none">
+            <h2 className="font-neuebit text-primary text-6xl sm:text-7xl md:text-8xl lg:text-9xl xl:text-[140px] tracking-tight leading-none">
               Our Services
             </h2>
-            <span className="font-neuebit text-[#FFFAF8] text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl leading-none select-none" aria-hidden="true">→</span>
+            <span className="font-neuebit text-primary text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl leading-none select-none" aria-hidden="true">↓</span>
           </div>
         </div>
 
@@ -331,23 +317,23 @@ export function Services() {
           {SERVICE_CARDS.map((service) => (
             <div
               key={service.id}
-              className="rounded-2xl md:rounded-[27px] p-5 sm:p-7 md:p-10 lg:p-14 xl:p-18 flex flex-col gap-6 md:gap-8 lg:gap-10 bg-[rgba(9,14,25,0.74)] border-[0.5px] border-white/20 overflow-clip"
+              className="rounded-2xl md:rounded-[27px] p-5 sm:p-7 md:p-10 lg:p-14 xl:p-18 flex flex-col gap-6 md:gap-8 lg:gap-10 bg-[rgba(9,14,25,0.06)] border-[0.5px] border-foreground/10 overflow-clip"
             >
               <div>
-                <h3 className="font-sans font-semibold text-[#FFFAF8] text-2xl md:text-3xl lg:text-4xl tracking-tight mb-2 sm:mb-3 md:mb-4">
+                <h3 className="font-sans font-semibold text-primary text-2xl md:text-3xl lg:text-4xl tracking-tight mb-2 sm:mb-3 md:mb-4">
                   {service.title}
                 </h3>
-                <p className="font-sans text-[#FFFAF8] text-lg sm:text-xl md:text-2xl lg:text-3xl tracking-tight leading-tight">
+                <p className="font-sans text-primary text-lg sm:text-xl md:text-2xl lg:text-3xl tracking-tight leading-tight">
                   {service.headline}
                 </p>
               </div>
               <ul className="space-y-2 sm:space-y-3 md:space-y-4">
                 {service.includes.map((item, i) => (
                   <li key={i} className="flex items-center gap-3 md:gap-5">
-                    <span className="font-neuebit text-white text-xl sm:text-2xl md:text-3xl lg:text-4xl leading-none shrink-0" aria-hidden="true">
+                    <span className="font-neuebit text-primary text-xl sm:text-2xl md:text-3xl lg:text-4xl leading-none shrink-0" aria-hidden="true">
                       →
                     </span>
-                    <span className="font-sans text-[#FFFAF8] text-sm sm:text-base md:text-lg lg:text-xl tracking-tight">
+                    <span className="font-sans text-primary text-sm sm:text-base md:text-lg lg:text-xl tracking-tight">
                       {item}
                     </span>
                   </li>
@@ -361,7 +347,7 @@ export function Services() {
   }
 
   return (
-    <section id="services" ref={sectionRef} data-header-transparent data-scroll-offset="8vh" className="contain-animated relative bg-[#090E19]">
+    <section id="services" ref={sectionRef} data-scroll-offset="8vh" className="contain-animated relative bg-background">
       {/* Scroll trigger container — responsive height: 400vh mobile, 500vh desktop */}
       <div
         ref={cardsContainerRef}
@@ -378,20 +364,6 @@ export function Services() {
             height: '100dvh',
           }}
         >
-          {/* Background image - hidden on mobile (solid bg-[#090E19] shows instead) */}
-          <div className="absolute inset-0 z-0 hidden md:block" aria-hidden="true">
-            <Image
-              src="/images/back.webp"
-              alt=""
-              fill
-              className="object-cover object-center"
-              sizes="(max-width: 767px) 0px, 100vw"
-              quality={85}
-            />
-            {/* Dark overlay for glassmorphism contrast */}
-            <div className="absolute inset-0 bg-[#090E19]/30" />
-          </div>
-
           {/* "Our Services" title — visible before cards scroll in */}
           <div
             ref={titleRef}
@@ -399,10 +371,10 @@ export function Services() {
             style={{ paddingTop: 'var(--header-height)' }}
           >
             <div className="flex flex-col md:flex-row items-center gap-4 md:gap-8">
-              <h2 className="font-neuebit text-[#FFFAF8] text-6xl sm:text-7xl md:text-8xl lg:text-9xl xl:text-[140px] tracking-tight leading-none">
+              <h2 className="font-neuebit text-primary text-6xl sm:text-7xl md:text-8xl lg:text-9xl xl:text-[140px] tracking-tight leading-none">
                 Our Services
               </h2>
-              <span className="font-neuebit text-[#FFFAF8] text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl leading-none select-none" aria-hidden="true">→</span>
+              <span className="font-neuebit text-primary text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl leading-none select-none" aria-hidden="true">↓</span>
             </div>
           </div>
 
