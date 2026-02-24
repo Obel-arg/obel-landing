@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { MotionValue, motion, useScroll, useTransform } from "motion/react";
 import { cn } from "@/lib/utils";
 import {
@@ -182,7 +182,7 @@ const MacbookHardware = ({
   </>
 );
 
-export const Lid = ({
+const Lid = ({
   scaleX,
   scaleY,
   rotate,
@@ -238,7 +238,7 @@ export const Lid = ({
   );
 };
 
-export const Trackpad = () => {
+const Trackpad = () => {
   return (
     <div
       className="mx-auto my-1 h-32 w-[40%] rounded-xl"
@@ -249,7 +249,7 @@ export const Trackpad = () => {
   );
 };
 
-export const Keypad = () => {
+const Keypad = () => {
   return (
     <div className="mx-1 h-full [transform:translateZ(0)] rounded-md bg-[#050505] p-1 [will-change:transform]">
       {/* First Row */}
@@ -607,7 +607,7 @@ export const Keypad = () => {
   );
 };
 
-export const KBtn = ({
+const KBtn = ({
   className,
   children,
   childrenClassName,
@@ -649,7 +649,7 @@ export const KBtn = ({
   );
 };
 
-export const SpeakerGrid = () => {
+const SpeakerGrid = () => {
   return (
     <div
       className="mt-2 flex h-40 gap-[2px] px-[0.5px]"
@@ -662,7 +662,7 @@ export const SpeakerGrid = () => {
   );
 };
 
-export const OptionKey = ({ className }: { className: string }) => {
+const OptionKey = ({ className }: { className: string }) => {
   return (
     <svg
       fill="none"
@@ -691,27 +691,6 @@ export const OptionKey = ({ className }: { className: string }) => {
         width="32"
         height="32"
         stroke="none"
-      />
-    </svg>
-  );
-};
-
-const AceternityLogo = () => {
-  return (
-    <svg
-      width="66"
-      height="65"
-      viewBox="0 0 66 65"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-      className="h-3 w-3 text-white"
-    >
-      <path
-        d="M8 8.05571C8 8.05571 54.9009 18.1782 57.8687 30.062C60.8365 41.9458 9.05432 57.4696 9.05432 57.4696"
-        stroke="currentColor"
-        strokeWidth="15"
-        strokeMiterlimit="3.86874"
-        strokeLinecap="round"
       />
     </svg>
   );

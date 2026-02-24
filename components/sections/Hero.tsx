@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import { InteractiveHoverButton } from "@/components/ui/InteractiveHoverButton";
 
 // Hoisted outside component (rendering-hoist-jsx) — never recreated on re-render
 function scrollToAbout() {
@@ -74,12 +75,13 @@ export function Hero() {
         {/* ── CTA + Hands Composition (locked alignment) ── */}
         <div className="relative mt-14 md:mt-40">
           {/* CTA Button */}
-          <button
+          <InteractiveHoverButton
             onClick={openContact}
-            className="relative z-10 bg-primary text-background font-sans font-medium text-[16px] md:text-[20px] rounded-[10px] md:rounded-[13px] px-5 md:px-6 py-3 md:py-[14px] hover:opacity-90 transition-opacity cursor-pointer border border-white/10"
+            className="relative z-10 bg-primary text-background text-[16px] md:text-[20px] rounded-[10px] md:rounded-[13px] px-5 md:px-6 py-3 md:py-[14px] border border-white/10 hover:text-primary"
+            hoverColor="#FFFAF8"
           >
             Get in Touch
-          </button>
+          </InteractiveHoverButton>
 
           {/* Desktop hands — anchored to CTA center */}
           <div className="hidden md:block absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[clamp(1000px,105vw,2100px)] max-w-none pointer-events-none">

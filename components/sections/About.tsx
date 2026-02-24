@@ -51,7 +51,7 @@ export function About() {
           <div className="space-y-1.5 xl:max-w-[70vw]">
             <p className="font-sans font-medium text-base md:text-lg lg:text-xl xl:text-[clamp(1.25rem,1.79vw,31px)] tracking-tight leading-normal">
               <mark
-                className="bg-primary text-background px-1.5 py-1 not-italic"
+                className="bg-primary text-background px-1.5 py-1"
                 style={{
                   boxDecorationBreak: "clone",
                   WebkitBoxDecorationBreak: "clone",

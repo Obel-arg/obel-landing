@@ -1,6 +1,5 @@
 // Layout constants
 export const HEADER_HEIGHT = 96;
-export const HEADER_HEIGHT_SCROLLED = 64;
 export const HEADER_SCROLL_THRESHOLD = 40;
 
 // Dynamic header height — reads the responsive CSS variable at runtime
@@ -13,7 +12,6 @@ export function getComputedHeaderHeight(): number {
 
 // Animation constants
 export const ANIMATION_DURATION = 0.6;
-export const ANIMATION_EASE: [number, number, number, number] = [0.22, 1, 0.36, 1]; // Custom cubic-bezier easing
 
 // Navigation links
 export const NAV_LINKS = [

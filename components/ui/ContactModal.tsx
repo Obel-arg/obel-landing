@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState, useCallback, useLayoutEffect } from "react";
-import { gsap } from "@/lib/gsap";
+import { gsap, ScrollTrigger } from "@/lib/gsap";
 
 // TypeScript declaration for global API
 declare global {
@@ -118,6 +118,8 @@ export function ContactModal() {
       window.lenis.start();
     }
     document.body.style.overflow = "";
+    // Recalculate all trigger positions after scroll context change
+    ScrollTrigger.refresh();
   }, []);
 
   // Open modal

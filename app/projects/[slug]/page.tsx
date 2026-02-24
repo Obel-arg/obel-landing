@@ -66,7 +66,7 @@ export default async function ProjectPage({
       {/* Mobile: stacked with reordered sections / Desktop: two-column */}
       <div className="flex flex-col lg:flex-row gap-8 lg:gap-12">
         {/* Left sidebar */}
-        <div className={`w-full lg:w-[320px] xl:w-[360px] lg:shrink-0 flex flex-col gap-6 md:gap-8${project.showcase ? " lg:sticky lg:top-[96px] lg:self-start lg:max-h-[calc(100vh-120px)] lg:overflow-y-auto scrollbar-none" : ""}`}>
+        <div className={`w-full lg:w-[320px] xl:w-[360px] lg:shrink-0 flex flex-col gap-6 md:gap-8${project.showcase ? " lg:sticky lg:top-[96px] lg:self-start" : ""}`}>
           {/* Project title */}
           <h1 className="font-sans text-3xl sm:text-4xl md:text-5xl font-semibold tracking-[-0.04em] leading-[1.1]">
             {project.company}

@@ -3,9 +3,9 @@
 import { Reveal } from "@/components/motion/Reveal";
 
 const KEY_AREAS = [
-  "Diagnosing real operational problems",
-  "Supporting long-term adoption and cultural change",
-  "Activating AI-driven ways of working",
+  "Diagnosing real operational problems.",
+  "Supporting long-term adoption and cultural change.",
+  "Activating AI-driven ways of working.",
 ] as const;
 
 export function ObelHub() {

@@ -3,6 +3,7 @@
 import { useEffect, useRef, useCallback, useState } from "react";
 import Link from "next/link";
 import { Reveal } from "@/components/motion/Reveal";
+import { InteractiveHoverButton } from "@/components/ui/InteractiveHoverButton";
 import { getComputedHeaderHeight } from "@/lib/constants";
 
 const NAV_LINKS = [
@@ -14,7 +15,7 @@ const NAV_LINKS = [
 ];
 
 const CHANNEL_LINKS = [
-  { label: "Instagram", href: "https://instagram.com/obel" },
+  { label: "Instagram", href: "https://instagram.com/obel.lab" },
   { label: "LinkedIn", href: "https://www.linkedin.com/company/obel-ar/" },
   { label: "X", href: "https://twitter.com/obel" },
 ];
@@ -98,12 +99,6 @@ export function Footer() {
     window.addEventListener("resize", check);
     return () => window.removeEventListener("resize", check);
   }, []);
-
-  useEffect(() => {
-    if (!isDesktop) return;
-    const img = new window.Image();
-    img.src = "/images/pattern-obel.webp";
-  }, [isDesktop]);
 
   const updateSpotlight = useCallback(() => {
     if (!patternRef.current) return;
@@ -195,15 +190,13 @@ export function Footer() {
                 <span className="block sm:whitespace-nowrap">Bring us your problem.</span>
                 <span className="block sm:whitespace-nowrap">We&rsquo;ll help you build the solution.</span>
               </h3>
-              <button
+              <InteractiveHoverButton
                 onClick={() => window.contactModal?.open()}
-                className="group/cta cursor-pointer mt-6 md:mt-8 inline-flex items-center gap-2 bg-white text-foreground font-sans font-medium text-sm sm:text-base md:text-lg tracking-tight px-4 py-2.5 sm:px-5 sm:py-3 rounded-xl transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-white/20"
+                className="mt-6 md:mt-8 bg-white text-foreground text-sm sm:text-base md:text-lg tracking-tight px-4 sm:px-5 py-2.5 sm:py-3 rounded-xl border border-foreground/10 hover:text-white"
+                hoverColor="#090E19"
               >
                 Get in Touch
-                <span className="inline-flex items-center justify-center bg-foreground text-white rounded-lg w-7 h-7 sm:w-8 sm:h-8 transition-transform duration-300 group-hover/cta:translate-x-0.5">
-                  <span className="font-neuebit text-lg sm:text-xl leading-none">→</span>
-                </span>
-              </button>
+              </InteractiveHoverButton>
             </div>
           </div>
         </Reveal>
