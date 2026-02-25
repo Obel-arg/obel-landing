@@ -1,398 +1,218 @@
 "use client";
 
-import { useRef } from "react";
-import { gsap, ScrollTrigger, useGSAP } from "@/lib/gsap";
-import { useReducedMotion } from "@/components/motion/useReducedMotion";
-import Atropos from "atropos/react";
+import { useState, useEffect } from "react";
+import { AnimatePresence, motion } from "motion/react";
 
-// Service cards data - 4 cards
+// Service cards data — 6 cards
 const SERVICE_CARDS = [
   {
     id: 1,
     title: "Product Design & Development",
+    previewTitle: "Product Design and DVP",
     headline: "Technology built for real use.",
-    description:
-      "We design and build digital products that solve operational problems and scale with your organization. From concept to launch, focused on performance, usability and real impact.",
     includes: [
       "Product strategy and definition",
       "UX/UI design",
       "Custom platform and app development",
-      "AI integration and automation",
-      "Scalable cloud architecture",
     ],
   },
   {
     id: 2,
     title: "AI Solutions",
+    previewTitle: "AI Solutions",
     headline: "From experimentation to real adoption.",
-    description:
-      "We turn artificial intelligence into practical tools for everyday work. Our focus is not only on building AI, but on making it useful, reliable and integrated into real workflows.",
     includes: [
       "Use case identification and prioritization",
       "Custom AI models and workflows",
       "Process automation with AI",
-      "Data analysis and decision support",
-      "Responsible and human-centered implementation",
     ],
   },
   {
     id: 3,
-    title: "Implementation & Adoption (OBEL Hub)",
-    headline: "Technology only matters when it's used.",
-    description:
-      "We work with teams to integrate new solutions into their daily operations, removing friction and building sustainable habits.",
-    includes: [
-      "Workflow integration and rollout support",
-      "Friction and usage analysis",
-      "Training through real use cases",
-      "Development of AI-driven skills",
-      "Continuous improvement and optimization",
-    ],
-  },
-  {
-    id: 4,
     title: "Process Mapping & Optimization",
+    previewTitle: "Process Mapping and Optimization",
     headline: "Make the invisible visible.",
-    description:
-      "We analyze operations to detect bottlenecks, inefficiencies and opportunities where technology and AI can create real value.",
     includes: [
       "Operational diagnostics",
       "Process mapping and prioritization",
       "Opportunity identification for automation",
-      "Impact and feasibility analysis",
-      "Actionable implementation roadmap",
+    ],
+  },
+  {
+    id: 4,
+    title: "Branding",
+    previewTitle: "Branding",
+    headline: "Identity that speaks before you do.",
+    includes: [
+      "Brand strategy and positioning",
+      "Visual identity and design systems",
+      "Brand guidelines and documentation",
+    ],
+  },
+  {
+    id: 5,
+    title: "CTO as a Service",
+    previewTitle: "CTO as a Service",
+    headline: "Strategic tech leadership, on demand.",
+    includes: [
+      "Technology strategy and roadmap",
+      "Architecture and infrastructure decisions",
+      "Team mentoring and vendor management",
+    ],
+  },
+  {
+    id: 6,
+    title: "Implementation & Adoption (OBEL Hub)",
+    previewTitle: "OBEL Hub",
+    headline: "Technology only matters when it's used.",
+    includes: [
+      "Workflow integration and rollout support",
+      "Training through real use cases",
+      "Continuous improvement and optimization",
     ],
   },
 ];
 
-function ServiceCard({
-  service,
-}: {
-  service: (typeof SERVICE_CARDS)[0];
-}) {
-  return (
-    <div className="service-card w-[60vw] sm:w-[60vw] md:w-[65vw] lg:w-[60vw] min-w-[60vw] sm:min-w-[60vw] md:min-w-[65vw] lg:min-w-[60vw] h-full flex items-center justify-center px-2 md:px-8 lg:px-12 xl:px-16 flex-shrink-0">
-      <Atropos
-        className="w-full max-w-3xl xl:max-w-4xl 2xl:max-w-5xl"
-        rotateXMax={10}
-        rotateYMax={10}
-        rotateTouch={false}
-        shadow={false}
-        highlight={false}
-      >
-        <div
-          className="service-card-inner rounded-2xl md:rounded-[27px] p-5 sm:p-7 md:p-10 lg:p-14 xl:p-18 flex flex-col gap-6 md:gap-8 lg:gap-10 bg-[rgba(9,14,25,0.06)] border-[0.5px] border-foreground/10 overflow-clip"
-        >
-          {/* Title + headline */}
-          <div>
-            <h3 className="font-sans font-semibold text-primary text-lg sm:text-xl md:text-3xl lg:text-4xl tracking-tight mb-1 sm:mb-2 md:mb-3">
-              {service.title}
-            </h3>
-            <p className="font-sans text-primary text-base sm:text-lg md:text-2xl lg:text-3xl tracking-tight leading-tight">
-              {service.headline}
-            </p>
-          </div>
-
-          {/* Arrow list */}
-          <ul className="space-y-2 sm:space-y-3 md:space-y-4">
-            {service.includes.map((item, i) => (
-              <li key={i} className="flex items-center gap-3 md:gap-5">
-                <span className="font-neuebit text-primary text-xl sm:text-2xl md:text-3xl lg:text-4xl leading-none shrink-0" aria-hidden="true">
-                  →
-                </span>
-                <span className="font-sans text-primary text-sm sm:text-base md:text-lg lg:text-xl tracking-tight">
-                  {item}
-                </span>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </Atropos>
-    </div>
-  );
-}
+const ACTIVE_COLOR = "#090E19";
+const COLLAPSED_COLORS: Record<number, string> = {
+  1: "rgba(9, 14, 25, 0.92)",
+  2: "rgba(9, 14, 25, 0.84)",
+  3: "rgba(9, 14, 25, 0.76)",
+  4: "rgba(9, 14, 25, 0.68)",
+  5: "rgba(9, 14, 25, 0.60)",
+  6: "#72052f",
+};
 
 export function Services() {
-  const sectionRef = useRef<HTMLElement>(null);
-  const cardsContainerRef = useRef<HTMLDivElement>(null);
-  const carouselRef = useRef<HTMLDivElement>(null);
-  const titleRef = useRef<HTMLDivElement>(null);
-  const snapCooldownRef = useRef(false);
-  const prefersReducedMotion = useReducedMotion();
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [isDesktop, setIsDesktop] = useState(true);
 
-  // Refs for dynamic xPercent values — snap closure reads the latest values
-  const xStartRef = useRef(125);
-  const xEndRef = useRef(-340);
-  const xRangeRef = useRef(465);
-
-  // Equalize card heights — all cards match the tallest one
-  useGSAP(
-    () => {
-      const carousel = carouselRef.current;
-      if (!carousel) return;
-
-      const equalize = () => {
-        const cards = carousel.querySelectorAll<HTMLElement>('.service-card-inner');
-        cards.forEach(c => { c.style.minHeight = ''; });
-        let max = 0;
-        cards.forEach(c => { max = Math.max(max, c.scrollHeight); });
-        cards.forEach(c => { c.style.minHeight = `${max}px`; });
-      };
-
-      equalize();
-      window.addEventListener('resize', equalize);
-      return () => window.removeEventListener('resize', equalize);
-    },
-    { scope: carouselRef }
-  );
-
-  // GSAP animations with responsive breakpoints
-  useGSAP(
-    () => {
-      if (prefersReducedMotion) return;
-
-      // Fade out "Our Services" title — same across all breakpoints
-      if (titleRef.current && cardsContainerRef.current) {
-        gsap.fromTo(
-          titleRef.current,
-          { opacity: 1 },
-          {
-            opacity: 0,
-            ease: "none",
-            scrollTrigger: {
-              trigger: cardsContainerRef.current,
-              start: "top top",
-              end: "15% top",
-              scrub: true,
-            },
-          }
-        );
-      }
-
-      // Horizontal scroll — responsive via matchMedia
-      // Animations auto-revert and re-create on breakpoint change (e.g. phone rotation)
-      if (cardsContainerRef.current && carouselRef.current) {
-        const computeXEnd = () => {
-          const cards = Array.from(carouselRef.current!.children) as HTMLElement[];
-          const totalContentWidth = cards.reduce((sum, card) => sum + card.offsetWidth, 0);
-          const viewportWidth = window.innerWidth;
-          return -(totalContentWidth / viewportWidth) * 100 - 5;
-        };
-
-        const createCarousel = (xStart: number) => {
-          const xEnd = computeXEnd();
-          xStartRef.current = xStart;
-          xEndRef.current = xEnd;
-          xRangeRef.current = xStart - xEnd;
-
-          gsap.fromTo(
-            carouselRef.current!,
-            { xPercent: xStart },
-            {
-              xPercent: xEnd,
-              immediateRender: true,
-              ease: "none",
-              scrollTrigger: {
-                trigger: cardsContainerRef.current!,
-                start: "top top",
-                end: "bottom bottom",
-                scrub: 0.3,
-                invalidateOnRefresh: true,
-                onRefresh: () => {
-                  const newEnd = computeXEnd();
-                  xStartRef.current = xStart;
-                  xEndRef.current = newEnd;
-                  xRangeRef.current = xStart - newEnd;
-                },
-                snap: {
-                  snapTo: (progress: number) => {
-                    const carousel = carouselRef.current;
-                    if (!carousel) return progress;
-
-                    const currentXStart = xStartRef.current;
-                    const currentXRange = xRangeRef.current;
-
-                    const cards = Array.from(carousel.children) as HTMLElement[];
-                    const elWidth = carousel.offsetWidth;
-                    const vw = window.innerWidth;
-                    const viewportCenter = vw / 2;
-
-                    const currentXPercent = currentXStart - currentXRange * progress;
-                    const translatePx = (currentXPercent / 100) * elWidth;
-
-                    const firstCard = cards[0];
-                    const lastCard = cards[cards.length - 1];
-                    const firstVisualCenter = firstCard.offsetLeft + firstCard.offsetWidth / 2 + translatePx;
-                    const lastVisualCenter = lastCard.offsetLeft + lastCard.offsetWidth / 2 + translatePx;
-
-                    if (lastVisualCenter < viewportCenter - lastCard.offsetWidth * 0.15) {
-                      return 1;
-                    }
-
-                    if (firstVisualCenter > viewportCenter + firstCard.offsetWidth * 0.15) {
-                      return 0;
-                    }
-
-                    if (snapCooldownRef.current) return progress;
-
-                    let bestProgress = progress;
-                    let bestDist = Infinity;
-
-                    for (let i = 0; i < cards.length; i++) {
-                      const card = cards[i];
-                      const cardLeft = card.offsetLeft + translatePx;
-                      const cardRight = cardLeft + card.offsetWidth;
-
-                      const visibleWidth = Math.max(
-                        0,
-                        Math.min(cardRight, vw) - Math.max(cardLeft, 0)
-                      );
-                      if (visibleWidth / card.offsetWidth < 0.2) continue;
-
-                      const cardCenter = cardLeft + card.offsetWidth / 2;
-                      const dist = Math.abs(cardCenter - viewportCenter);
-
-                      if (dist < bestDist) {
-                        bestDist = dist;
-                        const targetXPercent =
-                          ((viewportCenter - card.offsetLeft - card.offsetWidth / 2) /
-                            elWidth) *
-                          100;
-                        bestProgress = Math.max(
-                          0,
-                          Math.min(1, (currentXStart - targetXPercent) / currentXRange)
-                        );
-                      }
-                    }
-
-                    return bestProgress;
-                  },
-                  duration: { min: 0.8, max: 1.4 },
-                  delay: 0.15,
-                  ease: "power1.inOut",
-                  onComplete: () => {
-                    snapCooldownRef.current = true;
-                    setTimeout(() => {
-                      snapCooldownRef.current = false;
-                    }, 700);
-                  },
-                },
-              },
-            }
-          );
-        };
-
-        const mm = gsap.matchMedia();
-
-        // Mobile: larger xStart for more intro space before first card
-        mm.add("(max-width: 1023px)", () => {
-          createCarousel(150);
-        });
-
-        // Desktop: tighter xStart
-        mm.add("(min-width: 1024px)", () => {
-          createCarousel(105);
-        });
-      }
-    },
-    { scope: sectionRef, dependencies: [prefersReducedMotion] }
-  );
-
-  // Reduced motion fallback - vertical stack with dark theme
-  if (prefersReducedMotion) {
-    return (
-      <section id="services" className="below-fold relative py-24 md:py-32 overflow-hidden bg-background">
-        {/* Title */}
-        <div className="relative z-10 flex items-center justify-center py-16 md:py-24">
-          <div className="flex flex-col md:flex-row items-center gap-4 md:gap-8">
-            <h2 className="font-neuebit text-primary text-6xl sm:text-7xl md:text-8xl lg:text-9xl xl:text-[140px] tracking-tight leading-none">
-              Our Services
-            </h2>
-            <span className="font-neuebit text-primary text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl leading-none select-none" aria-hidden="true">↓</span>
-          </div>
-        </div>
-
-        {/* Cards in vertical stack */}
-        <div className="relative z-10 px-4 md:px-8 lg:px-16 space-y-6 sm:space-y-8">
-          {SERVICE_CARDS.map((service) => (
-            <div
-              key={service.id}
-              className="rounded-2xl md:rounded-[27px] p-5 sm:p-7 md:p-10 lg:p-14 xl:p-18 flex flex-col gap-6 md:gap-8 lg:gap-10 bg-[rgba(9,14,25,0.06)] border-[0.5px] border-foreground/10 overflow-clip"
-            >
-              <div>
-                <h3 className="font-sans font-semibold text-primary text-2xl md:text-3xl lg:text-4xl tracking-tight mb-2 sm:mb-3 md:mb-4">
-                  {service.title}
-                </h3>
-                <p className="font-sans text-primary text-lg sm:text-xl md:text-2xl lg:text-3xl tracking-tight leading-tight">
-                  {service.headline}
-                </p>
-              </div>
-              <ul className="space-y-2 sm:space-y-3 md:space-y-4">
-                {service.includes.map((item, i) => (
-                  <li key={i} className="flex items-center gap-3 md:gap-5">
-                    <span className="font-neuebit text-primary text-xl sm:text-2xl md:text-3xl lg:text-4xl leading-none shrink-0" aria-hidden="true">
-                      →
-                    </span>
-                    <span className="font-sans text-primary text-sm sm:text-base md:text-lg lg:text-xl tracking-tight">
-                      {item}
-                    </span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
-        </div>
-      </section>
-    );
-  }
+  useEffect(() => {
+    const mq = window.matchMedia("(min-width: 1024px)");
+    setIsDesktop(mq.matches);
+    const handler = (e: MediaQueryListEvent) => setIsDesktop(e.matches);
+    mq.addEventListener("change", handler);
+    return () => mq.removeEventListener("change", handler);
+  }, []);
 
   return (
-    <section id="services" ref={sectionRef} data-scroll-offset="8vh" className="contain-animated relative bg-background">
-      {/* Scroll trigger container — responsive height: 400vh mobile, 500vh desktop */}
-      <div
-        ref={cardsContainerRef}
-        className="relative z-10 h-[350vh] md:h-[400vh] lg:h-[500vh]"
-      >
-        {/* Sticky viewport — pins at top: 0 so background covers full screen including behind header.
-             suppressHydrationWarning: GSAP (PerspectiveTransition) applies inline transform
-             properties (translate, rotate, scale) via immediateRender before React hydrates. */}
-        <div
-          className="sticky overflow-hidden"
-          suppressHydrationWarning
-          style={{
-            top: '0px',
-            height: '100dvh',
-          }}
-        >
-          {/* "Our Services" title — visible before cards scroll in */}
-          <div
-            ref={titleRef}
-            className="absolute inset-0 z-[5] flex items-center justify-center pointer-events-none"
-            style={{ paddingTop: 'var(--header-height)' }}
-          >
-            <div className="flex flex-col md:flex-row items-center gap-4 md:gap-8">
-              <h2 className="font-neuebit text-primary text-6xl sm:text-7xl md:text-8xl lg:text-9xl xl:text-[140px] tracking-tight leading-none">
-                Our Services
-              </h2>
-              <span className="font-neuebit text-primary text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl leading-none select-none" aria-hidden="true">↓</span>
-            </div>
-          </div>
+    <section
+      id="services"
+      data-scroll-offset="8vh"
+      className="below-fold relative bg-background py-24 md:py-32 lg:py-44 xl:py-56"
+    >
+      {/* Title */}
+      <h2 className="font-neuebit text-primary text-center text-5xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-[clamp(96px,8vw,140px)] tracking-tight leading-none mb-8 md:mb-12 lg:mb-16">
+        Our Services
+      </h2>
 
-          {/* Horizontal carousel - padded below header */}
-          <div
-            ref={carouselRef}
-            className="relative z-10 flex h-full"
-            style={{
-              willChange: "transform",
-              paddingTop: 'var(--header-height)',
-            }}
-          >
-            {SERVICE_CARDS.map((service) => (
-              <ServiceCard key={service.id} service={service} />
-            ))}
-          </div>
-        </div>
-      </div>
+      {/* Card row — entrance animation with delay */}
+      <motion.div
+        initial={{ opacity: 0, translateY: 20 }}
+        animate={{ opacity: 1, translateY: 0 }}
+        transition={{ duration: 0.3, delay: 0.5 }}
+        className="w-full px-4 md:px-8 lg:px-16"
+      >
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.3 }}
+          className="flex flex-col lg:flex-row w-full items-center justify-center gap-1 lg:gap-2"
+        >
+        {SERVICE_CARDS.map((service, i) => {
+          const isActive = i === activeIndex;
+
+          return (
+            <motion.div
+              key={service.id}
+              className="relative overflow-hidden rounded-xl lg:rounded-2xl"
+              animate={{
+                width: isDesktop
+                  ? isActive
+                    ? "40rem"
+                    : "6rem"
+                  : "100%",
+                height: isDesktop
+                  ? "32rem"
+                  : isActive
+                    ? "24rem"
+                    : "4rem",
+              }}
+              transition={{ duration: 0.3, ease: "easeInOut" }}
+              onClick={() => setActiveIndex(i)}
+              onHoverStart={() => setActiveIndex(i)}
+              style={{
+                backgroundColor: COLLAPSED_COLORS[service.id],
+              }}
+            >
+              {/* Expanded content — fades in after card opens */}
+              <AnimatePresence>
+                {isActive && (
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1, transition: { duration: 0.4, delay: 0.2, ease: "easeOut" } }}
+                    exit={{ opacity: 0, transition: { duration: 0.1, ease: "easeIn" } }}
+                    className="absolute inset-0 p-6 sm:p-8 lg:p-10 flex flex-col"
+                  >
+                    {/* Service number */}
+                    <span className="self-end font-neuebit text-xl md:text-2xl lg:text-4xl text-background/50">
+                      {i + 1}
+                    </span>
+
+                    {/* Content */}
+                    <div className="flex flex-col justify-center flex-1 gap-6 md:gap-8">
+                      <div>
+                        <h3 className="font-sans font-semibold text-background text-xl sm:text-2xl md:text-3xl lg:text-4xl tracking-tight leading-[1.05] mb-1.5 md:mb-3">
+                          {service.title}
+                        </h3>
+                        <p className="font-sans text-background text-base sm:text-lg md:text-xl lg:text-2xl tracking-tight leading-tight">
+                          {service.headline}
+                        </p>
+                      </div>
+
+                      <ul className="space-y-1.5 sm:space-y-2 md:space-y-3">
+                        {service.includes.map((item, j) => (
+                          <li
+                            key={j}
+                            className="flex items-center gap-2.5 md:gap-4"
+                          >
+                            <span
+                              className="font-neuebit text-background text-lg sm:text-xl md:text-2xl lg:text-3xl leading-none shrink-0"
+                              aria-hidden="true"
+                            >
+                              →
+                            </span>
+                            <span className="font-sans text-background text-xs sm:text-sm md:text-base lg:text-lg tracking-tight">
+                              {item}
+                            </span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+
+              {/* Collapsed label — fades in when inactive */}
+              <AnimatePresence>
+                {!isActive && (
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1, transition: { duration: 0.3, delay: 0.15, ease: "easeOut" } }}
+                    exit={{ opacity: 0, transition: { duration: 0.1, ease: "easeIn" } }}
+                    className="absolute inset-0 flex items-end justify-center pb-4 lg:pb-6"
+                  >
+                    <span className="font-neuebit text-white uppercase tracking-tight text-base sm:text-lg md:text-xl lg:text-[clamp(1rem,2.3vw,36px)] lg:[writing-mode:vertical-rl] lg:rotate-180 lg:origin-center">
+                      {service.previewTitle}
+                    </span>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </motion.div>
+          );
+        })}
+        </motion.div>
+      </motion.div>
     </section>
   );
 }

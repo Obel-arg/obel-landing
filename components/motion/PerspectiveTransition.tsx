@@ -13,8 +13,9 @@ interface PerspectiveTransitionProps {
  * Perspective section transition — replicates the scroll-driven 3D illusion
  * from olivierlarose/perspective-section-transition.
  *
- * Section 1 (sticky) shrinks + tilts backward as Section 2 scrolls up over it,
- * growing + straightening. The dark wrapper bg peeks through as a depth cue.
+ * Section 1 / Hero (sticky) shrinks + tilts backward as Section 2 / About
+ * scrolls up over it, growing + straightening. The wrapper bg peeks through
+ * as a depth cue.
  */
 export function PerspectiveTransition({
   section1,
@@ -22,10 +23,11 @@ export function PerspectiveTransition({
 }: PerspectiveTransitionProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const section1Ref = useRef<HTMLDivElement>(null);
+  const section2Ref = useRef<HTMLDivElement>(null);
   const prefersReducedMotion = useReducedMotion();
   const [ready, setReady] = useState(false);
 
-  // Detect when dynamically imported children have mounted
+  // Detect when dynamically imported About section has mounted (Hero is static, always present)
   useEffect(() => {
     if (prefersReducedMotion) return;
 
@@ -34,8 +36,7 @@ export function PerspectiveTransition({
 
     const check = () => {
       const hasAbout = container.querySelector('[data-section="about"]');
-      const hasServicesSticky = container.querySelector("#services .sticky");
-      if (hasAbout && hasServicesSticky) {
+      if (hasAbout) {
         setReady(true);
         return true;
       }
@@ -57,17 +58,13 @@ export function PerspectiveTransition({
 
       const container = containerRef.current;
       const section1El = section1Ref.current;
-      if (!container || !section1El) return;
-
-      const servicesSticky = container.querySelector(
-        "#services .sticky"
-      ) as HTMLElement;
-      if (!servicesSticky) return;
+      const section2El = section2Ref.current;
+      if (!container || !section1El || !section2El) return;
 
       // Scroll distance for the full transition = one viewport height
       const scrollDistance = () => window.innerHeight;
 
-      // Section 1 (About): scale 1 → 0.8, rotate 0° → −5°
+      // Section 1 (Hero): scale 1 → 0.8, rotate 0° → −5°
       gsap.to(section1El, {
         scale: 0.8,
         rotation: -5,
@@ -80,9 +77,9 @@ export function PerspectiveTransition({
         },
       });
 
-      // Section 2 (Services sticky viewport): scale 0.8 → 1, rotate 5° → 0°
+      // Section 2 (About): scale 0.8 → 1, rotate 5° → 0°
       gsap.fromTo(
-        servicesSticky,
+        section2El,
         { scale: 0.8, rotation: 5 },
         {
           scale: 1,
@@ -117,7 +114,7 @@ export function PerspectiveTransition({
       className="relative"
       style={{ backgroundColor: "#FFFAF8" }}
     >
-      {/* Section 1: sticky, scales down + rotates backward on scroll */}
+      {/* Section 1 (Hero): sticky, scales down + rotates backward on scroll */}
       <div
         ref={section1Ref}
         className="sticky top-0 z-[1] bg-background"
@@ -126,8 +123,8 @@ export function PerspectiveTransition({
         {section1}
       </div>
 
-      {/* Section 2: scrolls up over Section 1, grows + straightens */}
-      <div className="relative z-[2]">
+      {/* Section 2 (About): scrolls up over Hero, grows + straightens */}
+      <div ref={section2Ref} className="relative z-[2] bg-background">
         {section2}
       </div>
     </div>

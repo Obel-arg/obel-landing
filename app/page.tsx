@@ -32,14 +32,14 @@ const BizarapShowcase = dynamic(
 export default function Home() {
   return (
     <main>
-      <Hero />
+      <PerspectiveTransition
+        section1={<Hero />}
+        section2={<About />}
+      />
       {/* Scroll anchor for #about — must be OUTSIDE PerspectiveTransition's sticky
           context, otherwise Lenis miscalculates position when sticky is active */}
       <div id="about" />
-      <PerspectiveTransition
-        section1={<About />}
-        section2={<Services />}
-      />
+      <Services />
       <ObelHub />
       <BizarapShowcase />
       <FeaturedProjects />

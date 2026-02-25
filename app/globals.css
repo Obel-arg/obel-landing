@@ -1,5 +1,4 @@
 @import "tailwindcss";
-@import "atropos/css";
 
 @font-face {
   font-family: 'PPNeueBit';
@@ -125,8 +124,7 @@ html::-webkit-scrollbar-track {
 }
 
 /* Layout containment for animated sections — prevents internal transforms
-   from triggering layout recalculations in sibling sections.
-   Uses layout+style (NOT paint — paint clips overflow which breaks 3D effects like Atropos). */
+   from triggering layout recalculations in sibling sections. */
 .contain-animated {
   contain: layout style;
 }
@@ -140,23 +138,6 @@ html::-webkit-scrollbar-track {
   display: none;
 }
 
-/* Atropos Logo - 3D hover effect */
-.atropos-logo {
-  display: inline-flex;
-  padding: 8px;
-  margin: -8px;
-}
-
-.atropos-logo .atropos-inner {
-  display: flex;
-  align-items: center;
-  overflow: visible;
-}
-
-.atropos-logo .atropos-scale,
-.atropos-logo .atropos-rotate {
-  overflow: visible;
-}
 
 /* Contact modal autofill override */
 input:-webkit-autofill,

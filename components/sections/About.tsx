@@ -6,7 +6,7 @@ import { ScrollTextReveal } from "@/components/motion/ScrollTextReveal";
 
 export function About() {
   return (
-    <section data-section="about" className="below-fold relative h-full flex flex-col justify-center py-20 md:py-24 lg:py-32">
+    <section data-section="about" className="below-fold relative min-h-dvh flex flex-col justify-center py-20 md:py-24 lg:py-32">
       {/* Static OBEL pattern background */}
       <div
         className="absolute inset-0 pointer-events-none"
