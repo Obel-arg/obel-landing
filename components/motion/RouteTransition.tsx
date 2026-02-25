@@ -404,9 +404,20 @@ export function RouteTransition() {
 
     const cellWidth = width / COLS;
     const cellHeight = height / ROWS;
+    const onPageReady = () => {
+      const isHomepage = window.location.pathname === "/";
+      const delay = isHomepage ? 415 : 50;
+      scheduleTimeout(() => {
+        startExitAnimationRef.current(ctx, width, height, cellWidth, cellHeight);
+      }, delay);
+    };
+    window.addEventListener("routePageReady", onPageReady, { once: true });
     scheduleTimeout(() => {
-      startExitAnimationRef.current(ctx, width, height, cellWidth, cellHeight);
-    }, 300);
+      window.removeEventListener("routePageReady", onPageReady);
+      if (stateRef.current === "covered") {
+        startExitAnimationRef.current(ctx, width, height, cellWidth, cellHeight);
+      }
+    }, 1200);
   }, [pathname, clearAllTimeouts, scheduleTimeout]);
 
   // --- Expose global API + popstate listener ---
@@ -467,14 +478,29 @@ export function RouteTransition() {
       stateRef.current = "covered";
       popstateHandledRef.current = true;
 
-      dbg("popstate: screen covered, scheduling exit dissolve");
+      dbg("popstate: screen covered, waiting for routePageReady");
 
-      // Deferred dissolve after new page renders underneath
+      // Wait for the new page to mount before dissolving — same pattern as
+      // forward navigation. The flat 300ms delay was too short for homepage
+      // dynamic imports, causing the dissolve to reveal mid-page content
+      // before scroll restoration completed.
       const cellWidth = width / COLS;
       const cellHeight = height / ROWS;
+      const onPageReady = () => {
+        const isHomepage = window.location.pathname === "/";
+        const delay = isHomepage ? 415 : 50;
+        scheduleTimeout(() => {
+          startExitAnimationRef.current(ctx, width, height, cellWidth, cellHeight);
+        }, delay);
+      };
+      window.addEventListener("routePageReady", onPageReady, { once: true });
+      // Safety: start exit anyway if page never signals ready
       scheduleTimeout(() => {
-        startExitAnimationRef.current(ctx, width, height, cellWidth, cellHeight);
-      }, 300);
+        window.removeEventListener("routePageReady", onPageReady);
+        if (stateRef.current === "covered") {
+          startExitAnimationRef.current(ctx, width, height, cellWidth, cellHeight);
+        }
+      }, 1200);
     };
 
     window.addEventListener("popstate", handlePopstate);

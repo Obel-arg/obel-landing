@@ -99,7 +99,7 @@ export function Services() {
     <section
       id="services"
       data-scroll-offset="8vh"
-      className="below-fold relative bg-background py-24 md:py-32 lg:py-44 xl:py-56"
+      className="below-fold relative bg-background pt-24 pb-10 md:pt-32 md:pb-14 lg:pt-44 lg:pb-20 xl:pt-56 xl:pb-28"
     >
       {/* Title */}
       <h2 className="font-neuebit text-primary text-center text-5xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-[clamp(96px,8vw,140px)] tracking-tight leading-none mb-8 md:mb-12 lg:mb-16">

@@ -26,14 +26,23 @@ function scrollToTop() {
       lenis?: {
         scrollTo: (
           target: number,
-          opts?: { duration?: number }
+          opts?: { duration?: number; immediate?: boolean }
         ) => void;
+        destroy?: unknown;
+        isStopped?: boolean;
       };
     }
   ).lenis;
-  if (lenis) {
+
+  // On touch-primary devices, Lenis has syncTouch: false — its scrollTo can
+  // fight with native scroll on iOS Safari, causing the animation to stall.
+  // Use native smooth scroll instead.
+  const isTouchPrimary =
+    window.matchMedia("(pointer: coarse)").matches;
+
+  if (lenis && !isTouchPrimary) {
     const distance = window.scrollY;
-    const duration = Math.min(4.5, Math.max(2, distance / 1200));
+    const duration = Math.min(3, Math.max(1.2, distance / 1500));
     lenis.scrollTo(0, { duration });
   } else {
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -68,11 +77,14 @@ function handleSmoothScroll(
   const extraOffset = target instanceof HTMLElement
     ? parseScrollOffset(target.dataset.scrollOffset)
     : 0;
-  if (lenis) {
+  const isTouchPrimary =
+    window.matchMedia("(pointer: coarse)").matches;
+
+  if (lenis && !isTouchPrimary) {
     const dist = target
       ? Math.abs(target.getBoundingClientRect().top)
       : window.scrollY;
-    const dur = Math.min(4.5, Math.max(2, dist / 1200));
+    const dur = Math.min(3, Math.max(1.2, dist / 1500));
     lenis.scrollTo(href === "#" ? 0 : href, {
       offset: href === "#" ? 0 : -getComputedHeaderHeight() + extraOffset,
       duration: dur,

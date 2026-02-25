@@ -35,12 +35,14 @@ export function TransitionLink({
           // sessionStorage blocked (private browsing, restricted env)
         }
 
-        // For links without hash, scroll to top before navigation
+        // For links without hash, scroll to top before navigation.
+        // Use native scrollTo (synchronous) — lenis.scrollTo({ immediate })
+        // defers to next RAF tick, causing a 1-frame flash of mid-page content
+        // through the pixel transition canvas.
         if (!hasHash) {
+          window.scrollTo(0, 0);
           if (lenis) {
             lenis.scrollTo(0, { immediate: true });
-          } else {
-            window.scrollTo(0, 0);
           }
         }
 
