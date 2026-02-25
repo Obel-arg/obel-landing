@@ -142,6 +142,64 @@ const PROJECTS: Project[] = [
       "/images/projects/iusports2.webp",
     ],
   },
+  {
+    id: 5,
+    slug: "dubbing-hits",
+    company: "Dubbing Hits",
+    title: "Custom Analytics Platform Development",
+    year: "2025",
+    country: "Global",
+    description:
+      "Dubbing Hits is a global music marketing company managing paid media campaigns for multiple artists across platforms and markets. As campaign volume and complexity increased, operational visibility became critical.",
+    longDescription:
+      "Dubbing Hits is a global music marketing company managing paid media campaigns for multiple artists across platforms and markets. As campaign volume and complexity increased, operational visibility became critical.",
+    problem:
+      "Campaign data across Meta, Google, TikTok, and other advertising platforms was fragmented. Performance tracking relied on manual reporting and disconnected dashboards, limiting real-time insights and making cross-artist analysis inefficient.",
+    solution:
+      "We designed and developed a custom platform that centralizes all paid media campaigns into a single system. The platform aggregates cross-platform performance data, unifies reporting across artists, and provides real-time visibility — enabling clearer insights and stronger operational control.",
+    services: ["Custom Analytics Platform Development"],
+    tools: [
+      { name: "Illustrator", icon: "/images/tools/illustrator.svg" },
+      { name: "Figma", icon: "/images/tools/figma.svg" },
+      { name: "Slack", icon: "/images/tools/slack.svg" },
+      { name: "Gemini", icon: "/images/tools/gemini.webp" },
+    ],
+    image: "/images/projects/dh-cover.webp",
+    images: [
+      "/images/projects/dh0.webp",
+      "/images/projects/dh1.webp",
+      "/images/projects/dh2.webp",
+    ],
+  },
+  {
+    id: 6,
+    slug: "catchfluence",
+    company: "Catch Fluence",
+    title: "Custom Platform Development",
+    year: "2025",
+    country: "Global",
+    description:
+      "Catch Fluence is a platform built for brands managing influencer-driven paid media campaigns. It centralizes campaign execution, content management, and performance tracking across multiple creators and platforms.",
+    longDescription:
+      "Catch Fluence is a platform built for brands managing influencer-driven paid media campaigns. It centralizes campaign execution, content management, and performance tracking across multiple creators and platforms.",
+    problem:
+      "Brands running paid media with influencers faced fragmented workflows. Campaign creation, post approvals, boosting content, and tracking results were handled across different tools, creating operational friction and limited visibility.",
+    solution:
+      "We designed and developed a centralized platform that allows brands to create campaigns, link influencer posts, schedule content, and manage paid media from a single system. Catch Fluence unifies execution and performance tracking — giving brands full control over their influencer advertising operations.",
+    services: ["Custom Platform Development"],
+    tools: [
+      { name: "Illustrator", icon: "/images/tools/illustrator.svg" },
+      { name: "Figma", icon: "/images/tools/figma.svg" },
+      { name: "Slack", icon: "/images/tools/slack.svg" },
+      { name: "Gemini", icon: "/images/tools/gemini.webp" },
+    ],
+    image: "/images/projects/ca-cover.webp",
+    images: [
+      "/images/projects/ca0.webp",
+      "/images/projects/ca1.webp",
+      "/images/projects/ca2.webp",
+    ],
+  },
 ];
 
 export function getAllProjects(): Project[] {
