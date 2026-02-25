@@ -27,20 +27,19 @@ const PROJECTS: Project[] = [
     id: 3,
     slug: "bizarrap",
     company: "Bizarrap",
-    title: "Visual Identity & Digital Experience",
-    year: "2026",
-    country: "Argentina",
-    // TODO(human): Replace these placeholders with real Bizarrap project content
+    title: "Web Experience Development",
+    year: "2025",
+    country: "Global",
     description:
-      "Placeholder description for the Bizarrap project.",
+      "We designed and developed the official bizarrap.com as the digital launch platform for the highly anticipated Session #1 with Daddy Yankee. The website became the central hub for all Bizarrap Music Sessions, combining catalog visibility with interactive fan engagement.",
     longDescription:
-      "Placeholder long description for the Bizarrap project.",
+      "We designed and developed the official bizarrap.com as the digital launch platform for the highly anticipated Session #1 with Daddy Yankee. The website became the central hub for all Bizarrap Music Sessions, combining catalog visibility with interactive fan engagement.",
     problem:
-      "Placeholder problem statement for the Bizarrap project.",
+      "The launch required more than a traditional landing page. It needed to build anticipation, centralize all sessions in one place, and create an interactive experience that kept fans engaged before and after each release.",
     solution:
-      "Placeholder solution statement for the Bizarrap project.",
+      "We built a dynamic platform showcasing every Bizarrap session through an interactive card system. Released sessions are fully accessible, while upcoming ones remain locked — featuring hidden clues that invite fans to guess the next artist.",
     link: "https://bizarrap.com",
-    services: ["Visual Identity", "Web Development", "Digital Experience"],
+    services: ["Web Experience Development"],
     tools: [
       { name: "Illustrator", icon: "/images/tools/illustrator.svg" },
       { name: "Figma", icon: "/images/tools/figma.svg" },
@@ -110,8 +109,8 @@ const PROJECTS: Project[] = [
     ],
     image: "/images/projects/dpr-cover.webp",
     images: [
-      "/images/projects/dpr1.webp",
       "/images/projects/dpr2.webp",
+      "/images/projects/dpr1.webp",
       "/images/projects/dpr3.webp",
     ],
   },
@@ -137,8 +136,8 @@ const PROJECTS: Project[] = [
     ],
     image: "/images/projects/iusports-cover.webp",
     images: [
-      "/images/projects/iusports-logos.webp",
       "/images/projects/iusports1.webp",
+      "/images/projects/iusports0.webp",
       "/images/projects/iusports2.webp",
     ],
   },
