@@ -5,17 +5,15 @@ import { usePathname } from "next/navigation";
 import Lenis from "lenis";
 import { gsap, ScrollTrigger } from "@/lib/gsap";
 
-// Module-level guard — prevents double init in StrictMode (Rule: advanced-init-once)
 let lenisInstance: Lenis | null = null;
 
 export function SmoothScroll({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const prevPathname = useRef<string | null>(null);
-  // Target scroll position — persists across hooks so staggered refreshes can re-apply
   const targetScrollRef = useRef<number | null>(null);
+  const hasInitialMounted = useRef(false);
 
-  // Hook 1: Restore scroll position synchronously BEFORE paint
-  // This runs before the Lenis useEffect — the browser never paints at position 0
+  // Restore scroll synchronously before first paint (hard reload / direct visit)
   useLayoutEffect(() => {
     try {
       const saved = sessionStorage.getItem(`scroll-${window.location.pathname}`);
@@ -25,12 +23,50 @@ export function SmoothScroll({ children }: { children: React.ReactNode }) {
         window.scrollTo(0, pos);
         sessionStorage.removeItem(`scroll-${window.location.pathname}`);
       }
-    } catch {
-      // sessionStorage blocked (private browsing, restricted env)
-    }
+    } catch { /* noop */ }
   }, []);
 
-  // Hook 2: Initialize Lenis AFTER paint (reads already-correct scroll position)
+  // Run BEFORE paint on SPA route change: projects always at top; home restores saved scroll.
+  // Lenis reads its own internal animatedScroll/targetScroll (not window.scrollY), so we must
+  // call lenisInstance.scrollTo(0, { immediate: true }) when entering projects so the first paint is at top.
+  useLayoutEffect(() => {
+    if (!hasInitialMounted.current) {
+      hasInitialMounted.current = true;
+      return; // initial load is handled by the [] layoutEffect
+    }
+
+    if (pathname.startsWith("/projects/") || pathname === "/projects") {
+      window.scrollTo(0, 0);
+      if (lenisInstance) lenisInstance.scrollTo(0, { immediate: true });
+      // Re-apply on next frames so we win vs in-flight Lenis scroll when user clicked while scrolling
+      const raf1 = requestAnimationFrame(() => {
+        window.scrollTo(0, 0);
+        if (lenisInstance) lenisInstance.scrollTo(0, { immediate: true });
+      });
+      const raf2 = requestAnimationFrame(() => {
+        window.scrollTo(0, 0);
+        if (lenisInstance) lenisInstance.scrollTo(0, { immediate: true });
+      });
+      return () => {
+        cancelAnimationFrame(raf1);
+        cancelAnimationFrame(raf2);
+      };
+    }
+
+    try {
+      const saved = sessionStorage.getItem(`scroll-${pathname}`);
+      if (saved) {
+        const pos = parseInt(saved, 10);
+        if (lenisInstance) {
+          lenisInstance.scrollTo(pos, { immediate: true });
+        } else {
+          window.scrollTo(0, pos);
+        }
+      }
+    } catch { /* noop */ }
+  }, [pathname]);
+
+  // Init Lenis
   useEffect(() => {
     if (lenisInstance) return;
 
@@ -44,22 +80,12 @@ export function SmoothScroll({ children }: { children: React.ReactNode }) {
     });
 
     lenisInstance = lenis;
-
-    // Expose lenis globally for external access
     (window as unknown as { lenis: Lenis }).lenis = lenis;
 
-    // Integrate Lenis with GSAP ScrollTrigger
     lenis.on("scroll", ScrollTrigger.update);
-
-    // Use GSAP ticker to drive Lenis (synced animation frame)
-    gsap.ticker.add((time) => {
-      lenis.raf(time * 1000);
-    });
-
-    // Disable lag smoothing for precise scroll synchronization
+    gsap.ticker.add((time) => lenis.raf(time * 1000));
     gsap.ticker.lagSmoothing(0);
 
-    // Save scroll position before reload/close
     const handleBeforeUnload = () => {
       try {
         if (lenisInstance) {
@@ -68,33 +94,23 @@ export function SmoothScroll({ children }: { children: React.ReactNode }) {
             String(Math.round(lenisInstance.scroll))
           );
         }
-      } catch {
-        // sessionStorage blocked
-      }
+      } catch { /* noop */ }
     };
     window.addEventListener("beforeunload", handleBeforeUnload);
 
-    // Re-apply scroll position as dynamic content loads.
-    // Dynamic imports replace 50vh placeholders with real content (Services alone is 500vh),
-    // so the page height grows over time. The initial scrollTo gets clamped to the shorter page.
-    // ResizeObserver detects each height change and re-applies the saved position.
+    // Re-apply scroll as dynamic imports expand the page height
     const tryRestore = () => {
       if (targetScrollRef.current === null) return;
       const target = targetScrollRef.current;
       ScrollTrigger.refresh();
-      // Use native scrollTo first (not constrained by Lenis internal limit)
       window.scrollTo(0, target);
-      if (lenisInstance) {
-        lenisInstance.scrollTo(target, { immediate: true });
-      }
-      // Stop once page is tall enough and we've reached the target
+      if (lenisInstance) lenisInstance.scrollTo(target, { immediate: true });
       const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
       if (maxScroll >= target - 5 && Math.abs(window.scrollY - target) < 10) {
         targetScrollRef.current = null;
       }
     };
 
-    // ResizeObserver fires each time body height changes (= dynamic import loaded)
     let resizeObserver: ResizeObserver | null = null;
     if (targetScrollRef.current !== null) {
       resizeObserver = new ResizeObserver(() => {
@@ -107,11 +123,9 @@ export function SmoothScroll({ children }: { children: React.ReactNode }) {
       resizeObserver.observe(document.body);
     }
 
-    // Fallback timeouts in case ResizeObserver misses something
     const t1 = setTimeout(tryRestore, 200);
     const t2 = setTimeout(tryRestore, 800);
     const t3 = setTimeout(tryRestore, 2000);
-    const t4 = setTimeout(tryRestore, 4000);
 
     return () => {
       window.removeEventListener("beforeunload", handleBeforeUnload);
@@ -119,50 +133,88 @@ export function SmoothScroll({ children }: { children: React.ReactNode }) {
       clearTimeout(t1);
       clearTimeout(t2);
       clearTimeout(t3);
-      clearTimeout(t4);
       lenis.destroy();
       lenisInstance = null;
     };
   }, []);
 
-  // Restore scroll position on SPA route change (back/forward navigation)
+  // SPA route change: save → reset → restore
   useEffect(() => {
     if (!lenisInstance) return;
 
-    // Skip first mount (handled by init effect above)
     if (prevPathname.current === null) {
       prevPathname.current = pathname;
       return;
     }
 
-    if (pathname !== prevPathname.current) {
-      prevPathname.current = pathname;
+    if (pathname === prevPathname.current) return;
+    prevPathname.current = pathname;
 
-      let saved: string | null = null;
-      try {
-        saved = sessionStorage.getItem(`scroll-${pathname}`);
-        if (saved) sessionStorage.removeItem(`scroll-${pathname}`);
-      } catch {
-        // sessionStorage blocked
-      }
-      if (saved) {
-        const pos = parseInt(saved, 10);
-        // Set native scroll immediately so position is correct before
-        // RouteTransition exit dissolve reveals the page (~100ms after nav)
-        window.scrollTo(0, pos);
-        // Wait for page DOM to fully render + ScrollTrigger to recalculate
-        // before restoring position. Multiple attempts ensure it sticks
-        // even if layout shifts happen during hydration.
-        const restore = () => {
-          if (!lenisInstance) return;
-          ScrollTrigger.refresh();
-          lenisInstance.scrollTo(pos, { immediate: true });
-        };
-        setTimeout(restore, 150);
-        setTimeout(restore, 500);
-        setTimeout(restore, 1000);
-      }
+    // Project pages always start at top
+    if (pathname.startsWith("/projects/") || pathname === "/projects") {
+      window.scrollTo(0, 0);
+      lenisInstance.scrollTo(0, { immediate: true });
+      ScrollTrigger.refresh();
+      return;
     }
+
+    // Restore saved position for this pathname
+    let pos: number | null = null;
+    try {
+      const saved = sessionStorage.getItem(`scroll-${pathname}`);
+      if (saved) {
+        sessionStorage.removeItem(`scroll-${pathname}`);
+        pos = parseInt(saved, 10);
+      }
+    } catch { /* noop */ }
+
+    if (!pos) return;
+
+    // Jump immediately, then re-apply each time dynamic imports expand the page
+    targetScrollRef.current = pos;
+    window.scrollTo(0, pos);
+    lenisInstance.scrollTo(pos, { immediate: true });
+    ScrollTrigger.refresh();
+
+    // Al volver: alinear ScrollTrigger con Lenis en el siguiente frame (tras el ticker)
+    requestAnimationFrame(() => {
+      ScrollTrigger.update();
+      ScrollTrigger.refresh();
+    });
+
+    if (pathname === "/") {
+      requestAnimationFrame(() => {
+        window.dispatchEvent(new CustomEvent("obel:scroll-restored"));
+      });
+    }
+
+    const apply = () => {
+      if (targetScrollRef.current === null || !lenisInstance) return;
+      const target = targetScrollRef.current;
+      ScrollTrigger.refresh();
+      window.scrollTo(0, target);
+      lenisInstance.scrollTo(target, { immediate: true });
+      const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+      if (maxScroll >= target - 5 && Math.abs(window.scrollY - target) < 10) {
+        targetScrollRef.current = null;
+      }
+    };
+
+    const ro = new ResizeObserver(() => {
+      apply();
+      if (targetScrollRef.current === null) ro.disconnect();
+    });
+    ro.observe(document.body);
+
+    const safety = setTimeout(() => {
+      targetScrollRef.current = null;
+      ro.disconnect();
+    }, 3000);
+
+    return () => {
+      clearTimeout(safety);
+      ro.disconnect();
+    };
   }, [pathname]);
 
   return <>{children}</>;

@@ -29,16 +29,15 @@ export function PixelTransition() {
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    // Check reduced motion preference
     const prefersReducedMotion = window.matchMedia(
       "(prefers-reduced-motion: reduce)"
     ).matches;
+    const isMobile = window.matchMedia("(max-width: 767px)").matches;
 
-    if (prefersReducedMotion || getGpuConfig().tier <= 1) {
+    if (prefersReducedMotion || isMobile || getGpuConfig().tier <= 1) {
       if (containerRef.current) {
         containerRef.current.style.display = "none";
       }
-      // Reveal the page (hidden by inline <style> in <head>)
       document.documentElement.style.transition = "opacity 0.15s ease";
       document.documentElement.style.opacity = "1";
       return;

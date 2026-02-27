@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useEffect, useLayoutEffect } from "react";
+import { usePathname } from "next/navigation";
 import { gsap } from "@/lib/gsap";
 
 // Track whether this is the initial page load (reload / first visit)
@@ -9,39 +10,32 @@ let isInitialLoad = true;
 
 export default function Template({ children }: { children: React.ReactNode }) {
   const ref = useRef<HTMLDivElement>(null);
+  const pathname = usePathname();
 
   // useLayoutEffect runs synchronously before paint — prevents flash of content
-  // before animation applies opacity: 0
+  // before animation applies opacity: 0. Re-run on pathname change so we hide
+  // previous page (e.g. home footer) and reveal the new page without a flash.
   const isomorphicLayoutEffect = typeof window !== "undefined" ? useLayoutEffect : useEffect;
 
   isomorphicLayoutEffect(() => {
     const el = ref.current;
     if (!el) return;
 
-    // On initial page load, PixelTransition handles the reveal — skip fade-in
     if (isInitialLoad) {
       isInitialLoad = false;
       gsap.set(el, { opacity: 1, y: 0 });
-      // Still signal ready in case RouteTransition is waiting
       window.dispatchEvent(new CustomEvent("routePageReady"));
       return;
     }
 
-    // Signal that the new page has mounted and is ready to be revealed.
-    // RouteTransition listens for this to start the exit dissolve.
+    // Route changed: hide content immediately so we don't see previous page (e.g. footer)
+    gsap.set(el, { opacity: 0, y: 0 });
     window.dispatchEvent(new CustomEvent("routePageReady"));
 
-    // If RouteTransition is handling this SPA navigation, stay invisible
-    // until the exit dissolve starts (prevents flash of content beneath canvas)
-    if (window.routeTransition) {
-      const reveal = () => {
-        gsap.set(el, { opacity: 1, y: 0 });
-      };
+    if ((window as unknown as { routeTransition?: unknown }).routeTransition) {
+      const reveal = () => gsap.set(el, { opacity: 1, y: 0 });
       window.addEventListener("routeTransitionExit", reveal, { once: true });
-
-      // Safety: reveal if routeTransitionExit never fires
       const safety = setTimeout(reveal, 1500);
-
       return () => {
         window.removeEventListener("routeTransitionExit", reveal);
         clearTimeout(safety);
@@ -51,10 +45,9 @@ export default function Template({ children }: { children: React.ReactNode }) {
     gsap.fromTo(
       el,
       { opacity: 0, y: 12 },
-      { opacity: 1, y: 0, duration: 0.6, ease: "power2.out" }
+      { opacity: 1, y: 0, duration: 0.5, ease: "power2.out" }
     );
-  }, []);
+  }, [pathname]);
 
-  // Start at opacity:0 to prevent flash — revealed by animation/event above
   return <div ref={ref} style={{ opacity: 0 }}>{children}</div>;
 }

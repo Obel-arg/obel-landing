@@ -1,7 +1,20 @@
 import { Resend } from "resend";
 import { NextResponse } from "next/server";
 
-// Simple in-memory rate limiter
+/** Escape HTML to prevent injection in email body */
+function escapeHtml(s: unknown): string {
+  const str = String(s ?? "");
+  return str
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
+// In-memory rate limiter (3 req/min per IP). Effective only on single-instance
+// deployments (e.g. VPS). In serverless (Vercel/Netlify) the Map does not persist
+// across invocations; for production rate limiting use a shared store (e.g. Vercel KV).
 const rateLimitMap = new Map<string, { count: number; resetTime: number }>();
 const RATE_LIMIT = 3; // max requests
 const RATE_WINDOW = 60 * 1000; // per minute
@@ -24,51 +37,71 @@ function isRateLimited(ip: string): boolean {
 }
 
 export async function POST(request: Request) {
+  console.log("[contact] POST received");
   try {
     // Get IP for rate limiting
     const ip = request.headers.get("x-forwarded-for") || "unknown";
 
     // Rate limit check
     if (isRateLimited(ip)) {
+      console.log("[contact] rate limited, ip:", ip);
       return NextResponse.json(
         { error: "Too many requests. Please try again later." },
         { status: 429 }
       );
     }
 
-    const { firstName, lastName, email, message, company, role, website } = await request.json();
+    const body = await request.json();
+    const { firstName, lastName, email, message, company, role, website } = body;
+    console.log("[contact] body parsed, has website (honeypot):", !!website);
 
     // Honeypot check - if filled, it's a bot
     if (website) {
-      // Silently reject but return success to not tip off bots
+      console.log("[contact] honeypot filled, rejecting silently");
       return NextResponse.json({ success: true });
     }
 
     // Validate required fields
     if (!firstName || !lastName || !email || !message) {
+      console.log("[contact] validation failed, missing:", {
+        firstName: !!firstName,
+        lastName: !!lastName,
+        email: !!email,
+        message: !!message,
+      });
       return NextResponse.json(
         { error: "Missing required fields" },
         { status: 400 }
       );
     }
 
+    const safe = {
+      firstName: escapeHtml(firstName),
+      lastName: escapeHtml(lastName),
+      email: escapeHtml(email),
+      message: escapeHtml(message),
+      company: escapeHtml(company ?? ""),
+      role: escapeHtml(role ?? ""),
+    };
+
     // Check for API key
     if (!process.env.RESEND_API_KEY) {
-      console.error("RESEND_API_KEY is not configured");
+      console.error("[contact] RESEND_API_KEY is not configured");
       return NextResponse.json(
         { error: "Email service not configured" },
         { status: 500 }
       );
     }
 
+    console.log("[contact] sending email to hello@obel.la, from:", email);
     const resend = new Resend(process.env.RESEND_API_KEY);
 
     // Send email with excellent formatting
-    await resend.emails.send({
+    const result = await resend.emails.send({
       from: "OBEL Contact <onboarding@resend.dev>", // Change to contact@obel.la after domain verification
       to: "hello@obel.la",
       replyTo: email,
-      subject: `New Contact: ${firstName} ${lastName}`,
+      subject: `New Contact: ${safe.firstName} ${safe.lastName}`,
       html: `
         <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 600px; margin: 0 auto; background: #ffffff;">
           <div style="background: #090E19; padding: 30px 40px;">
@@ -84,7 +117,7 @@ export async function POST(request: Request) {
                   Name
                 </td>
                 <td style="padding: 16px 0; border-bottom: 1px solid #f0f0f0; color: #090E19; font-size: 16px;">
-                  ${firstName} ${lastName}
+                  ${safe.firstName} ${safe.lastName}
                 </td>
               </tr>
               <tr>
@@ -92,28 +125,28 @@ export async function POST(request: Request) {
                   Email
                 </td>
                 <td style="padding: 16px 0; border-bottom: 1px solid #f0f0f0; color: #090E19; font-size: 16px;">
-                  <a href="mailto:${email}" style="color: #090E19; text-decoration: none; border-bottom: 1px solid #090E19;">
-                    ${email}
+                  <a href="mailto:${safe.email}" style="color: #090E19; text-decoration: none; border-bottom: 1px solid #090E19;">
+                    ${safe.email}
                   </a>
                 </td>
               </tr>
-              ${company ? `
+              ${safe.company ? `
               <tr>
                 <td style="padding: 16px 0; border-bottom: 1px solid #f0f0f0; color: #666; font-size: 13px; text-transform: uppercase; letter-spacing: 1px; vertical-align: top;">
                   Company
                 </td>
                 <td style="padding: 16px 0; border-bottom: 1px solid #f0f0f0; color: #090E19; font-size: 16px;">
-                  ${company}
+                  ${safe.company}
                 </td>
               </tr>
               ` : ''}
-              ${role ? `
+              ${safe.role ? `
               <tr>
                 <td style="padding: 16px 0; border-bottom: 1px solid #f0f0f0; color: #666; font-size: 13px; text-transform: uppercase; letter-spacing: 1px; vertical-align: top;">
                   Role
                 </td>
                 <td style="padding: 16px 0; border-bottom: 1px solid #f0f0f0; color: #090E19; font-size: 16px;">
-                  ${role}
+                  ${safe.role}
                 </td>
               </tr>
               ` : ''}
@@ -125,7 +158,7 @@ export async function POST(request: Request) {
               </p>
               <div style="background: #FFFAF8; padding: 24px; border-radius: 8px; border-left: 3px solid #090E19;">
                 <p style="color: #090E19; font-size: 16px; line-height: 1.6; margin: 0; white-space: pre-wrap;">
-                  ${message}
+                  ${safe.message}
                 </p>
               </div>
             </div>
@@ -140,9 +173,17 @@ export async function POST(request: Request) {
       `,
     });
 
+    if (result.error) {
+      console.error("[contact] Resend API error:", result.error);
+      return NextResponse.json(
+        { error: result.error.message || "Failed to send email" },
+        { status: 500 }
+      );
+    }
+    console.log("[contact] email sent, id:", result.data?.id);
     return NextResponse.json({ success: true });
   } catch (error) {
-    console.error("Email error:", error);
+    console.error("[contact] exception:", error);
     return NextResponse.json(
       { error: "Failed to send email" },
       { status: 500 }

@@ -135,7 +135,7 @@ export function Services() {
                 height: isDesktop
                   ? "32rem"
                   : isActive
-                    ? "24rem"
+                    ? "15rem"
                     : "4rem",
               }}
               transition={{ duration: 0.3, ease: "easeInOut" }}
@@ -152,17 +152,17 @@ export function Services() {
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1, transition: { duration: 0.4, delay: 0.2, ease: "easeOut" } }}
                     exit={{ opacity: 0, transition: { duration: 0.1, ease: "easeIn" } }}
-                    className="absolute inset-0 p-6 sm:p-8 lg:p-10 flex flex-col"
+                    className="absolute inset-0 p-4 sm:p-6 md:p-8 lg:p-10 flex flex-col"
                   >
                     {/* Service number */}
-                    <span className="self-end font-neuebit text-xl md:text-2xl lg:text-4xl text-background/50">
+                    <span className="hidden sm:block self-end font-neuebit text-lg sm:text-xl md:text-2xl lg:text-4xl text-background/50">
                       {i + 1}
                     </span>
 
                     {/* Content */}
-                    <div className="flex flex-col justify-center flex-1 gap-6 md:gap-8">
+                    <div className="flex flex-col justify-center flex-1 gap-3 sm:gap-4 md:gap-6 lg:gap-8">
                       <div>
-                        <h3 className="font-sans font-semibold text-background text-xl sm:text-2xl md:text-3xl lg:text-4xl tracking-tight leading-[1.05] mb-1.5 md:mb-3">
+                        <h3 className="font-sans font-semibold text-background text-xl sm:text-2xl md:text-3xl lg:text-4xl tracking-tight leading-[1.05] mb-1 md:mb-3">
                           {service.title}
                         </h3>
                         <p className="font-sans text-background text-base sm:text-lg md:text-xl lg:text-2xl tracking-tight leading-tight">
@@ -170,7 +170,7 @@ export function Services() {
                         </p>
                       </div>
 
-                      <ul className="space-y-1.5 sm:space-y-2 md:space-y-3">
+                      <ul className="space-y-1 sm:space-y-1.5 md:space-y-3">
                         {service.includes.map((item, j) => (
                           <li
                             key={j}
@@ -200,9 +200,9 @@ export function Services() {
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1, transition: { duration: 0.3, delay: 0.15, ease: "easeOut" } }}
                     exit={{ opacity: 0, transition: { duration: 0.1, ease: "easeIn" } }}
-                    className="absolute inset-0 flex items-end justify-center pb-4 lg:pb-6"
+                    className="absolute inset-0 flex items-center justify-center lg:items-end lg:justify-center lg:pb-6"
                   >
-                    <span className="font-neuebit text-white uppercase tracking-tight text-base sm:text-lg md:text-xl lg:text-[clamp(1rem,2.3vw,36px)] lg:[writing-mode:vertical-rl] lg:rotate-180 lg:origin-center">
+                    <span className="font-neuebit text-white uppercase tracking-tight text-xl sm:text-2xl md:text-xl lg:text-[clamp(1rem,2.3vw,36px)] lg:[writing-mode:vertical-rl] lg:rotate-180 lg:origin-center text-center px-2">
                       {service.previewTitle}
                     </span>
                   </motion.div>

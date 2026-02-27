@@ -1,7 +1,6 @@
 import dynamic from "next/dynamic";
 import { Hero } from "@/components/sections/Hero";
 import { Footer } from "@/components/layout/Footer";
-import { PerspectiveTransition } from "@/components/motion/PerspectiveTransition";
 
 // Placeholder to reserve space during dynamic import loading (prevents CLS)
 const SectionPlaceholder = () => (
@@ -32,13 +31,8 @@ const BizarapShowcase = dynamic(
 export default function Home() {
   return (
     <main>
-      <PerspectiveTransition
-        section1={<Hero />}
-        section2={<About />}
-      />
-      {/* Scroll anchor for #about — must be OUTSIDE PerspectiveTransition's sticky
-          context, otherwise Lenis miscalculates position when sticky is active */}
-      <div id="about" />
+      <Hero />
+      <About />
       <Services />
       <ObelHub />
       <BizarapShowcase />

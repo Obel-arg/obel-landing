@@ -43,27 +43,19 @@ export function Reveal({
 
       const offsets = getOffsets(direction);
 
-      // Set initial state (hidden)
       gsap.set(el, { opacity: 0, ...offsets });
 
-      // Check if element is already in viewport (e.g. dynamic imports, route transitions)
       const rect = el.getBoundingClientRect();
       const isInViewport = rect.top < window.innerHeight * 0.85;
 
+      // Si ya está en viewport (vuelta de proyecto / refresh abajo), mostrar y permitir decolorar al subir
+      const useLeaveBack = !once || isInViewport;
+      const triggerOnce = once && !isInViewport;
+
       if (isInViewport) {
-        // Already visible — animate in immediately instead of skipping
-        gsap.to(el, {
-          opacity: 1,
-          x: 0,
-          y: 0,
-          duration,
-          delay: delay + 0.05,
-          ease: "power3.out",
-        });
-        return;
+        gsap.set(el, { opacity: 1, x: 0, y: 0 });
       }
 
-      // Create scroll trigger for below-fold elements — auto-cleaned by useGSAP on unmount
       ScrollTrigger.create({
         trigger: el,
         start: "top 85%",
@@ -77,18 +69,20 @@ export function Reveal({
             ease: "power3.out",
           });
         },
-        onLeaveBack: once
-          ? undefined
-          : () => {
+        onLeaveBack: useLeaveBack
+          ? () => {
               gsap.to(el, {
                 opacity: 0,
                 ...offsets,
                 duration: duration * 0.5,
                 ease: "power3.in",
               });
-            },
-        once,
+            }
+          : undefined,
+        once: triggerOnce,
       });
+
+      if (isInViewport) ScrollTrigger.refresh();
     },
     { scope: ref, dependencies: [direction, delay, duration, once, prefersReducedMotion] }
   );
