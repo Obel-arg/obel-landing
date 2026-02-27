@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import { getAllProjects, getProjectBySlug } from "@/lib/projects";
-import { TransitionLink } from "@/components/ui/TransitionLink";
+import { BackButton } from "@/components/ui/BackButton";
 import { ProjectAccordion } from "@/components/ui/ProjectAccordion";
 import { ShareButton } from "@/components/ui/ShareButton";
 import { Footer } from "@/components/layout/Footer";
@@ -38,35 +38,14 @@ export default async function ProjectPage({
 
   return (
     <>
-      <main className="px-4 sm:px-6 md:px-10 lg:px-16 pt-24 sm:pt-28 pb-16 sm:pb-24">
-        {/* Back link */}
-      <TransitionLink
-        href="/#works"
-        className="inline-flex items-center gap-2 font-sans text-xs sm:text-sm opacity-50 hover:opacity-80 transition-opacity duration-300 mb-6 sm:mb-8"
-      >
-        <svg
-          width="16"
-          height="16"
-          viewBox="0 0 16 16"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-          aria-hidden
-        >
-          <path
-            d="M10 13L5 8L10 3"
-            stroke="currentColor"
-            strokeWidth="1.5"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-        </svg>
-        Back to works
-      </TransitionLink>
+      <main className="px-4 sm:px-6 md:px-10 lg:px-16 pt-10 sm:pt-12 pb-16 sm:pb-24">
+        {/* Back button */}
+        <BackButton className="inline-flex items-center gap-2 font-sans text-xs sm:text-sm opacity-50 hover:opacity-80 transition-opacity duration-300 mb-6 sm:mb-8 cursor-pointer" />
 
       {/* Mobile: stacked with reordered sections / Desktop: two-column */}
       <div className="flex flex-col lg:flex-row gap-8 lg:gap-12">
         {/* Left sidebar */}
-        <div className={`w-full lg:w-[320px] xl:w-[360px] lg:shrink-0 flex flex-col gap-6 md:gap-8${project.showcase ? " lg:sticky lg:top-[96px] lg:self-start" : ""}`}>
+        <div className={`w-full lg:w-[320px] xl:w-[360px] lg:shrink-0 flex flex-col gap-6 md:gap-8${project.showcase ? " lg:sticky lg:top-8 lg:self-start" : ""}`}>
           {/* Project title */}
           <h1 className="font-sans text-3xl sm:text-4xl md:text-5xl font-semibold tracking-[-0.04em] leading-[1.1]">
             {project.company}
@@ -162,34 +141,6 @@ export default async function ProjectPage({
               { label: "The Solution", content: project.solution },
             ]}
           />
-
-          {/* Tools section */}
-          {project.tools.length > 0 && (
-            <div className="flex flex-col gap-4 sm:gap-5">
-              <div className="border-t border-foreground/10" />
-              <span className="font-sans text-base sm:text-lg text-foreground tracking-[-0.03em]">
-                Tools Used
-              </span>
-              <div className="flex flex-wrap gap-3 sm:gap-4">
-                {project.tools.map((tool) => (
-                  <div
-                    key={tool.name}
-                    className="size-[48px] sm:size-[54px] rounded-xl flex items-center justify-center overflow-hidden"
-                  >
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src={tool.icon}
-                      alt={tool.name}
-                      width={42}
-                      height={42}
-                      className="object-contain"
-                    />
-                  </div>
-                ))}
-              </div>
-              <div className="border-t border-foreground/10" />
-            </div>
-          )}
 
           {/* Share button */}
           <ShareButton />

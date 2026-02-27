@@ -72,19 +72,10 @@ export function ScrollTextReveal({
     const chars = container.querySelectorAll("[data-scroll-char]");
     if (chars.length === 0) return;
 
-    // Viewport check — if already visible, skip animation
     const rect = container.getBoundingClientRect();
-    const isInViewport = rect.top < window.innerHeight * 0.85;
-
-    if (isInViewport) return;
-
-    // Set initial faded state
     gsap.set(chars, { opacity: 0.15 });
 
-    // Dynamic stagger: ~2s of scrub progress regardless of character count
     const staggerEach = Math.max(0.02, 2 / chars.length);
-
-    // Minimum scroll range (300px) prevents abrupt reveals on short text
     const elHeight = rect.height;
     const minRange = 300;
     const end = elHeight > minRange ? "bottom 40%" : `+=${minRange}`;
@@ -100,6 +91,9 @@ export function ScrollTextReveal({
         stagger: { each: staggerEach },
       }),
     });
+
+    // Si ya estás abajo (vuelta de proyecto / refresh), actualizar progreso para que al subir se decolore
+    ScrollTrigger.refresh();
 
     return () => {
       trigger.kill();

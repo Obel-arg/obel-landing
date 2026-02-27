@@ -64,6 +64,7 @@ export function Header() {
   // Cached section refs — refreshed on route change, not on every scroll frame
   const darkSectionsRef = useRef<Element[]>([]);
   const transparentSectionsRef = useRef<Element[]>([]);
+  const shouldHideHeader = pathname === "/projects" || pathname.startsWith("/projects/");
 
   // Check if header overlaps any dark or transparent section
   const checkOverlap = (): { dark: boolean; transparent: boolean } => {
@@ -92,6 +93,7 @@ export function Header() {
 
   // Scroll detection
   useEffect(() => {
+    if (shouldHideHeader) return;
     const sentinel = sentinelRef.current;
     if (!sentinel) return;
 
@@ -101,10 +103,11 @@ export function Header() {
     );
     observer.observe(sentinel);
     return () => observer.disconnect();
-  }, []);
+  }, [shouldHideHeader]);
 
   // Cache header height on resize
   useEffect(() => {
+    if (shouldHideHeader) return;
     const updateHeight = () => {
       cachedHeaderHeight = parseFloat(
         getComputedStyle(document.documentElement).getPropertyValue('--header-height')
@@ -113,11 +116,12 @@ export function Header() {
     updateHeight();
     window.addEventListener("resize", updateHeight, { passive: true });
     return () => window.removeEventListener("resize", updateHeight);
-  }, []);
+  }, [shouldHideHeader]);
 
   // Dark section detection - using scroll event with rAF throttle
   // Re-runs when pathname changes to handle route navigation
   useEffect(() => {
+    if (shouldHideHeader) return;
     let rafId: number | null = null;
 
     // Cache section references (refreshed on route change, not every frame)
@@ -160,7 +164,9 @@ export function Header() {
       clearTimeout(timeoutId2);
       if (rafId !== null) cancelAnimationFrame(rafId);
     };
-  }, [pathname]);
+  }, [pathname, shouldHideHeader]);
+
+  if (shouldHideHeader) return null;
 
   return (
     <>

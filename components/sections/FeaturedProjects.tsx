@@ -58,14 +58,14 @@ function ProjectCard({
             </p>
           </div>
 
-          {/* Problem & Solution */}
-          <div className="mt-4 md:mt-6 space-y-6 md:space-y-8 max-w-full lg:max-w-[70%]">
+          {/* Problem & Solution — hidden on mobile */}
+          <div className="hidden md:block mt-4 md:mt-6 space-y-6 md:space-y-8 max-w-full lg:max-w-[70%]">
             <div>
               <h4 className="font-sans font-semibold text-sm md:text-base">
                 The problem:
               </h4>
               <p className="mt-1.5 font-sans text-sm md:text-base leading-relaxed opacity-60">
-                {project.problem}
+                {project.shortProblem}
               </p>
             </div>
 
@@ -74,7 +74,7 @@ function ProjectCard({
                 The Solution:
               </h4>
               <p className="mt-1.5 font-sans text-sm md:text-base leading-relaxed opacity-60">
-                {project.solution}
+                {project.shortSolution}
               </p>
             </div>
           </div>

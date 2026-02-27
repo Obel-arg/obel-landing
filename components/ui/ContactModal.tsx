@@ -50,6 +50,7 @@ export function ContactModal() {
   // Submission states
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<"idle" | "success" | "error">("idle");
+  const [apiErrorMessage, setApiErrorMessage] = useState<string | null>(null);
   const [touched, setTouched] = useState<Record<string, boolean>>({});
 
   // Validation check
@@ -127,6 +128,7 @@ export function ContactModal() {
 
   // Open modal
   const open = useCallback(() => {
+    setApiErrorMessage(null);
     setIsOpen(true);
   }, []);
 
@@ -300,6 +302,7 @@ export function ContactModal() {
 
     setIsSubmitting(true);
     setSubmitStatus("idle");
+    setApiErrorMessage(null);
 
     try {
       const res = await fetch("/api/contact", {
@@ -308,7 +311,13 @@ export function ContactModal() {
         body: JSON.stringify(formValues),
       });
 
-      if (!res.ok) throw new Error("Failed to send");
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        const message = typeof data?.error === "string" ? data.error : "Failed to send";
+        setApiErrorMessage(message);
+        setSubmitStatus("error");
+        return;
+      }
 
       setSubmitStatus("success");
       // Reset form after success
@@ -563,7 +572,7 @@ export function ContactModal() {
                   {/* Error message */}
                   {submitStatus === "error" && (
                     <p className="text-[#FF4141] font-sans text-sm mt-3 animate-fade-in">
-                      Failed to send message. Please try again or email us at{" "}
+                      {apiErrorMessage ?? "Failed to send message."} Please try again or email us at{" "}
                       <a href="mailto:hello@obel.la" className="underline hover:text-[#FFFAF8]">
                         hello@obel.la
                       </a>

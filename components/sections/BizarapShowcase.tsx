@@ -4,7 +4,7 @@ import Image from "next/image";
 import { MacbookScroll } from "@/components/ui/macbook-scroll";
 export function BizarapShowcase() {
   return (
-    <section className="hidden md:block relative z-0 bg-background">
+    <section id="projects" className="hidden md:block relative z-0 bg-background">
       <MacbookScroll
         src="/images/projects/bizarrap-screen.webp"
         showGradient={false}

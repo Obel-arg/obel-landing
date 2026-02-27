@@ -14,12 +14,15 @@ export interface Project {
   longDescription: string;
   problem: string;
   solution: string;
+  shortProblem?: string;
+  shortSolution?: string;
   services: string[];
   tools: ProjectTool[];
   link?: string;
   image: string;
   images: string[];
   showcase?: boolean;
+  hidden?: boolean;
 }
 
 const PROJECTS: Project[] = [
@@ -38,6 +41,8 @@ const PROJECTS: Project[] = [
       "The launch required more than a traditional landing page. It needed to build anticipation, centralize all sessions in one place, and create an interactive experience that kept fans engaged before and after each release.",
     solution:
       "We built a dynamic platform showcasing every Bizarrap session through an interactive card system. Released sessions are fully accessible, while upcoming ones remain locked — featuring hidden clues that invite fans to guess the next artist.",
+    shortProblem: "",
+    shortSolution: "",
     link: "https://bizarrap.com",
     services: ["Web Experience Development"],
     tools: [
@@ -71,6 +76,8 @@ const PROJECTS: Project[] = [
       "As the division scaled, coordinating logistics, suppliers, budgets, and internal workflows across multiple simultaneous events became increasingly complex. Disconnected tools and manual processes limited visibility and made real-time decision-making difficult.",
     solution:
       "We partnered as their CTO-as-a-Service and designed a centralized platform that brings all live operational processes into one system. The solution unifies planning, scheduling, supplier management, and financial tracking — providing full operational visibility, stronger control, and a scalable tech foundation for growth.",
+    shortProblem: "Disconnected tools and manual processes limited visibility and made real-time decision-making difficult.",
+    shortSolution: "We provided a full CTO-as-a-Service engagement and built Malbec, a centralized platform that aggregates all label data and workflows in a single place.",
     services: ["CTO-as-a-Service", "Strategy & Custom Platform Development"],
     tools: [
       { name: "Illustrator", icon: "/images/tools/illustrator.svg" },
@@ -100,6 +107,8 @@ const PROJECTS: Project[] = [
       "As the label grew, manual workflows and scattered data created operational friction. Managing projects, assets, and teams across channels without a unified system limited efficiency and made scaling more difficult.",
     solution:
       "We provided a full CTO-as-a-Service engagement and built Malbec, a centralized platform that aggregates all label data and workflows in a single place. This solution streamlines project coordination, gives real-time visibility into operations, and allows the team to focus on creativity and releases without process bottlenecks.",
+    shortProblem: "Manual workflows and scattered data created operational friction. Managing projects, assets, and teams across channels without a unified system made scaling more difficult.",
+    shortSolution: "We provided a full CTO-as-a-Service engagement and built Malbec, a centralized platform that aggregates all label data and workflows in a single place. ",
     services: ["CTO-as-a-Service", "Platform Development"],
     tools: [
       { name: "Illustrator", icon: "/images/tools/illustrator.svg" },
@@ -116,6 +125,7 @@ const PROJECTS: Project[] = [
   },
   {
     id: 2,
+    hidden: true,
     slug: "iusports",
     company: "iuSports",
     title: "App Design & Development",
@@ -129,6 +139,8 @@ const PROJECTS: Project[] = [
       "Amateur sports run on passion, but operations, video and performance tracking are still manual, fragmented and hard to scale.",
     solution:
       "iuSports automates recording, highlights, analytics and management in one platform — bringing professional tools and visibility to the amateur ecosystem.",
+    shortProblem: "",
+    shortSolution: "",
     services: ["UX Design", "App Development", "Brand Identity"],
     tools: [
       { name: "Figma", icon: "/images/tools/figma.svg" },
@@ -156,6 +168,8 @@ const PROJECTS: Project[] = [
       "Campaign data across Meta, Google, TikTok, and other advertising platforms was fragmented. Performance tracking relied on manual reporting and disconnected dashboards, limiting real-time insights and making cross-artist analysis inefficient.",
     solution:
       "We designed and developed a custom platform that centralizes all paid media campaigns into a single system. The platform aggregates cross-platform performance data, unifies reporting across artists, and provides real-time visibility — enabling clearer insights and stronger operational control.",
+    shortProblem: "Campaign data across Meta, Google, TikTok, and other advertising platforms was fragmented. Performance tracking relied on manual reporting and disconnected dashboards.",
+    shortSolution: "We designed and developed a custom platform that centralizes all paid media campaigns into a single system.",
     services: ["Custom Analytics Platform Development"],
     tools: [
       { name: "Illustrator", icon: "/images/tools/illustrator.svg" },
@@ -185,6 +199,8 @@ const PROJECTS: Project[] = [
       "Brands running paid media with influencers faced fragmented workflows. Campaign creation, post approvals, boosting content, and tracking results were handled across different tools, creating operational friction and limited visibility.",
     solution:
       "We designed and developed a centralized platform that allows brands to create campaigns, link influencer posts, schedule content, and manage paid media from a single system. Catch Fluence unifies execution and performance tracking — giving brands full control over their influencer advertising operations.",
+    shortProblem: "Brands running paid media with influencers faced fragmented workflows.",
+    shortSolution: "We designed and developed a centralized platform that allows brands to create campaigns, link influencer posts, schedule content, and manage paid media from a single system.",
     services: ["Custom Platform Development"],
     tools: [
       { name: "Illustrator", icon: "/images/tools/illustrator.svg" },
@@ -202,7 +218,7 @@ const PROJECTS: Project[] = [
 ];
 
 export function getAllProjects(): Project[] {
-  return PROJECTS;
+  return PROJECTS.filter((p) => !p.hidden);
 }
 
 export function getProjectBySlug(slug: string): Project | undefined {

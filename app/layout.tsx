@@ -4,7 +4,6 @@ import { GeistMono } from "geist/font/mono";
 import { Header } from "@/components/layout/Header";
 import { SmoothScroll } from "@/components/providers/SmoothScroll";
 import { PixelTransition } from "@/components/motion/PixelTransition";
-import { RouteTransition } from "@/components/motion/RouteTransition";
 import { ContactModal } from "@/components/ui/ContactModal";
 import { Agentation } from "agentation";
 import "./globals.css";
@@ -77,7 +76,6 @@ export default function RootLayout({
         className={`${instrumentSerif.variable} ${inter.variable} ${pressStart2P.variable} ${GeistMono.variable} antialiased text-pretty`}
       >
         <PixelTransition />
-        <RouteTransition />
         <ContactModal />
         <Header />
         <SmoothScroll>{children}</SmoothScroll>
