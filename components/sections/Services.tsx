@@ -7,17 +7,6 @@ import { AnimatePresence, motion } from "motion/react";
 const SERVICE_CARDS = [
   {
     id: 1,
-    title: "Product Design & Development",
-    previewTitle: "Product Design and DVP",
-    headline: "Technology built for real use.",
-    includes: [
-      "Product strategy and definition",
-      "UX/UI design",
-      "Custom platform and app development",
-    ],
-  },
-  {
-    id: 2,
     title: "AI Solutions",
     previewTitle: "AI Solutions",
     headline: "From experimentation to real adoption.",
@@ -25,6 +14,17 @@ const SERVICE_CARDS = [
       "Use case identification and prioritization",
       "Custom AI models and workflows",
       "Process automation with AI",
+    ],
+  },
+  {
+    id: 2,
+    title: "Product Design & Development",
+    previewTitle: "Product Design and DVP",
+    headline: "Technology built for real use.",
+    includes: [
+      "Product strategy and definition",
+      "UX/UI design",
+      "Custom platform and app development",
     ],
   },
   {
