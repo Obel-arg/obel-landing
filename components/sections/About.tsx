@@ -61,7 +61,7 @@ export function About() {
               </mark>
             </p>
             <p className="font-sans text-sm md:text-base lg:text-lg xl:text-[clamp(1.125rem,1.62vw,28px)] tracking-tight leading-relaxed xl:max-w-[clamp(767px,69vw,1193px)] text-pretty">
-              OBEL is a team that works end to end: from building solutions to ensuring their real adoption. We don&apos;t believe in delivering products and disappearing. We care about how they&apos;re used, how they integrate into workflows, and how they change people&apos;s daily routines.
+              Obel is a team that works end to end: from building solutions to ensuring their real adoption. We don&apos;t believe in delivering products and disappearing. We care about how they&apos;re used, how they integrate into workflows, and how they change people&apos;s daily routines.
             </p>
           </div>
         </Reveal>
