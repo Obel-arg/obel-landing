@@ -27,8 +27,8 @@ export function About() {
             <h2 className="font-neuebit text-[2.5rem] md:text-[4rem] lg:text-[5.5rem] xl:text-[clamp(5.5rem,6.42vw,111px)] leading-[0.67] tracking-[-0.023em] xl:max-w-[65vw] text-balance whitespace-nowrap">
               We build the team. You run the business<span className="font-sans font-semibold text-[1.5rem] md:text-[2.5rem] lg:text-[3.5rem] xl:text-[clamp(3.5rem,3.65vw,63px)]">.</span>
             </h2>
-            <p className="font-sans text-xl md:text-[1.75rem] lg:text-[2.75rem] xl:text-[clamp(2.75rem,3.3vw,57px)] leading-[1.15] tracking-tight xl:max-w-[65vw] text-pretty">
-              Every AI employee we create is shaped around your workflows, your tools, and how your team already operates. We stay until they’re fully embedded and delivering real results — from hiring to performance, we’re in it with you.
+            <p className="font-sans text-xl md:text-[1.75rem] lg:text-[2.75rem] xl:text-[clamp(2.75rem,3.3vw,57px)] leading-[1.15] tracking-tight xl:max-w-[70vw] text-pretty pt-2">
+              Every AI employee we create is shaped around your workflows, your tools, and how your team already operates. We stay until they're fully embedded and delivering real results — from hiring to performance, we're in&nbsp;it&nbsp;with&nbsp;you.
             </p>
           </div>
         </ScrollTextReveal>
