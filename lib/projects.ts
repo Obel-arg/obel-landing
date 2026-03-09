@@ -185,6 +185,32 @@ const PROJECTS: Project[] = [
     ],
   },
   {
+    id: 7,
+    slug: "top-rentals",
+    company: "Top Rentals",
+    title: "Custom Platform Development",
+    year: "2026",
+    country: "Argentina",
+    description:
+      "Top Rentals manages a large portfolio of short-term rental properties in Buenos Aires and needed a more reliable way to handle reservation payments as booking volume increased.",
+    longDescription:
+      "Top Rentals manages a large portfolio of short-term rental properties across multiple buildings and locations in Buenos Aires. As booking volume increased, the team needed a more reliable way to manage and execute reservation payments efficiently across their operations.",
+    problem:
+      "Reservation payments were handled through manual processes between reception teams and the accounting department. Each booking required coordination between multiple people, creating delays, operational friction, and a higher risk of human error.",
+    solution:
+      "We developed a custom platform that automates the payment workflow for rental reservations. Receptionists register booking requests directly in the system, and the accounting team can trigger payment execution with a single action. The platform automatically generates a payment agent that accesses the back-office environment and completes the transaction — streamlining financial operations and reducing manual work.",
+    shortProblem: "Reservation payments relied on manual coordination between reception and accounting teams, creating delays, inefficiencies, and a higher risk of human error.",
+    shortSolution: "We built a custom platform that automates reservation payment workflows, allowing reception to register bookings and accounting to execute payments instantly through automated agents.",
+    services: ["Custom Platform Development"],
+    tools: [],
+    image: "/images/projects/top-rental.webp",
+    images: [
+      "/images/projects/top-rental-1.webp",
+      "/images/projects/top-rental-2.webp",
+      "/images/projects/top-rental-3.webp",
+    ],
+  },
+  {
     id: 6,
     slug: "catchfluence",
     company: "Catch Fluence",

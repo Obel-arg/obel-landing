@@ -24,12 +24,11 @@ export function About() {
         {/* Title block */}
         <ScrollTextReveal className="flex flex-col">
           <div>
-            <h2 className="font-neuebit text-[2.5rem] md:text-[4rem] lg:text-[5.5rem] xl:text-[clamp(5.5rem,6.42vw,111px)] leading-[0.67] tracking-[-0.023em] xl:max-w-[48vw] text-balance">
-              We design products, solutions, and processes
-              <span className="font-sans font-semibold text-[1.5rem] md:text-[2.5rem] lg:text-[3.5rem] xl:text-[clamp(3.5rem,3.65vw,63px)]">.</span>
+            <h2 className="font-neuebit text-[2.5rem] md:text-[4rem] lg:text-[5.5rem] xl:text-[clamp(5.5rem,6.42vw,111px)] leading-[0.67] tracking-[-0.023em] xl:max-w-[65vw] text-balance whitespace-nowrap">
+              We build the team. You run the business<span className="font-sans font-semibold text-[1.5rem] md:text-[2.5rem] lg:text-[3.5rem] xl:text-[clamp(3.5rem,3.65vw,63px)]">.</span>
             </h2>
             <p className="font-sans text-xl md:text-[1.75rem] lg:text-[2.75rem] xl:text-[clamp(2.75rem,3.3vw,57px)] leading-[1.15] tracking-tight xl:max-w-[65vw] text-pretty">
-              But we also support implementation, learning, and the adjustments needed for everything to work in real-world contexts.
+              Every AI employee we create is shaped around your workflows, your tools, and how your team already operates. We stay until they’re fully embedded and delivering real results — from hiring to performance, we’re in it with you.
             </p>
           </div>
         </ScrollTextReveal>
@@ -57,11 +56,11 @@ export function About() {
                   WebkitBoxDecorationBreak: "clone",
                 }}
               >
-                We don&apos;t just build. We get involved.
+                We don&apos;t just deploy AI. We make it work.
               </mark>
             </p>
             <p className="font-sans text-sm md:text-base lg:text-lg xl:text-[clamp(1.125rem,1.62vw,28px)] tracking-tight leading-relaxed xl:max-w-[clamp(767px,69vw,1193px)] text-pretty">
-              Obel is a team that works end to end: from building solutions to ensuring their real adoption. We don&apos;t believe in delivering products and disappearing. We care about how they&apos;re used, how they integrate into workflows, and how they change people&apos;s daily routines.
+              Obel is a team that works end to end: from designing AI agents and digital products to integrating them into real systems and daily operations. We don&apos;t believe in building technology that lives outside the business. What we create becomes part of how teams operate, make decisions, and move work forward.
             </p>
           </div>
         </Reveal>

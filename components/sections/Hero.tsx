@@ -60,16 +60,16 @@ export function Hero() {
         {/* Heading — mobile: "Digital products...", desktop: "Products..." */}
         <h1 className="font-neuebit text-[min(16vw,27vh)] md:text-[min(10vw,17vh)] leading-[0.64] md:leading-[0.72] tracking-[-0.05em] text-primary max-w-[85vw] md:max-w-[74vw]">
           <span className="md:hidden">Digital products</span>
-          <span className="hidden md:inline">Products</span>
-          {" "}shaped by people,{" "}
-          powered by tech.
+          <span className="hidden md:inline">AI employees </span>
+          {" "}that work <br />
+          across your operations 24/7
         </h1>
 
         {/* Subtitle */}
-        <p className="font-sans font-medium text-sm md:text-[23px] tracking-[-0.02em] text-primary mt-3 md:mt-5 leading-[1.4]">
-          From complex operations to digital products
+        <p className="font-sans font-medium text-sm md:text-[23px] tracking-[-0.02em] text-primary pt-3 mt-3 md:mt-5 leading-[1.4]">
+          You don’t install them. You hire them.
           <br className="hidden md:block" />
-          {" "}that support how your business really runs.
+          {" "} Built to work the way your business does.
         </p>
 
         {/* ── CTA + Hands Composition (locked alignment) ── */}
