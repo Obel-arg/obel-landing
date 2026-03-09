@@ -56,7 +56,7 @@ export function Hero() {
       style={{ height: "100dvh" }}
     >
       {/* ── Text content + CTA ── */}
-      <div className="relative z-10 flex flex-col items-center text-center justify-center h-full pb-[20vh] md:pb-0 md:justify-start md:h-auto md:absolute md:inset-0 md:pt-[calc(var(--header-height)+10vh)] px-6 md:px-0">
+      <div className="relative z-10 flex flex-col items-center text-center justify-center h-full pb-[20vh] md:pb-0 md:justify-start md:h-auto md:absolute md:inset-0 md:pt-[calc(var(--header-height)+10vh)] md:px-0">
         {/* Heading — mobile: "Digital products...", desktop: "Products..." */}
         <h1 className="font-neuebit text-[min(16vw,27vh)] md:text-[min(10vw,17vh)] leading-[0.64] md:leading-[0.72] tracking-[-0.05em] text-primary max-w-[85vw] md:max-w-[74vw]">
           <span className="hidden md:inline">AI employees </span>
