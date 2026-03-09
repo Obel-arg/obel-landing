@@ -189,7 +189,7 @@ const PROJECTS: Project[] = [
     slug: "top-rentals",
     company: "Top Rentals",
     title: "Custom Platform Development",
-    year: "2024",
+    year: "2026",
     country: "Argentina",
     description:
       "Top Rentals manages a large portfolio of short-term rental properties in Buenos Aires and needed a more reliable way to handle reservation payments as booking volume increased.",
@@ -203,11 +203,11 @@ const PROJECTS: Project[] = [
     shortSolution: "We built a custom platform that automates reservation payment workflows, allowing reception to register bookings and accounting to execute payments instantly through automated agents.",
     services: ["Custom Platform Development"],
     tools: [],
-    image: "/images/projects/top-rentals-cover.webp",
+    image: "/images/projects/top-rental.webp",
     images: [
-      "/images/projects/top-rentals1.webp",
-      "/images/projects/top-rentals2.webp",
-      "/images/projects/top-rentals3.webp",
+      "/images/projects/top-rental-1.webp",
+      "/images/projects/top-rental-2.webp",
+      "/images/projects/top-rental-3.webp",
     ],
   },
   {

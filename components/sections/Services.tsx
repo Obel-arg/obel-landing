@@ -7,19 +7,19 @@ import { AnimatePresence, motion } from "motion/react";
 const SERVICE_CARDS = [
   {
     id: 1,
-    title: "AI Solutions",
-    previewTitle: "AI Solutions",
-    headline: "From experimentation to real adoption.",
+    title: "AI Operations",
+    previewTitle: "AI Operations",
+    headline: "Your always-on operations team.",
     includes: [
-      "Use case identification and prioritization",
-      "Custom AI models and workflows",
-      "Process automation with AI",
+      "AI employees that manage workflows end to end",
+      "Agents trained on your tools and systems",
+      "Continuous optimization without human bottlenecks",
     ],
   },
   {
     id: 2,
-    title: "Product Design & Development",
-    previewTitle: "Product Design and DVP",
+    title: "Product & Development",
+    previewTitle: "Product & Development",
     headline: "Technology built for real use.",
     includes: [
       "Product strategy and definition",
@@ -29,8 +29,8 @@ const SERVICE_CARDS = [
   },
   {
     id: 3,
-    title: "Process Mapping & Optimization",
-    previewTitle: "Process Mapping and Optimization",
+    title: "Process Intelligence",
+    previewTitle: "Process Intelligence",
     headline: "Make the invisible visible.",
     includes: [
       "Operational diagnostics",
@@ -40,8 +40,8 @@ const SERVICE_CARDS = [
   },
   {
     id: 4,
-    title: "Branding",
-    previewTitle: "Branding",
+    title: "Brand & Content",
+    previewTitle: "Brand & Content",
     headline: "Identity that speaks before you do.",
     includes: [
       "Brand strategy and positioning",
@@ -51,8 +51,8 @@ const SERVICE_CARDS = [
   },
   {
     id: 5,
-    title: "CTO as a Service",
-    previewTitle: "CTO as a Service",
+    title: "Tech Leadership",
+    previewTitle: "Tech Leadership",
     headline: "Strategic tech leadership, on demand.",
     includes: [
       "Technology strategy and roadmap",
@@ -62,8 +62,8 @@ const SERVICE_CARDS = [
   },
   {
     id: 6,
-    title: "Implementation & Adoption (OBEL Hub)",
-    previewTitle: "OBEL Hub",
+    title: "Obel Hub",
+    previewTitle: "Obel Hub",
     headline: "Technology only matters when it's used.",
     includes: [
       "Workflow integration and rollout support",
@@ -102,9 +102,14 @@ export function Services() {
       className="below-fold relative bg-background pt-24 pb-10 md:pt-32 md:pb-14 lg:pt-44 lg:pb-20 xl:pt-56 xl:pb-28"
     >
       {/* Title */}
-      <h2 className="font-neuebit text-primary text-center text-5xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-[clamp(96px,8vw,140px)] tracking-tight leading-none mb-8 md:mb-12 lg:mb-16">
-        Our Services
+      <h2 className="font-neuebit text-primary text-center text-5xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-[clamp(96px,8vw,140px)] tracking-tight leading-none mb-4 md:mb-6 lg:mb-8">
+        Roles ready to hire.
       </h2>
+
+      {/* Subtitle */}
+      <p className="font-sans text-primary text-center text-lg sm:text-xl md:text-2xl lg:text-3xl tracking-tight leading-tight mb-8 md:mb-12 lg:mb-16 px-4 max-w-4xl mx-auto">
+        Every AI employee is designed for a specific function in your business.
+      </p>
 
       {/* Card row — entrance animation with delay */}
       <motion.div
