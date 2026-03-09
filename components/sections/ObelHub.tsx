@@ -65,7 +65,7 @@ export function ObelHub() {
 
               {/* Link — desktop only, pushed to bottom to align with 3rd key area */}
               <a
-                href="https://www.obel.la/hub"
+                href="https://hub.obel.la/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="hidden xl:inline-block mt-auto mb-6 lg:mb-10 pt-4 lg:pt-6 font-sans text-primary text-base sm:text-lg md:text-xl lg:text-2xl tracking-[-0.04em] underline underline-offset-4 decoration-primary/40 hover:decoration-primary transition-colors"
@@ -107,7 +107,7 @@ export function ObelHub() {
 
           {/* Link — mobile/tablet only, at bottom of card */}
           <a
-            href="https://www.obel.la/hub"
+            href="https://hub.obel.la/"
             target="_blank"
             rel="noopener noreferrer"
             className="inline-block xl:hidden mt-4 sm:mt-6 md:mt-8 font-sans text-primary text-base sm:text-lg md:text-xl tracking-[-0.04em] underline underline-offset-4 decoration-primary/40 hover:decoration-primary transition-colors"

@@ -59,17 +59,16 @@ export function Hero() {
       <div className="relative z-10 flex flex-col items-center text-center justify-center h-full pb-[20vh] md:pb-0 md:justify-start md:h-auto md:absolute md:inset-0 md:pt-[calc(var(--header-height)+10vh)] px-6 md:px-0">
         {/* Heading — mobile: "Digital products...", desktop: "Products..." */}
         <h1 className="font-neuebit text-[min(16vw,27vh)] md:text-[min(10vw,17vh)] leading-[0.64] md:leading-[0.72] tracking-[-0.05em] text-primary max-w-[85vw] md:max-w-[74vw]">
-          <span className="md:hidden">Digital products</span>
           <span className="hidden md:inline">AI employees </span>
-          {" "}that work <br />
-          across your operations 24/7
+          <span className="md:hidden">AI employees that <br />work across your <br />operations 24/7</span>
+          <span className="hidden md:inline">that work <br />across your operations 24/7</span>
         </h1>
 
         {/* Subtitle */}
         <p className="font-sans font-medium text-sm md:text-[23px] tracking-[-0.02em] text-primary pt-3 mt-3 md:mt-5 leading-[1.4]">
           You don’t install them. You hire them.
-          <br className="hidden md:block" />
-          {" "} Built to work the way your business does.
+          <br />
+          Built to work the way your business does.
         </p>
 
         {/* ── CTA + Hands Composition (locked alignment) ── */}
