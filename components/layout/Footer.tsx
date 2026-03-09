@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useCallback, useState } from "react";
+import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { Reveal } from "@/components/motion/Reveal";
 import { InteractiveHoverButton } from "@/components/ui/InteractiveHoverButton";
@@ -98,6 +99,8 @@ function handleSmoothScroll(
 }
 
 export function Footer() {
+  const pathname = usePathname();
+  const isProjectPage = pathname?.startsWith("/projects/");
   const textRef = useRef<HTMLDivElement>(null);
   const patternRef = useRef<SVGSVGElement>(null);
   const rafRef = useRef<number | null>(null);
@@ -215,92 +218,94 @@ export function Footer() {
       </div>
 
       {/* Middle section: tagline + nav columns */}
-      <div className="px-4 sm:px-6 md:px-10 lg:px-16 pt-10 md:pt-14 lg:pt-16 pb-8 md:pb-12">
-        <div className="flex flex-col items-center text-center lg:items-start lg:text-left lg:flex-row gap-10 lg:gap-16">
-          {/* Left: Tagline + Back to top (desktop) */}
-          <div className="lg:flex-1">
-            <Reveal>
-              <p className="font-sans text-foreground text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-[42px] tracking-tight leading-snug">
-                <span className="block font-semibold">From Argentina to your</span>
-                <span className="block font-semibold">daily operations.</span>
-                <span className="block sm:whitespace-nowrap">Real solutions. Real adoption.</span>
-              </p>
-            </Reveal>
-            {/* Back to top — desktop only (inline with tagline) */}
-            <Reveal delay={0.1}>
+      {!isProjectPage && (
+        <div className="px-4 sm:px-6 md:px-10 lg:px-16 pt-10 md:pt-14 lg:pt-16 pb-8 md:pb-12">
+          <div className="flex flex-col items-center text-center lg:items-start lg:text-left lg:flex-row gap-10 lg:gap-16">
+            {/* Left: Tagline + Back to top (desktop) */}
+            <div className="lg:flex-1">
+              <Reveal>
+                <p className="font-sans text-foreground text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-[42px] tracking-tight leading-snug">
+                  <span className="block font-semibold">From Argentina to your</span>
+                  <span className="block font-semibold">daily operations.</span>
+                  <span className="block sm:whitespace-nowrap">Real solutions. Real adoption.</span>
+                </p>
+              </Reveal>
+              {/* Back to top — desktop only (inline with tagline) */}
+              <Reveal delay={0.1}>
+                <button
+                  onClick={scrollToTop}
+                  className="hidden lg:inline-flex cursor-pointer mt-6 md:mt-8 items-center gap-3 border border-foreground/20 text-foreground font-sans font-medium text-sm sm:text-base tracking-tight px-4 py-2.5 sm:px-5 sm:py-3 rounded-xl hover:border-foreground/40 transition-colors"
+                >
+                  Back to top
+                  <span className="font-neuebit text-foreground text-lg sm:text-xl leading-none -rotate-90">→</span>
+                </button>
+              </Reveal>
+            </div>
+
+            {/* Right: Navigation + Channels */}
+            <div className="flex gap-12 sm:gap-16 md:gap-20 lg:gap-16 lg:shrink-0 lg:ml-auto lg:mr-[8vw] xl:mr-[12vw] 2xl:mr-[16vw]">
+              {/* Navigation */}
+              <Reveal>
+                <div className="text-center lg:text-left">
+                  <h4 className="font-sans font-medium text-foreground/80 text-lg md:text-xl lg:text-2xl tracking-tight mb-4">
+                    Navigation
+                  </h4>
+                  <ul className="space-y-2 sm:space-y-2.5">
+                    {NAV_LINKS.map((link) => (
+                      <li key={link.label}>
+                        <Link
+                          href={link.href}
+                          onClick={(e) => handleSmoothScroll(e, link.href)}
+                          className="font-sans text-foreground/80 text-sm sm:text-base tracking-tight hover:text-foreground transition-colors"
+                        >
+                          {link.label}
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </Reveal>
+
+              {/* Channels */}
+              <Reveal delay={0.1}>
+                <div className="text-center lg:text-left">
+                  <h4 className="font-sans font-medium text-foreground/80 text-lg md:text-xl lg:text-2xl tracking-tight mb-4">
+                    Channels
+                  </h4>
+                  <ul className="space-y-2 sm:space-y-2.5">
+                    {CHANNEL_LINKS.map((link) => (
+                      <li key={link.label}>
+                        <Link
+                          href={link.href}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="font-sans text-foreground/80 text-sm sm:text-base tracking-tight hover:text-foreground transition-colors"
+                        >
+                          {link.label}
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </Reveal>
+            </div>
+
+            {/* Back to top — mobile only (below links) */}
+            <Reveal delay={0.15}>
               <button
                 onClick={scrollToTop}
-                className="hidden lg:inline-flex cursor-pointer mt-6 md:mt-8 items-center gap-3 border border-foreground/20 text-foreground font-sans font-medium text-sm sm:text-base tracking-tight px-4 py-2.5 sm:px-5 sm:py-3 rounded-xl hover:border-foreground/40 transition-colors"
+                className="lg:hidden cursor-pointer inline-flex items-center gap-3 border border-foreground/20 text-foreground font-sans font-medium text-sm sm:text-base tracking-tight px-4 py-2.5 sm:px-5 sm:py-3 rounded-xl hover:border-foreground/40 transition-colors"
               >
                 Back to top
                 <span className="font-neuebit text-foreground text-lg sm:text-xl leading-none -rotate-90">→</span>
               </button>
             </Reveal>
           </div>
-
-          {/* Right: Navigation + Channels */}
-          <div className="flex gap-12 sm:gap-16 md:gap-20 lg:gap-16 lg:shrink-0 lg:ml-auto lg:mr-[8vw] xl:mr-[12vw] 2xl:mr-[16vw]">
-            {/* Navigation */}
-            <Reveal>
-              <div className="text-center lg:text-left">
-                <h4 className="font-sans font-medium text-foreground/80 text-lg md:text-xl lg:text-2xl tracking-tight mb-4">
-                  Navigation
-                </h4>
-                <ul className="space-y-2 sm:space-y-2.5">
-                  {NAV_LINKS.map((link) => (
-                    <li key={link.label}>
-                      <Link
-                        href={link.href}
-                        onClick={(e) => handleSmoothScroll(e, link.href)}
-                        className="font-sans text-foreground/80 text-sm sm:text-base tracking-tight hover:text-foreground transition-colors"
-                      >
-                        {link.label}
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </Reveal>
-
-            {/* Channels */}
-            <Reveal delay={0.1}>
-              <div className="text-center lg:text-left">
-                <h4 className="font-sans font-medium text-foreground/80 text-lg md:text-xl lg:text-2xl tracking-tight mb-4">
-                  Channels
-                </h4>
-                <ul className="space-y-2 sm:space-y-2.5">
-                  {CHANNEL_LINKS.map((link) => (
-                    <li key={link.label}>
-                      <Link
-                        href={link.href}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="font-sans text-foreground/80 text-sm sm:text-base tracking-tight hover:text-foreground transition-colors"
-                      >
-                        {link.label}
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </Reveal>
-          </div>
-
-          {/* Back to top — mobile only (below links) */}
-          <Reveal delay={0.15}>
-            <button
-              onClick={scrollToTop}
-              className="lg:hidden cursor-pointer inline-flex items-center gap-3 border border-foreground/20 text-foreground font-sans font-medium text-sm sm:text-base tracking-tight px-4 py-2.5 sm:px-5 sm:py-3 rounded-xl hover:border-foreground/40 transition-colors"
-            >
-              Back to top
-              <span className="font-neuebit text-foreground text-lg sm:text-xl leading-none -rotate-90">→</span>
-            </button>
-          </Reveal>
         </div>
-      </div>
+      )}
 
       {/* Giant "obel" text — Fix #2: text-primary for dark blue */}
-      <div className="w-full overflow-hidden">
+      <div className={`w-full overflow-hidden ${isProjectPage ? 'pt-10 md:pt-14 lg:pt-16' : ''}`}>
         <Reveal>
           <div
             ref={textRef}

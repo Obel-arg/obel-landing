@@ -108,7 +108,7 @@ export function Services() {
 
       {/* Subtitle */}
       <p className="font-sans text-primary text-center text-lg sm:text-xl md:text-2xl lg:text-3xl tracking-tight leading-tight mb-8 md:mb-12 lg:mb-16 px-4 max-w-4xl mx-auto">
-        Every AI employee is designed for a specific function in your business.
+        Every AI employee is designed for a specific function <span className="whitespace-nowrap">in your business.</span>
       </p>
 
       {/* Card row — entrance animation with delay */}

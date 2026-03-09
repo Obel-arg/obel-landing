@@ -60,7 +60,7 @@ export function Hero() {
         {/* Heading — mobile: "Digital products...", desktop: "Products..." */}
         <h1 className="font-neuebit text-[min(16vw,27vh)] md:text-[min(10vw,17vh)] leading-[0.64] md:leading-[0.72] tracking-[-0.05em] text-primary max-w-[85vw] md:max-w-[74vw]">
           <span className="hidden md:inline">AI employees </span>
-          <span className="md:hidden">AI employees that <br />work across your <br />operations 24/7</span>
+          <span className="md:hidden">AI employees that<br />work across your<br />operations 24/7</span>
           <span className="hidden md:inline">that work <br />across your operations 24/7</span>
         </h1>
 
